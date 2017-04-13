@@ -5,6 +5,7 @@ CC = $(CROSS_COMPILE)as
 LD = $(CROSS_COMPILE)ld
 OBJCOPY = $(CROSS_COMPILE)objcopy
 OBJDUMP = $(CROSS_COMPILE)objdump
+GDB = $(CROSS_COMPILE)gdb
 
 OBJECTS = inst_rom.o
 
@@ -30,5 +31,15 @@ Bin2Mem: Bin2Mem.c
 	@gcc $< -o $@
 ../modelsim/inst_rom.data: inst_rom.data
 	@cp $< $@
+
+spike_prog.om: spike.ld $(OBJECTS)
+	@$(LD) -T spike.ld $(OBJECTS) -o $@
+debug: spike_prog.om
+	@spike --gdb-port=12345 -H $< &
+	@sleep 2
+	@$(GDB) -x gdbinit
+	@killall spike 
+
+
 clean:
 	@rm -f *.o *.om *.bin *.data *.mif *.asm Bin2Mem

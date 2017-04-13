@@ -1,7 +1,14 @@
 .org 0x0
 .global _start
 _start:
+	ori x0, x0, 0x123
+	ori x1, x0, 0x100
+	ori x1, x1, 0x020
+	ori x1, x1, 0x400
+	ori x1, x1, 0x044
+	ori x2, x1, 0
+	ori x3, x1, 0
 
-	addi x1, x2, 123
-	addi x2, x3, 456
-	addi x3, x4, 789
+
+_first_inst:
+	j _start

@@ -31,8 +31,8 @@
 //////////////////////////////////////////////////////////////////////
 `include "defines.v"
 
-`define UART_PHYSICAL_ADDR_BEGIN 32'h1fd0_03f8
-`define UART_PHYSICAL_ADDR_LEN 32'h10
+`define UART_PHYSICAL_ADDR_BEGIN 64'hffffffff_ffff1000
+`define UART_PHYSICAL_ADDR_LEN 64'h10
 
 `define RAM_PHYSICAL_ADDR_BEGIN 32'h0000_0000
 `define RAM_PHYSICAL_ADDR_LEN   32'h0800_0000
@@ -50,9 +50,9 @@ module phy_bus_addr_conv(
 		if (rst_n == `RstEnable)
 			bus_addr_o <= `ZeroWord;
 		else if (`UART_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `UART_PHYSICAL_ADDR_BEGIN + `UART_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h1, uart_index[27:2], 2'h0};
+			bus_addr_o <= {4'h1, uart_index[59:2], 2'h0};
 		else if (`RAM_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `RAM_PHYSICAL_ADDR_BEGIN + `RAM_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h0, ram_index[27:0]};
+			bus_addr_o <= {4'h0, ram_index[59:0]};
 		else
 			bus_addr_o <= `ZeroWord;
 endmodule

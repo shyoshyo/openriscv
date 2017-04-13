@@ -26,8 +26,8 @@
 // File:    id.v
 // Author:  Lei Silei, shyoshyo
 // E-mail:  leishangwen@163.com, shyoshyo@qq.com
-// Description: ÒëÂë½×¶Î
-//   À©³äÁË mtc0/mfc0 µÄ sel ×Ö¶Î
+// Description: è¯‘ç é˜¶æ®µ
+//   æ‰©å……äº† mtc0/mfc0 çš„ sel å­—æ®µ
 // Revision: 1.0
 //////////////////////////////////////////////////////////////////////
 
@@ -38,21 +38,21 @@ module id(
 	input wire[`RegBus] pc_i,
 	input wire[`InstBus] inst_i,
 	
-	// ÒÑ¾­¼ì²âµ½µÄÒì³£
+	// å·²ç»æ£€æµ‹åˆ°çš„å¼‚å¸¸
 	input wire[31:0] excepttype_i,
 
 	input wire not_stall_i,
 
-	//´¦ÓÚÖ´ĞĞ½×¶ÎµÄÖ¸ÁîµÄÒ»Ğ©ĞÅÏ¢£¬ÓÃÓÚ½â¾öloadÏà¹Ø
+	//å¤„äºæ‰§è¡Œé˜¶æ®µçš„æŒ‡ä»¤çš„ä¸€äº›ä¿¡æ¯ï¼Œç”¨äºè§£å†³loadç›¸å…³
 	input wire[`AluOpBus] ex_aluop_i,
 	
-	// Êı¾İÅÔÂ·
-	// ´¦ÓÚÖ´ĞĞ½×¶ÎµÄÖ¸ÁîÒªĞ´ÈëµÄÄ¿µÄ¼Ä´æÆ÷ĞÅÏ¢
+	// æ•°æ®æ—è·¯
+	// å¤„äºæ‰§è¡Œé˜¶æ®µçš„æŒ‡ä»¤è¦å†™å…¥çš„ç›®çš„å¯„å­˜å™¨ä¿¡æ¯
 	input wire ex_wreg_i,
 	input wire[`RegBus] ex_wdata_i,
 	input wire[`RegAddrBus] ex_wd_i,
 	
-	//´¦ÓÚ·Ã´æ½×¶ÎµÄÖ¸ÁîÒªĞ´ÈëµÄÄ¿µÄ¼Ä´æÆ÷ĞÅÏ¢
+	//å¤„äºè®¿å­˜é˜¶æ®µçš„æŒ‡ä»¤è¦å†™å…¥çš„ç›®çš„å¯„å­˜å™¨ä¿¡æ¯
 	input wire mem_wreg_i,
 	input wire[`RegBus] mem_wdata_i,
 	input wire[`RegAddrBus] mem_wd_i,
@@ -60,50 +60,50 @@ module id(
 	input wire[`RegBus] reg1_data_i,
 	input wire[`RegBus] reg2_data_i,
 
-	// Èç¹ûÉÏÒ»ÌõÖ¸ÁîÊÇ×ªÒÆÖ¸Áî£¬ÄÇÃ´ÏÂÒ»ÌõÖ¸ÁîÔÚÒëÂëµÄÊ±ºò is_in_delayslot Îª true
+	// å¦‚æœä¸Šä¸€æ¡æŒ‡ä»¤æ˜¯è½¬ç§»æŒ‡ä»¤ï¼Œé‚£ä¹ˆä¸‹ä¸€æ¡æŒ‡ä»¤åœ¨è¯‘ç çš„æ—¶å€™ is_in_delayslot ä¸º true
 	input wire is_in_delayslot_i,
 
-	//ËÍµ½ regfile µÄĞÅÏ¢£¬ÓÃÓÚ·ÃÎÊ¼Ä´æÆ÷
+	//é€åˆ° regfile çš„ä¿¡æ¯ï¼Œç”¨äºè®¿é—®å¯„å­˜å™¨
 	output reg reg1_read_o,
 	output reg reg2_read_o,
 	output wire[`RegAddrBus] reg1_addr_o,
 	output wire[`RegAddrBus] reg2_addr_o,
 	
 	
-	// ËÍµ½£¨ÏÂÒ»½×¶Î£©Ö´ĞĞ½×¶ÎµÄĞÅÏ¢
+	// é€åˆ°ï¼ˆä¸‹ä¸€é˜¶æ®µï¼‰æ‰§è¡Œé˜¶æ®µçš„ä¿¡æ¯
 	
-	// op µÄÀàĞÍ£¬×ÓÀàĞÍ
+	// op çš„ç±»å‹ï¼Œå­ç±»å‹
 	output reg[`AluOpBus] aluop_o,
 	output reg[`AluSelBus] alusel_o,
 	
-	// ²ÎÓë¼ÆËãµÄ¼Ä´æÆ÷
+	// å‚ä¸è®¡ç®—çš„å¯„å­˜å™¨
 	output reg[`RegBus] reg1_o,
 	output reg[`RegBus] reg2_o,
 	
-	// ĞèÒªĞ´»ØµÄ¼Ä´æÆ÷£¬ÒÔ¼°ÊÇ·ñĞèÒªĞ´»Ø
+	// éœ€è¦å†™å›çš„å¯„å­˜å™¨ï¼Œä»¥åŠæ˜¯å¦éœ€è¦å†™å›
 	output reg[`RegAddrBus] wd_o,
 	output reg wreg_o,
 
-	// ÕâÒ»ÌõÖ¸ÁîµÄÍêÕûÄÚÈİ
+	// è¿™ä¸€æ¡æŒ‡ä»¤çš„å®Œæ•´å†…å®¹
 	output wire[`InstBus] inst_o,
 
 
-	// ÏÂÒ»ÌõÖ¸ÁîÊÇ·ñÔÚÑÓ³Ù²ÛÖĞ
+	// ä¸‹ä¸€æ¡æŒ‡ä»¤æ˜¯å¦åœ¨å»¶è¿Ÿæ§½ä¸­
 	output reg next_inst_in_delayslot_o,
 
-	// ÊÇ·ñĞèÒªÌø×ª£¬ÒÔ¼°Ìø×ªµØÖ·£¬Á´½ÓµØÖ·
+	// æ˜¯å¦éœ€è¦è·³è½¬ï¼Œä»¥åŠè·³è½¬åœ°å€ï¼Œé“¾æ¥åœ°å€
 	output reg branch_flag_o,
 	output reg[`RegBus] branch_target_address_o,       
 	output reg[`RegBus] link_addr_o,
 
-	// ÕâÌõÖ¸ÁîÊÇ·ñÔÚÑÓ³Ù²ÛÖĞ
+	// è¿™æ¡æŒ‡ä»¤æ˜¯å¦åœ¨å»¶è¿Ÿæ§½ä¸­
 	output reg is_in_delayslot_o,
 
 	output wire[31:0] excepttype_o,
 	output wire[`RegBus] current_inst_address_o,
 	output wire not_stall_o,
 
-	// ÔİÍ£ÇëÇó
+	// æš‚åœè¯·æ±‚
 	output wire stallreq
 );
 
@@ -141,12 +141,12 @@ module id(
 
 	// exceptiontype
 	//   0   machine check   TLB write that conflicts with an existing entry
-	//   1-8 Íâ²¿ÖĞ”à         Assertion of unmasked HW or SW interrupt signal.
+	//   1-8 å¤–éƒ¨ä¸­æ–·         Assertion of unmasked HW or SW interrupt signal.
 	// . 9   adEl            Fetch address alignment error.
 	// . 10  TLBL            Fetch TLB miss, Fetch TLB hit to page with V=0 (inst)
 	// * 11  syscall
-	// * 12  RI              ŸoĞ§Ö¸Áî Reserved Instruction
-	//   13  ov              Òç³ö
+	// * 12  RI              ç„¡æ•ˆæŒ‡ä»¤ Reserved Instruction
+	//   13  ov              æº¢å‡º
 	//   14  trap
 	//   15  AdEL            Load address alignment error,  
 	//   16  adES            Store address alignment error.
@@ -160,7 +160,7 @@ module id(
 	assign current_inst_address_o = pc_i;
 	assign not_stall_o = not_stall_i;
 
-	/******************* ¶ÔÖ¸Áî½øĞĞÒëÂë ********************/
+	/******************* å¯¹æŒ‡ä»¤è¿›è¡Œè¯‘ç  ********************/
 
 	always @ (*) begin
 		if (rst_n == `RstEnable)
@@ -187,27 +187,27 @@ module id(
 		end
 		else
 		begin
-			// Ä¬ÈÏµÄÖ¸ÁîÀàĞÍºÍ×ÓÀàĞÍ
+			// é»˜è®¤çš„æŒ‡ä»¤ç±»å‹å’Œå­ç±»å‹
 			aluop_o <= `EXE_NOP_OP;
 			alusel_o <= `EXE_RES_NOP;
 			instvalid <= `InstInvalid;	
 			
-			// ÊÇ·ñĞ´Èë¼Ä´æÆ÷£¬Ğ´ÈëÄÄ¸ö¼Ä´æÆ÷
+			// æ˜¯å¦å†™å…¥å¯„å­˜å™¨ï¼Œå†™å…¥å“ªä¸ªå¯„å­˜å™¨
 			wd_o <= inst_i[11:7];
 			wreg_o <= `WriteDisable;
 			
-			// ÊÇ·ñ¶ÁÈ¡¼Ä´æÆ÷£¬´ÓÄÄ¸ö¼Ä´æÆ÷¶Á
+			// æ˜¯å¦è¯»å–å¯„å­˜å™¨ï¼Œä»å“ªä¸ªå¯„å­˜å™¨è¯»
 			reg1_read_o <= `ReadDisable;
 			reg2_read_o <= `ReadDisable;
 			
 
-			// ÊÇ·ñÌø×ª£¬Ìø×ªµØÖ·£¬ÏÂÒ»ÌõÖ¸ÁîÊÇ·ñÔÚÑÓ³Ù²ÛÖĞ
+			// æ˜¯å¦è·³è½¬ï¼Œè·³è½¬åœ°å€ï¼Œä¸‹ä¸€æ¡æŒ‡ä»¤æ˜¯å¦åœ¨å»¶è¿Ÿæ§½ä¸­
 			link_addr_o <= `ZeroDoubleWord;
 			branch_target_address_o <= `ZeroDoubleWord;
 			branch_flag_o <= `NotBranch;
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
 
-			// ÊÇ·ñ´¥·¢ syscall, eret Òì³£
+			// æ˜¯å¦è§¦å‘ syscall, eret å¼‚å¸¸
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_eret <= `False_v;
 
@@ -366,7 +366,7 @@ module id(
 	end
 	
 	
-	/**************** È·¶¨Ô´²Ù×÷Êı 1 *****************/
+	/**************** ç¡®å®šæºæ“ä½œæ•° 1 *****************/
 	
 	always @ (*)
 	begin
@@ -393,7 +393,7 @@ module id(
 			reg1_o <= `ZeroDoubleWord;
 	end
 	
-	/**************** È·¶¨Ô´²Ù×÷Êı 2 *****************/
+	/**************** ç¡®å®šæºæ“ä½œæ•° 2 *****************/
 	
 	always @ (*)
 	begin
@@ -420,7 +420,7 @@ module id(
 			reg2_o <= `ZeroDoubleWord;
 	end
 	
-	/*********** È·¶¨ÕâÒ»ÌõÖ¸ÁîÊÇ·ñÔÚÑÓ³Ù²ÛÖĞ **********/
+	/*********** ç¡®å®šè¿™ä¸€æ¡æŒ‡ä»¤æ˜¯å¦åœ¨å»¶è¿Ÿæ§½ä¸­ **********/
 
 	always @ (*)
 	begin

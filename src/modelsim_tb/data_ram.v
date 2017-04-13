@@ -35,8 +35,8 @@
 //数据存储器data_ram
 `define DataAddrBus 31:0
 `define DataBus 31:0
-`define DataMemNum 16777216
-`define DataMemNumLog2 24
+`define DataMemNum 1024
+`define DataMemNumLog2 10
 `define ByteWidth 7:0
 
 `timescale 1ns/1ps
@@ -48,7 +48,7 @@ module data_ram(
 	input wire[`RegBus]           wishbone_addr_i,
 	input wire[`RegBus]           wishbone_data_i,
 	input wire                    wishbone_we_i,
-	input wire[3:0]               wishbone_sel_i,
+	input wire[7:0]               wishbone_sel_i,
 	input wire                    wishbone_stb_i,
 	input wire                    wishbone_cyc_i,
 	

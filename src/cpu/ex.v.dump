@@ -26,7 +26,7 @@
 // File:    ex.v
 // Author:  Lei Silei, shyoshyo
 // E-mail:  leishangwen@163.com, shyoshyo@qq.com
-// Description: Ö´ĞĞ½×¶Î
+// Description: æ‰§è¡Œé˜¶æ®µ
 // Revision: 1.0
 //////////////////////////////////////////////////////////////////////
 
@@ -36,7 +36,7 @@ module ex(
 
 	input wire rst_n,
 	
-	// ËÍµ½Ö´ĞĞ½×¶ÎµÄĞÅÏ¢
+	// é€åˆ°æ‰§è¡Œé˜¶æ®µçš„ä¿¡æ¯
 	input wire[`AluOpBus] aluop_i,
 	input wire[`AluSelBus] alusel_i,
 	input wire[`RegBus] reg1_i,
@@ -45,105 +45,105 @@ module ex(
 	input wire wreg_i,
 	input wire[`InstBus] inst_i,
 
-	// ÒÑ¾­¼ì²âµ½µÄÒì³£ºÍÖ¸ÁîµØÖ·¼°ÆäÊÇ·ñºÏ·¨
+	// å·²ç»æ£€æµ‹åˆ°çš„å¼‚å¸¸å’ŒæŒ‡ä»¤åœ°å€åŠå…¶æ˜¯å¦åˆæ³•
 	input wire[31:0] excepttype_i,
 	input wire[`RegBus] current_inst_address_i,
 	input wire not_stall_i,
 
-	// HILO Ä£¿é¸ø³öµÄ HI¡¢LO ¼Ä´æÆ÷µÄÖµ
+	// HILO æ¨¡å—ç»™å‡ºçš„ HIã€LO å¯„å­˜å™¨çš„å€¼
 	input wire[`RegBus] hi_i,
 	input wire[`RegBus] lo_i,
 
-	//»ØĞ´½×¶ÎµÄÖ¸ÁîÊÇ·ñÒªĞ´HI¡¢LO£¬ÓÃÓÚ¼ì²âHI¡¢LOµÄÊı¾İÏà¹Ø
+	//å›å†™é˜¶æ®µçš„æŒ‡ä»¤æ˜¯å¦è¦å†™HIã€LOï¼Œç”¨äºæ£€æµ‹HIã€LOçš„æ•°æ®ç›¸å…³
 	input wire[`RegBus] wb_hi_i,
 	input wire[`RegBus] wb_lo_i,
 	input wire wb_whilo_i,
 	
-	//·Ã´æ½×¶ÎµÄÖ¸ÁîÊÇ·ñÒªĞ´HI¡¢LO£¬ÓÃÓÚ¼ì²âHI¡¢LOµÄÊı¾İÏà¹Ø
+	//è®¿å­˜é˜¶æ®µçš„æŒ‡ä»¤æ˜¯å¦è¦å†™HIã€LOï¼Œç”¨äºæ£€æµ‹HIã€LOçš„æ•°æ®ç›¸å…³
 	input wire[`RegBus] mem_hi_i,
 	input wire[`RegBus] mem_lo_i,
 	input wire mem_whilo_i,
 	
-	// ÔİÍ££¬ÉÏÒ»´Î ex µÃµ½µÄ½á¹û
+	// æš‚åœï¼Œä¸Šä¸€æ¬¡ ex å¾—åˆ°çš„ç»“æœ
 	input wire[`DoubleRegBus] hilo_temp_i,
 	input wire[1:0] cnt_i,
 	input wire div_started_i,
 
-	// ³ı·¨Ä£¿é¸øµÄ½á¹û
+	// é™¤æ³•æ¨¡å—ç»™çš„ç»“æœ
 	input wire[`DoubleRegBus] div_result_i,
 	input wire div_ready_i,
 
-	// ÊÇ·ñÔÚÑÓ³Ù²ÛÖĞ¡¢ÒÔ¼°link address
+	// æ˜¯å¦åœ¨å»¶è¿Ÿæ§½ä¸­ã€ä»¥åŠlink address
 	input wire[`RegBus] link_address_i,
 	input wire is_in_delayslot_i,
 
-	//·Ã´æ½×¶ÎµÄÖ¸ÁîÊÇ·ñÒªĞ´CP0£¬ÓÃÀ´¼ì²âÊı¾İÏà¹Ø
+	//è®¿å­˜é˜¶æ®µçš„æŒ‡ä»¤æ˜¯å¦è¦å†™CP0ï¼Œç”¨æ¥æ£€æµ‹æ•°æ®ç›¸å…³
 	input wire mem_cp0_reg_we,
 	input wire[7:0] mem_cp0_reg_write_addr,
 	input wire[`RegBus] mem_cp0_reg_data,
 	
-	//»ØĞ´½×¶ÎµÄÖ¸ÁîÊÇ·ñÒªĞ´CP0£¬ÓÃÀ´¼ì²âÊı¾İÏà¹Ø
+	//å›å†™é˜¶æ®µçš„æŒ‡ä»¤æ˜¯å¦è¦å†™CP0ï¼Œç”¨æ¥æ£€æµ‹æ•°æ®ç›¸å…³
 	input wire wb_cp0_reg_we,
 	input wire[7:0] wb_cp0_reg_write_addr,
 	input wire[`RegBus] wb_cp0_reg_data,
 
-	// TLB Ìá¹©µÄÎïÀíµØÖ·
+	// TLB æä¾›çš„ç‰©ç†åœ°å€
 	input wire[`RegBus] mem_phy_addr_i,
 	input wire data_tlb_r_miss_exception_i,
 	input wire data_tlb_w_miss_exception_i,
 	input wire data_tlb_mod_exception_i, 
 
-	//ÓëCP0ÏàÁ¬£¬¶ÁÈ¡ÆäÖĞCP0¼Ä´æÆ÷µÄÖµ
+	//ä¸CP0ç›¸è¿ï¼Œè¯»å–å…¶ä¸­CP0å¯„å­˜å™¨çš„å€¼
 	input wire[`RegBus] cp0_reg_data_i,
 	output reg[7:0] cp0_reg_read_addr_o,
 
-	//ÏòÏÂÒ»Á÷Ë®¼¶´«µİ£¬ÓÃÓÚĞ´CP0ÖĞµÄ¼Ä´æÆ÷
+	//å‘ä¸‹ä¸€æµæ°´çº§ä¼ é€’ï¼Œç”¨äºå†™CP0ä¸­çš„å¯„å­˜å™¨
 	output reg cp0_reg_we_o,
 	output reg[7:0] cp0_reg_write_addr_o,
 	output reg[`RegBus] cp0_reg_data_o,
 	output reg cp0_write_tlb_index_o,
 	output reg cp0_write_tlb_random_o,
 
-	// ÊÇ·ñĞ´¼Ä´æÆ÷£¬ÒÔ¼°¼Ä´æÆ÷µÄµØÖ·ºÍÒªĞ´µÄÖµ
+	// æ˜¯å¦å†™å¯„å­˜å™¨ï¼Œä»¥åŠå¯„å­˜å™¨çš„åœ°å€å’Œè¦å†™çš„å€¼
 	output reg[`RegAddrBus] wd_o,
 	output reg wreg_o,
 	output reg[`RegBus] wdata_o,
 	
-	// ÊÇ·ñĞ´Èë hi, lo, ÒªĞ´ÈëµÄÖµ
+	// æ˜¯å¦å†™å…¥ hi, lo, è¦å†™å…¥çš„å€¼
 	output reg[`RegBus] hi_o,
 	output reg[`RegBus] lo_o,
 	output reg whilo_o,
 
-	// ÔİÍ££¬ÏÂÒ»´Î ex ĞèÒªµÄ½á¹û
+	// æš‚åœï¼Œä¸‹ä¸€æ¬¡ ex éœ€è¦çš„ç»“æœ
 	output reg[`DoubleRegBus] hilo_temp_o,
 	output reg[1:0] cnt_o,
 	output reg div_started_o,
 
-	// ·¢ËÍ¸ø³ı·¨Æ÷µÄÇëÇó
+	// å‘é€ç»™é™¤æ³•å™¨çš„è¯·æ±‚
 	output reg[`RegBus] div_opdata1_o,
 	output reg[`RegBus] div_opdata2_o,
 	output reg div_start_o,
 	output reg signed_div_o,
 
-	// Îª¼ÓÔØ¡¢´æ´¢Ö¸Áî×¼±¸µÄ£¬
-	// ÄÚ´æµÄĞ´Ê¹ÄÜºÍÊ¹ÄÜÊÇÎªÁËĞéÊµµØÖ·×ª»»¶ø´ÖÂÔ¼ÆËãµÄ£¬²»¼ûµÃÊÇ×îºóµÄ´ğ°¸
-	// ×îºóÈç¹ûÊ¹ÄÜÈ·ÊµÊÇ¿ªµÄ»°£¬ÔòÕâÀï±ØĞëÒªÊÇ¿ª£¬Ğ´Ê¹ÄÜÒ²ÊÇÈç´Ë
+	// ä¸ºåŠ è½½ã€å­˜å‚¨æŒ‡ä»¤å‡†å¤‡çš„ï¼Œ
+	// å†…å­˜çš„å†™ä½¿èƒ½å’Œä½¿èƒ½æ˜¯ä¸ºäº†è™šå®åœ°å€è½¬æ¢è€Œç²—ç•¥è®¡ç®—çš„ï¼Œä¸è§å¾—æ˜¯æœ€åçš„ç­”æ¡ˆ
+	// æœ€åå¦‚æœä½¿èƒ½ç¡®å®æ˜¯å¼€çš„è¯ï¼Œåˆ™è¿™é‡Œå¿…é¡»è¦æ˜¯å¼€ï¼Œå†™ä½¿èƒ½ä¹Ÿæ˜¯å¦‚æ­¤
 	output wire[`AluOpBus] aluop_o,
 	output wire[`RegBus] mem_addr_o,
 	output reg mem_we_o,
 	output reg mem_ce_o,
 	output wire[`RegBus] reg2_o,
 	
-	// ĞÂ¼ì²â³öµÄÒì³£ÀàĞÍ
+	// æ–°æ£€æµ‹å‡ºçš„å¼‚å¸¸ç±»å‹
 	output wire[31:0] excepttype_o,
-	// µ±Ç°Ö¸ÁîÊÇ·ñÔÚÑÓ³Ù²ÛÖĞ
+	// å½“å‰æŒ‡ä»¤æ˜¯å¦åœ¨å»¶è¿Ÿæ§½ä¸­
 	output wire is_in_delayslot_o,
-	// µ±Ç°Ö¸ÁîµØÖ·ÒÔ¼°ÆäÊÇ·ñºÏ·¨
+	// å½“å‰æŒ‡ä»¤åœ°å€ä»¥åŠå…¶æ˜¯å¦åˆæ³•
 	output wire[`RegBus] current_inst_address_o,
 	output wire not_stall_o,
 
 
-	// ¸æËß MEM ½×¶ÎµÄÎïÀíµØÖ·
+	// å‘Šè¯‰ MEM é˜¶æ®µçš„ç‰©ç†åœ°å€
 	output wire[`RegBus] mem_phy_addr_o,
 	output wire data_tlb_r_miss_exception_o,
 	output wire data_tlb_w_miss_exception_o,
@@ -158,19 +158,19 @@ module ex(
 	reg[`RegBus] arithout;
 	reg[`DoubleRegBus] multiout;
 
-	// ×ÔÏİÒì³£
+	// è‡ªé™·å¼‚å¸¸
 	reg trapassert;
-	// Òç³öÒì³£
+	// æº¢å‡ºå¼‚å¸¸
 	reg ovassert;
 
 	// exceptiontype
 	//   0   machine check   TLB write that conflicts with an existing entry
-	//   1-8 Íâ²¿ÖĞ”à         Assertion of unmasked HW or SW interrupt signal.
+	//   1-8 å¤–éƒ¨ä¸­æ–·         Assertion of unmasked HW or SW interrupt signal.
 	// . 9   adEl            Fetch address alignment error.
 	// . 10  TLBL            Fetch TLB miss, Fetch TLB hit to page with V=0 (inst)
 	// . 11  syscall
-	// . 12  RI              ŸoĞ§Ö¸Áî Reserved Instruction
-	// * 13  ov              Òç³ö
+	// . 12  RI              ç„¡æ•ˆæŒ‡ä»¤ Reserved Instruction
+	// * 13  ov              æº¢å‡º
 	// * 14  trap
 	//   15  AdEL            Load address alignment error,  
 	//   16  adES            Store address alignment error.
@@ -309,8 +309,8 @@ module ex(
 	reg[`RegBus] HI;
 	reg[`RegBus] LO;
 	
-	// HI¡¢LO ¼Ä´æÆ÷Êı¾İÅÔÂ·
-	// µÃµ½×îĞÂµÄHI¡¢LO¼Ä´æÆ÷µÄÖµ£¬´Ë´¦Òª½â¾öÖ¸ÁîÊı¾İÏà¹ØÎÊÌâ
+	// HIã€LO å¯„å­˜å™¨æ•°æ®æ—è·¯
+	// å¾—åˆ°æœ€æ–°çš„HIã€LOå¯„å­˜å™¨çš„å€¼ï¼Œæ­¤å¤„è¦è§£å†³æŒ‡ä»¤æ•°æ®ç›¸å…³é—®é¢˜
 	always @ (*) begin
 		if(rst_n == `RstEnable) begin
 			{HI, LO} <= {`ZeroWord, `ZeroWord};
@@ -408,7 +408,7 @@ module ex(
 					
 					`CP0_REG_CAUSE:
 					begin
-						//cause¼Ä´æÆ÷Ö»ÓĞIP[1:0]¡¢IV¡¢WP×Ö¶ÎÊÇ¿ÉĞ´µÄ
+						//causeå¯„å­˜å™¨åªæœ‰IP[1:0]ã€IVã€WPå­—æ®µæ˜¯å¯å†™çš„
 						cp0regout[9:8] <= mem_cp0_reg_data[9:8];
 						cp0regout[22] <= mem_cp0_reg_data[22];
 						cp0regout[23] <= mem_cp0_reg_data[23];
@@ -498,7 +498,7 @@ module ex(
 					
 					`CP0_REG_CAUSE:
 					begin
-						//cause¼Ä´æÆ÷Ö»ÓĞIP[1:0]¡¢IV¡¢WP×Ö¶ÎÊÇ¿ÉĞ´µÄ
+						//causeå¯„å­˜å™¨åªæœ‰IP[1:0]ã€IVã€WPå­—æ®µæ˜¯å¯å†™çš„
 						cp0regout[9:8] <= wb_cp0_reg_data[9:8];
 						cp0regout[22] <= wb_cp0_reg_data[22];
 						cp0regout[23] <= wb_cp0_reg_data[23];
@@ -690,15 +690,15 @@ module ex(
 		end
 	end	
 
-	//aluop_o´«µİµ½·Ã´æ½×¶Î£¬ÓÃÓÚ¼ÓÔØ¡¢´æ´¢Ö¸Áî
-	//µ½Ê±ºòÔÙ¾ö¶¨Æä¼ÓÔØ¡¢´æ´¢ÀàĞÍ
+	//aluop_oä¼ é€’åˆ°è®¿å­˜é˜¶æ®µï¼Œç”¨äºåŠ è½½ã€å­˜å‚¨æŒ‡ä»¤
+	//åˆ°æ—¶å€™å†å†³å®šå…¶åŠ è½½ã€å­˜å‚¨ç±»å‹
 	assign aluop_o = aluop_i;
 
-	//mem_addr´«µİµ½·Ã´æ½×¶Î£¬ÊÇ¼ÓÔØ¡¢´æ´¢Ö¸Áî¶ÔÓ¦µÄ´æ´¢Æ÷µØÖ·
+	//mem_addrä¼ é€’åˆ°è®¿å­˜é˜¶æ®µï¼Œæ˜¯åŠ è½½ã€å­˜å‚¨æŒ‡ä»¤å¯¹åº”çš„å­˜å‚¨å™¨åœ°å€
 	assign mem_addr_o = reg1_i + {{16{inst_i[15]}},inst_i[15:0]};
 
-	//½«Á½¸ö²Ù×÷ÊıÒ²´«µİµ½·Ã´æ½×¶Î£¬Ò²ÊÇÎª¼ÇÔØ¡¢´æ´¢Ö¸Áî×¼±¸µÄ
-	// ´æ´¢£¬lwl, lwr Ö¸ÁîĞèÒª
+	//å°†ä¸¤ä¸ªæ“ä½œæ•°ä¹Ÿä¼ é€’åˆ°è®¿å­˜é˜¶æ®µï¼Œä¹Ÿæ˜¯ä¸ºè®°è½½ã€å­˜å‚¨æŒ‡ä»¤å‡†å¤‡çš„
+	// å­˜å‚¨ï¼Œlwl, lwr æŒ‡ä»¤éœ€è¦
 	assign reg2_o = reg2_i;
 
 	assign mem_phy_addr_o = mem_phy_addr_i;
@@ -723,12 +723,12 @@ module ex(
 
 
 
-	/************************** ÔİÍ£Á÷Ë®Ïß ******************************/
+	/************************** æš‚åœæµæ°´çº¿ ******************************/
 	always @(*)
 	 	stallreq <= stallreq_for_madd_msub || stallreq_for_div; 
 
 
-	/***************** ÕâÌõÖ¸ÁîÒªĞ´µ½ regfile µÄÄÚÈİ ********************/
+	/***************** è¿™æ¡æŒ‡ä»¤è¦å†™åˆ° regfile çš„å†…å®¹ ********************/
 
 	always @ (*)
 		if(rst_n == `RstEnable)
@@ -769,7 +769,7 @@ module ex(
 		end
 	
 	
-	/***************** ÕâÌõÖ¸ÁîÒªĞ´µ½ hi, lo µÄÄÚÈİ ********************/
+	/***************** è¿™æ¡æŒ‡ä»¤è¦å†™åˆ° hi, lo çš„å†…å®¹ ********************/
 	always @ (*)
 		if(rst_n == `RstEnable)
 		begin
@@ -813,7 +813,7 @@ module ex(
 		end
 
 
-	/******************* ÕâÌõÖ¸ÁîÒªĞ´µ½ cp0 µÄÄÚÈİ **********************/
+	/******************* è¿™æ¡æŒ‡ä»¤è¦å†™åˆ° cp0 çš„å†…å®¹ **********************/
 	always @ (*)
 		if(rst_n == `RstEnable)
 		begin

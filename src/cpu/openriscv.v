@@ -46,7 +46,7 @@ module openriscv(
 	output wire[`RegBus]           iwishbone_addr_o,
 	output wire[`RegBus]           iwishbone_data_o,
 	output wire                    iwishbone_we_o,
-	output wire[3:0]               iwishbone_sel_o,
+	output wire[7:0]               iwishbone_sel_o,
 	output wire                    iwishbone_stb_o,
 	output wire                    iwishbone_cyc_o, 
 	
@@ -56,7 +56,7 @@ module openriscv(
 	output wire[`RegBus]           dwishbone_addr_o,
 	output wire[`RegBus]           dwishbone_data_o,
 	output wire                    dwishbone_we_o,
-	output wire[3:0]               dwishbone_sel_o,
+	output wire[7:0]               dwishbone_sel_o,
 	output wire                    dwishbone_stb_o,
 	output wire                    dwishbone_cyc_o,
 	
@@ -80,14 +80,14 @@ module openriscv(
 
 	//连接译码阶段 IF 模块的输出与 IF/ID 模块的输入
 	// 从 inst 存储器获得的数据
-	wire[`RegBus] if_inst_o;
+	wire[`InstBus] if_inst_o;
 	wire if_inst_ce_o;
 	wire [31:0]if_excepttype_o;
 
 	//连接译码阶段ID模块的输入
 	wire[`RegBus] id_pc_i;
-	wire[`RegBus] id_inst_i;
-	wire[`RegBus] id_excepttype_i;
+	wire[`InstBus] id_inst_i;
+	wire[31:0] id_excepttype_i;
 	wire id_not_stall_i;
 	
 	//连接译码阶段ID模块的输出与ID/EX模块的输入
@@ -99,7 +99,7 @@ module openriscv(
 	wire[`RegAddrBus] id_wd_o;
 	wire id_is_in_delayslot_o;
 	wire[`RegBus] id_link_address_o;
-	wire[`RegBus] id_inst_o;
+	wire[`InstBus] id_inst_o;
 	wire[31:0] id_excepttype_o;
 	wire[`RegBus] id_current_inst_address_o;
 	wire id_not_stall_o;
@@ -113,7 +113,7 @@ module openriscv(
 	wire[`RegAddrBus] ex_wd_i;
 	wire ex_is_in_delayslot_i;	
 	wire[`RegBus] ex_link_address_i;
-	wire[`RegBus] ex_inst_i;
+	wire[`InstBus] ex_inst_i;
 	wire[31:0] ex_excepttype_i;	
 	wire[`RegBus] ex_current_inst_address_i;
 	wire ex_not_stall_i;
@@ -915,7 +915,7 @@ module openriscv(
 		.cpu_data_i(ram_data_o),
 		.cpu_addr_i(ram_phy_addr_o),
 		.cpu_we_i(ram_we_o),
-		.cpu_sel_i(ram_sel_o),
+		.cpu_sel_i({4'b0000, ram_sel_o}),
 		.cpu_data_o(ram_data_i),
 
 
@@ -933,6 +933,8 @@ module openriscv(
 	
 	);
 	
+	wire[31:0] useless;
+
 	wishbone_bus_if #(.delay(0)) iwishbone_bus_if(
 		.cpu_clk(clk),
 		.wishbone_clk(wishbone_clk),
@@ -946,11 +948,11 @@ module openriscv(
 	
 		// CPU
 		.cpu_ce_i(if_inst_ce_o & (~(|if_excepttype_i))),
-		.cpu_data_i(32'h00000000),
+		.cpu_data_i(`ZeroDoubleWord),
 		.cpu_addr_i(if_inst_phy_addr_i),
 		.cpu_we_i(`WriteDisable),
-		.cpu_sel_i(4'b1111),
-		.cpu_data_o(if_inst_o),
+		.cpu_sel_i(8'b0000_1111),
+		.cpu_data_o({useless, if_inst_o}),
 	
 		// Wishbone 
 		.wishbone_data_i(iwishbone_data_i),

@@ -46,7 +46,7 @@ module if_id(
 	// 取指阶段取得的指令对应的地址
 	input wire[`RegBus] if_pc,
 	// 取值阶段取到的地址
-	input wire[`RegBus] if_inst,
+	input wire[`InstBus] if_inst,
 	// 取值阶段使能是否就绪
 	input wire if_inst_ce,
 	
@@ -55,7 +55,7 @@ module if_id(
 	output reg[`RegBus] id_pc,
 	
 	// 译码阶段要用的指令
-	output reg[`RegBus] id_inst,
+	output reg[`InstBus] id_inst,
 
 	// 新检测出的异常类型
 	output reg[31:0] id_excepttype,

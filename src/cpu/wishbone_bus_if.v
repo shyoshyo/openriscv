@@ -52,7 +52,7 @@ module wishbone_bus_if(
 	input wire[`RegBus]           cpu_data_i,
 	input wire[`RegBus]           cpu_addr_i,
 	input wire                    cpu_we_i,
-	input wire[3:0]               cpu_sel_i,
+	input wire[7:0]               cpu_sel_i,
 	output reg[`RegBus]           cpu_data_o,
 	
 	//Wishbone interface
@@ -61,7 +61,7 @@ module wishbone_bus_if(
 	output wire[`RegBus]           wishbone_addr_o,
 	output wire[`RegBus]           wishbone_data_o,
 	output wire                    wishbone_we_o,
-	output wire[3:0]               wishbone_sel_o,
+	output wire[7:0]               wishbone_sel_o,
 	output wire                    wishbone_stb_o,
 	output wire                    wishbone_cyc_o,
 

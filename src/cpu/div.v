@@ -40,8 +40,8 @@ module div(
 	input wire signed_div_i,
 	
 	// 两个 32 位的输入
-	input wire[31:0] opdata1_i,
-	input wire[31:0] opdata2_i,
+	input wire[63:0] opdata1_i,
+	input wire[63:0] opdata2_i,
 
 	// 开始信号
 	// 与书上不同，这里开始信号给一周期就可以了。
@@ -53,10 +53,13 @@ module div(
 	
 
 	// 结果寄存器
-	output reg[63:0] result_o,
+	output reg[127:0] result_o,
 	// 除法运算是否结束
 	output reg ready_o
 );
+	// 32 bit divisor
+	
+	/*
 
 	wire[32:0] div_temp;
 
@@ -163,4 +166,5 @@ module div(
 			endcase
 		end
 	end
+	*/
 endmodule

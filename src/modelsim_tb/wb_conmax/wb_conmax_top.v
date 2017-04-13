@@ -163,8 +163,8 @@ module wb_conmax_top(
 // Module Parameters
 //
 
-parameter		dw	 = 32;		// Data bus Width
-parameter		aw	 = 32;		// Address bus Width
+parameter		dw	 = 64;		// Data bus Width
+parameter		aw	 = 64;		// Address bus Width
 parameter	[3:0]	rf_addr  = 4'hf;
 parameter	[1:0]	pri_sel0 = 2'd2;
 parameter	[1:0]	pri_sel1 = 2'd2;

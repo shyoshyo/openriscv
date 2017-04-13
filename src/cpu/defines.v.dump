@@ -1,4 +1,4 @@
-//È«¾Ö
+//å…¨å±€
 `define RstEnable 1'b0
 `define RstDisable 1'b1
 `define ZeroWord 32'h00000000
@@ -27,14 +27,14 @@
 `define False_v 1'b0
 `define ChipEnable 1'b1
 `define ChipDisable 1'b0
-// Çå¿ÕÁ÷Ë®Ïß
+// æ¸…ç©ºæµæ°´çº¿
 `define Flush 1'b1
-// ²»Çå¿ÕÁ÷Ë®Ïß
+// ä¸æ¸…ç©ºæµæ°´çº¿
 `define NoFlush 1'b0
 
 
 /*
-//Ö¸Áî
+//æŒ‡ä»¤
 `define EXE_AND  6'b100100
 `define EXE_OR   6'b100101
 `define EXE_XOR 6'b100110
@@ -267,7 +267,7 @@
 
 
 
-//Í¨ÓÃ¼Ä´æÆ÷regfile
+//é€šç”¨å¯„å­˜å™¨regfile
 `define RegBus 63:0
 `define RegWidth 64
 `define InstBus 31:0
@@ -281,7 +281,7 @@
 `define ZeroRegAddr 5'b00000
 `define NOPRegAddr 5'b00000
 
-//³ı·¨div
+//é™¤æ³•div
 `define DivFree 2'b00
 `define DivByZero 2'b01
 `define DivOn 2'b10
@@ -291,22 +291,22 @@
 `define DivStart 1'b1
 `define DivStop 1'b0
 
-//CP0¼Ä´æÆ÷µØÖ· {addr, sel}
+//CP0å¯„å­˜å™¨åœ°å€ {addr, sel}
 `define CP0_REG_INDEX    {5'b00000, 3'b000}
 `define CP0_REG_RANDOM   {5'b00001, 3'b000}
 `define CP0_REG_ENTRYLO0 {5'b00010, 3'b000}
 `define CP0_REG_ENTRYLO1 {5'b00011, 3'b000}
 `define CP0_REG_PAGEMASK {5'b00101, 3'b000}
 `define CP0_REG_BadVAddr {5'b01000, 3'b000}
-`define CP0_REG_COUNT    {5'b01001, 3'b000}        //¿É¶ÁĞ´
+`define CP0_REG_COUNT    {5'b01001, 3'b000}        //å¯è¯»å†™
 `define CP0_REG_ENTRYHI  {5'b01010, 3'b000}
-`define CP0_REG_COMPARE  {5'b01011, 3'b000}        //¿É¶ÁĞ´
-`define CP0_REG_STATUS   {5'b01100, 3'b000}        //¿É¶ÁĞ´
-`define CP0_REG_CAUSE    {5'b01101, 3'b000}        //Ö»¶Á
-`define CP0_REG_EPC      {5'b01110, 3'b000}        //¿É¶ÁĞ´
-`define CP0_REG_PrId     {5'b01111, 3'b000}        //Ö»¶Á
-`define CP0_REG_EBASE    {5'b01111, 3'b001}        //Ö»¶Á
-`define CP0_REG_CONFIG   {5'b10000, 3'b000}        //Ö»¶Á
+`define CP0_REG_COMPARE  {5'b01011, 3'b000}        //å¯è¯»å†™
+`define CP0_REG_STATUS   {5'b01100, 3'b000}        //å¯è¯»å†™
+`define CP0_REG_CAUSE    {5'b01101, 3'b000}        //åªè¯»
+`define CP0_REG_EPC      {5'b01110, 3'b000}        //å¯è¯»å†™
+`define CP0_REG_PrId     {5'b01111, 3'b000}        //åªè¯»
+`define CP0_REG_EBASE    {5'b01111, 3'b001}        //åªè¯»
+`define CP0_REG_CONFIG   {5'b10000, 3'b000}        //åªè¯»
 
 `define CAUSE_INT  5'd0
 `define CAUSE_MOD  5'd1
