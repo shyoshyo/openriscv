@@ -1,8 +1,0 @@
-modelsim/*
-asmtest/*.data
-asmtest/*.o
-asmtest/*.om
-asmtest/*.asm
-asmtest/*.bin
-asmtest/*.exe
-asmtest/Bin2Mem

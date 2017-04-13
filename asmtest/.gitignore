@@ -1,0 +1,7 @@
+*.data
+*.o
+*.om
+*.asm
+*.bin
+*.exe
+Bin2Mem
