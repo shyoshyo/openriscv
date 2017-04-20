@@ -194,9 +194,9 @@ module id(
 			reg1_read_o <= `ReadDisable;
 			reg2_read_o <= `ReadDisable;
 			
-			imm <= `ZeroDoubleWord;
+			imm <= `ZeroWord;
 
-			branch_target_address_o <= `ZeroDoubleWord;
+			branch_target_address_o <= `ZeroWord;
 			branch_flag_o <= `NotBranch;
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
 			stallreq_for_jump_and_branch <= `NoStop;
@@ -219,10 +219,10 @@ module id(
 			reg1_read_o <= `ReadDisable;
 			reg2_read_o <= `ReadDisable;
 			
-			imm <= `ZeroDoubleWord;
+			imm <= `ZeroWord;
 
 			// 是否跳转，跳转地址，下一条指令是否在延迟槽中
-			branch_target_address_o <= `ZeroDoubleWord;
+			branch_target_address_o <= `ZeroWord;
 			branch_flag_o <= `NotBranch;
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
 			stallreq_for_jump_and_branch <= `NoStop;
@@ -582,12 +582,8 @@ module id(
 
 						step_o <= 1'b1;
 					end
-					else
-					begin
-						step_o <= 1'b1;
-					end
 				end
-
+ 
 				`EXE_JALR:
 					if(funct3 == 3'b000)
 					begin
@@ -605,10 +601,6 @@ module id(
 							branch_flag_o <= `Branch;
 							stallreq_for_jump_and_branch <= `Stop;
 
-							step_o <= 1'b1;
-						end
-						else
-						begin
 							step_o <= 1'b1;
 						end
 					end
@@ -633,10 +625,6 @@ module id(
 									step_o <= 1'b1;
 								end
 							end
-							else
-							begin
-								step_o <= 1'b1;
-							end
 						end
 
 						`EXE_BNE:
@@ -656,10 +644,6 @@ module id(
 
 									step_o <= 1'b1;
 								end
-							end
-							else
-							begin
-								step_o <= 1'b1;
 							end
 						end
 
@@ -681,10 +665,6 @@ module id(
 									step_o <= 1'b1;
 								end
 							end
-							else
-							begin
-								step_o <= 1'b1;
-							end
 						end
 
 						`EXE_BLTU:
@@ -704,10 +684,6 @@ module id(
 
 									step_o <= 1'b1;
 								end
-							end
-							else
-							begin
-								step_o <= 1'b1;
 							end
 						end
 
@@ -729,10 +705,6 @@ module id(
 									step_o <= 1'b1;
 								end
 							end
-							else
-							begin
-								step_o <= 1'b1;
-							end
 						end
 
 						`EXE_BGEU:
@@ -752,10 +724,6 @@ module id(
 
 									step_o <= 1'b1;
 								end
-							end
-							else
-							begin
-								step_o <= 1'b1;
 							end
 						end
 
@@ -895,13 +863,13 @@ module id(
 		stallreq_for_reg1_loadrelate <= `NoStop;	
 
 		if(rst_n == `RstEnable)
-			reg1_o <= `ZeroDoubleWord;
+			reg1_o <= `ZeroWord;
 		else if((reg1_read_o == 1'b1) && (reg1_addr_o == `ZeroRegAddr))
-			reg1_o <= `ZeroDoubleWord;
+			reg1_o <= `ZeroWord;
 		else if((reg1_read_o == 1'b1) && (pre_inst_is_load == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg1_addr_o))
 		begin
 			stallreq_for_reg1_loadrelate <= `Stop;
-			reg1_o <= `ZeroDoubleWord;
+			reg1_o <= `ZeroWord;
 		end
 		else if((reg1_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg1_addr_o))
 			reg1_o <= ex_wdata_i; 
@@ -912,7 +880,7 @@ module id(
 		else if(reg1_read_o == 1'b0)
 			reg1_o <= imm;
 		else
-			reg1_o <= `ZeroDoubleWord;
+			reg1_o <= `ZeroWord;
 	end
 	
 	/**************** 确定源操作数 2 *****************/
@@ -922,13 +890,13 @@ module id(
 		stallreq_for_reg2_loadrelate <= `NoStop;	
 
 		if(rst_n == `RstEnable)
-			reg2_o <= `ZeroDoubleWord;
+			reg2_o <= `ZeroWord;
 		else if((reg2_read_o == 1'b1) && (reg2_addr_o == `ZeroRegAddr))
-			reg2_o <= `ZeroDoubleWord;
+			reg2_o <= `ZeroWord;
 		else if((reg2_read_o == 1'b1) && (pre_inst_is_load == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg2_addr_o))
 		begin
 			stallreq_for_reg2_loadrelate <= `Stop;
-			reg2_o <= `ZeroDoubleWord;
+			reg2_o <= `ZeroWord;
 		end
 		else if((reg2_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg2_addr_o))
 			reg2_o <= ex_wdata_i; 
@@ -939,7 +907,7 @@ module id(
 		else if(reg2_read_o == 1'b0)
 			reg2_o <= imm;
 		else
-			reg2_o <= `ZeroDoubleWord;
+			reg2_o <= `ZeroWord;
 	end
 
 	/***************** 确定源 imm ******************/

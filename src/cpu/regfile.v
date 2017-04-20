@@ -67,7 +67,7 @@ module regfile(
 				regs[20], regs[21], regs[22], regs[23],
 				regs[24], regs[25], regs[26], regs[27],
 				regs[28], regs[29], regs[30], regs[31]
-			} <= {`RegNum{`ZeroDoubleWord}};
+			} <= {`RegNum{`ZeroWord}};
 		end
 		else
 		begin

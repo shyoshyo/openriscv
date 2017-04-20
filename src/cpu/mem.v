@@ -116,7 +116,7 @@ module mem(
 	output reg[`RegBus] mem_addr_o,
 	output reg[`RegBus] mem_phy_addr_o,
 	output wire mem_we_o,
-	output reg[3:0] mem_sel_o,
+	output reg[`RegSel] mem_sel_o,
 	output reg[`RegBus] mem_data_o,
 	// memory Ê¹ÄÜ
 	output wire mem_ce_o
@@ -362,56 +362,6 @@ module mem(
 					endcase
 				end
 
-				`EXE_LWL_OP:
-				begin
-					mem_ce <= `ChipEnable;
-					
-					mem_addr_o <= {mem_addr_i[31:2], 2'b00};
-					mem_phy_addr_o <= {mem_phy_addr_i[31:2], 2'b00};
-					mem_we <= `WriteDisable;
-					mem_sel_o <= 4'b1111;
-					
-					case(mem_addr_i[1:0])
-						2'b00: wdata_o <= {mem_data_i[7:0], reg2_i[23:0]};
-						2'b01: wdata_o <= {mem_data_i[15:0], reg2_i[15:0]};
-						2'b10: wdata_o <= {mem_data_i[23:0], reg2_i[7:0]};
-						2'b11: wdata_o <= mem_data_i[31:0];
-						
-						default:
-						begin
-							wdata_o <= `ZeroWord;
-
-							mem_ce <= `ChipDisable;
-							load_alignment_error <= `True_v;
-						end
-					endcase
-				end
-
-				`EXE_LWR_OP:
-				begin
-					mem_ce <= `ChipEnable;
-					
-					mem_addr_o <= {mem_addr_i[31:2], 2'b00};
-					mem_phy_addr_o <= {mem_phy_addr_i[31:2], 2'b00};
-					mem_we <= `WriteDisable;
-					mem_sel_o <= 4'b1111;
-					
-					case(mem_addr_i[1:0])
-						2'b00: wdata_o <= mem_data_i[31:0];
-						2'b01: wdata_o <= {reg2_i[31:24], mem_data_i[31:8]};
-						2'b10: wdata_o <= {reg2_i[31:16], mem_data_i[31:16]};
-						2'b11: wdata_o <= {reg2_i[31:8], mem_data_i[31:24]};
-						
-						default:
-						begin
-							wdata_o <= `ZeroWord;
-
-							mem_ce <= `ChipDisable;
-							load_alignment_error <= `True_v;
-						end
-					endcase
-				end
-
 				`EXE_LL_OP:
 				begin
 					mem_ce <= `ChipEnable;
@@ -510,89 +460,6 @@ module mem(
 						end
 					endcase
 				end
-
-				`EXE_SWL_OP:
-				begin
-					mem_ce <= `ChipEnable;
-
-					mem_addr_o <= {mem_addr_i[31:2], 2'b00};
-					mem_phy_addr_o <= {mem_phy_addr_i[31:2], 2'b00};
-					mem_we <= `WriteEnable;
-					
-					case(mem_addr_i[1:0])
-						2'b00:
-						begin
-							mem_sel_o <= 4'b0001;
-							mem_data_o <= {24'b0, reg2_i[31:24]};
-						end
-						2'b01:
-						begin
-							mem_sel_o <= 4'b0011;
-							mem_data_o <= {16'b0, reg2_i[31:16]};
-						end
-						2'b10:
-						begin
-							mem_sel_o <= 4'b0111;
-							mem_data_o <= {8'b0, reg2_i[31:8]};
-						end
-						2'b11:
-						begin
-							mem_sel_o <= 4'b1111;
-							mem_data_o <= reg2_i[31:0];
-						end
-
-						default:
-						begin
-							mem_sel_o <= 4'b0000;
-							mem_data_o <= `ZeroWord;
-
-							mem_ce <= `ChipDisable;
-							store_alignment_error <= `True_v;
-						end
-					endcase
-				end
-
-				`EXE_SWR_OP:
-				begin
-					mem_ce <= `ChipEnable;
-
-					mem_addr_o <= {mem_addr_i[31:2], 2'b00};
-					mem_phy_addr_o <= {mem_phy_addr_i[31:2], 2'b00};
-					mem_we <= `WriteEnable;
-					
-					case(mem_addr_i[1:0])
-						2'b00:
-						begin
-							mem_sel_o <= 4'b1111;
-							mem_data_o <= reg2_i[31:0];
-						end
-						2'b01:
-						begin
-							mem_sel_o <= 4'b1110;
-							mem_data_o <= {reg2_i[23:0], 8'b0};
-						end
-						2'b10:
-						begin
-							mem_sel_o <= 4'b1100;
-							mem_data_o <= {reg2_i[15:0], 16'b0};
-						end
-						2'b11:
-						begin
-							mem_sel_o <= 4'b1000;
-							mem_data_o <= {reg2_i[7:0], 24'b0};
-						end
-
-						default:
-						begin
-							mem_sel_o <= 4'b0000;
-							mem_data_o <= `ZeroWord;
-
-							mem_ce <= `ChipDisable;
-							store_alignment_error <= `True_v;
-						end
-					endcase
-				end
-
 
 				`EXE_SC_OP:
 				begin

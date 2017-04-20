@@ -45,14 +45,14 @@ module data_ram(
 	input wire clk,
 	input wire rst_n,
 
-	input wire[`RegBus]           wishbone_addr_i,
-	input wire[`RegBus]           wishbone_data_i,
+	input wire[`WishboneAddrBus]           wishbone_addr_i,
+	input wire[`WishboneDataBus]           wishbone_data_i,
 	input wire                    wishbone_we_i,
-	input wire[7:0]               wishbone_sel_i,
+	input wire[`WishboneSelBus]               wishbone_sel_i,
 	input wire                    wishbone_stb_i,
 	input wire                    wishbone_cyc_i,
 	
-	output reg[`RegBus]           wishbone_data_o,
+	output reg[`WishboneDataBus]           wishbone_data_o,
 	output wire                   wishbone_ack_o
 );
 	// request signal
@@ -74,7 +74,7 @@ module data_ram(
 	assign is_write = wishbone_stb_i & wishbone_cyc_i & wishbone_we_i;
 
 
-	reg[`RegBus]  mem[0:`DataMemNum-1];
+	reg[`WishboneDataBus]  mem[0:`DataMemNum-1];
 	
 	initial
 	begin

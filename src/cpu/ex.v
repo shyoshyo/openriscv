@@ -191,14 +191,13 @@ module ex(
 	// logic op
 	always @ (*)
 		if(rst_n == `RstEnable)
-			logicout <= `ZeroDoubleWord;
+			logicout <= `ZeroWord;
 		else
 			case (aluop_i)
 				`EXE_OR_OP: logicout <= reg1_i | reg2_i;
 				`EXE_AND_OP: logicout <= reg1_i & reg2_i;
-				`EXE_NOR_OP: logicout <= ~(reg1_i | reg2_i);
 				`EXE_XOR_OP: logicout <= reg1_i ^ reg2_i;
-				default: logicout <= `ZeroDoubleWord;
+				default: logicout <= `ZeroWord;
 			endcase
 	
 	/***********************************************************/
@@ -206,45 +205,36 @@ module ex(
 	// shift op
 	always @ (*)
 		if(rst_n == `RstEnable)
-			shiftout <= `ZeroDoubleWord;
+			shiftout <= `ZeroWord;
 		else
 			case (aluop_i)
 				`EXE_SLL_OP: shiftout <= reg1_i << reg2_i[4:0];
 				`EXE_SRL_OP: shiftout <= reg1_i >> reg2_i[4:0];
 				`EXE_SRA_OP: shiftout <= $signed(reg1_i) >>> reg2_i[4:0];
-				default: shiftout <= `ZeroDoubleWord;
+				default: shiftout <= `ZeroWord;
 			endcase
 
 	/***********************************************************/
 
 	// arithmetic op
-	wire overflow_sum;
 	wire reg1_lt_reg2;
 	wire [`RegBus] reg2_i_mux;
-	wire [`RegBus] reg1_i_not;
 	wire [`RegBus] result_sum;
 
 	assign reg2_i_mux = 
 			(
-				aluop_i == `EXE_SUB_OP || aluop_i == `EXE_SLT_OP ||
-				aluop_i == `EXE_TLT_OP || aluop_i == `EXE_TGE_OP 
+				aluop_i == `EXE_SUB_OP || aluop_i == `EXE_TLT_OP || aluop_i == `EXE_TGE_OP 
 			) ? ((~reg2_i) + 1'b1) : reg2_i;
-
-	assign reg1_i_not = ~reg1_i;
 
 	assign result_sum = reg1_i + reg2_i_mux;
 
-	assign overflow_sum =
-			(!reg1_i[63] && !reg2_i_mux[63] &&  result_sum[63]) || ( reg1_i[63] &&  reg2_i_mux[63] && !result_sum[63]);
-
 	assign reg1_lt_reg2 =
 			(aluop_i == `EXE_SLT_OP || aluop_i == `EXE_TLT_OP || aluop_i == `EXE_TGE_OP) ? 
-				((reg1_i[63] && !reg2_i[63]) || (reg1_i[63] == reg2_i[63] && result_sum[63])) :
-				(reg1_i < reg2_i);
+				($signed(reg1_i) < $signed(reg2_i)) : (reg1_i < reg2_i);
 
 	always @ (*)
 		if(rst_n == `RstEnable)
-			arithout <= `ZeroDoubleWord;
+			arithout <= `ZeroWord;
 		else
 			case (aluop_i)
 				`EXE_SLT_OP, `EXE_SLTU_OP:

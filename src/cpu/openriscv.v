@@ -41,26 +41,26 @@ module openriscv(
 	input wire[5:0] int_i,
 	
 	// inst wishbone
-	input wire[`RegBus]            iwishbone_data_i,
+	input wire[`WishboneDataBus]   iwishbone_data_i,
 	input wire                     iwishbone_ack_i,
 	output wire[`RegBus]           iwishbone_addr_o,
-	output wire[`RegBus]           iwishbone_data_o,
+	output wire[`WishboneDataBus]  iwishbone_data_o,
 	output wire                    iwishbone_we_o,
-	output wire[7:0]               iwishbone_sel_o,
+	output wire[`WishboneSelBus]   iwishbone_sel_o,
 	output wire                    iwishbone_stb_o,
 	output wire                    iwishbone_cyc_o, 
 	
 	// data wishbone
-	input wire[`RegBus]            dwishbone_data_i,
+	input wire[`WishboneDataBus]   dwishbone_data_i,
 	input wire                     dwishbone_ack_i,
 	output wire[`RegBus]           dwishbone_addr_o,
-	output wire[`RegBus]           dwishbone_data_o,
+	output wire[`WishboneDataBus]  dwishbone_data_o,
 	output wire                    dwishbone_we_o,
-	output wire[7:0]               dwishbone_sel_o,
+	output wire[`WishboneSelBus]   dwishbone_sel_o,
 	output wire                    dwishbone_stb_o,
 	output wire                    dwishbone_cyc_o,
 	
-	output wire[31:0] pc_o,
+	output wire[`RegBus] pc_o,
 	
 	output wire timer_int_o
 );
@@ -653,7 +653,7 @@ module openriscv(
 	wire[`RegBus] ram_addr_o;
 	wire[`RegBus] ram_data_o;
 	wire ram_we_o;
-	wire[3:0] ram_sel_o;
+	wire[`RegSel] ram_sel_o;
 	wire ram_ce_o;
 
 	//MEMÄ£¿éÀý»¯
@@ -815,6 +815,7 @@ module openriscv(
 		.stall(stall)
 	);
 
+	/*
 	div div0(
 		.clk(clk),
 		.rst_n(rst_n),
@@ -828,6 +829,7 @@ module openriscv(
 		.result_o(div_result),
 		.ready_o(div_ready)
 	);
+	*/
 
 	LLbit_reg LLbit_reg0(
 		.clk(clk),
@@ -927,7 +929,7 @@ module openriscv(
 		.cpu_data_i(ram_data_o),
 		.cpu_addr_i(ram_phy_addr_o),
 		.cpu_we_i(ram_we_o),
-		.cpu_sel_i({4'b0000, ram_sel_o}),
+		.cpu_sel_i(ram_sel_o),
 		.cpu_data_o(ram_data_i),
 
 
@@ -960,12 +962,21 @@ module openriscv(
 	
 		// CPU
 		.cpu_ce_i(if_inst_ce_o & (~(|if_excepttype_i))),
-		.cpu_data_i(`ZeroDoubleWord),
+`ifdef RV32
+		.cpu_data_i(`ZeroWord),
+`else
+		.cpu_data_i({`ZeroWord, `ZeroWord}),
+`endif
 		.cpu_addr_i(if_inst_phy_addr_i),
 		.cpu_we_i(`WriteDisable),
+`ifdef RV32
+		.cpu_sel_i(4'b1111),
+		.cpu_data_o(if_inst_o),
+`else
 		.cpu_sel_i(8'b0000_1111),
 		.cpu_data_o({useless, if_inst_o}),
-	
+`endif
+
 		// Wishbone 
 		.wishbone_data_i(iwishbone_data_i),
 		.wishbone_ack_i(iwishbone_ack_i),

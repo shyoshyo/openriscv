@@ -1,8 +1,8 @@
-BITS32 = 1
+RV32 = 1
 SPIKE_FLAGS = 
 
 ifndef CROSS_COMPILE
-ifeq ($(BITS32),1)
+ifeq ($(RV32),1)
 	CROSS_COMPILE = riscv32-unknown-elf-
 	SPIKE_FLAGS += --isa=RV32IMA
 else
@@ -47,9 +47,9 @@ spike_prog.om: spike.ld $(OBJECTS)
 	@$(LD) -T spike.ld $(OBJECTS) -o $@
 	
 debug: spike_prog.om
-	spike $(SPIKE_FLAGS) --gdb-port=12345 -H $< &
+	@spike $(SPIKE_FLAGS) --gdb-port=12345 -H $< &
 	@sleep 2
-	$(GDB) -x gdbinit
+	@$(GDB) -x gdbinit
 	@sleep 2
 	@killall spike
 

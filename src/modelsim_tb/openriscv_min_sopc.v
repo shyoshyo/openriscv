@@ -56,22 +56,22 @@ module openriscv_min_sopc(
 	assign int = {timer_int, 2'b0, uart_int, 2'b0};
 
 	// dwishbone
-	wire[63:0] m0_data_i;
-	wire[63:0] m0_data_o;
-	wire[63:0] m0_addr_i;
-	wire[63:0] m0_addr_phy_i;
-	wire[7:0]  m0_sel_i;
+	wire[`WishboneDataBus] m0_data_i;
+	wire[`WishboneDataBus] m0_data_o;
+	wire[`WishboneAddrBus] m0_addr_i;
+	wire[`RegBus] m0_addr_phy_i;
+	wire[`WishboneSelBus]  m0_sel_i;
 	wire       m0_we_i;
 	wire       m0_cyc_i;
 	wire       m0_stb_i;
 	wire       m0_ack_o;
 
 	// iwishbone
-	wire[63:0] m1_data_i;
-	wire[63:0] m1_data_o;
-	wire[63:0] m1_addr_i;
-	wire[63:0] m1_addr_phy_i;
-	wire[7:0]  m1_sel_i;
+	wire[`WishboneDataBus] m1_data_i;
+	wire[`WishboneDataBus] m1_data_o;
+	wire[`WishboneAddrBus] m1_addr_i;
+	wire[`RegBus] m1_addr_phy_i;
+	wire[`WishboneSelBus]  m1_sel_i;
 	wire       m1_we_i;
 	wire       m1_cyc_i;
 	wire       m1_stb_i;
@@ -124,41 +124,16 @@ module openriscv_min_sopc(
 	);
 
 	//连接指令数据存储器
-	wire[63:0] s3_data_i;
-	wire[63:0] s3_data_o;
-	wire[63:0] s3_addr_o;
-	wire[7:0]  s3_sel_o;
-	wire       s3_we_o; 
-	wire       s3_cyc_o; 
-	wire       s3_stb_o;
-	wire       s3_ack_i;
-
-	data_ram data_ram0(
-		.clk(wishbone_clk),
-		.rst_n(rst_n),
-
-		.wishbone_addr_i(s3_addr_o),
-		.wishbone_data_i(s3_data_o),
-		.wishbone_we_i(s3_we_o),
-		.wishbone_sel_i(s3_sel_o),
-		.wishbone_stb_i(s3_stb_o),
-		.wishbone_cyc_i(s3_cyc_o),
-
-		.wishbone_data_o(s3_data_i),
-		.wishbone_ack_o(s3_ack_i)
-	);
-
-	//连接指令数据存储器
-	wire[63:0] s0_data_i;
-	wire[63:0] s0_data_o;
-	wire[63:0] s0_addr_o;
-	wire[7:0]  s0_sel_o;
+	wire[31:0] s0_data_i;
+	wire[31:0] s0_data_o;
+	wire[31:0] s0_addr_o;
+	wire[3:0]  s0_sel_o;
 	wire       s0_we_o; 
 	wire       s0_cyc_o; 
 	wire       s0_stb_o;
 	wire       s0_ack_i;
 
-	data_ram data_ram1(
+	data_ram data_ram0(
 		.clk(wishbone_clk),
 		.rst_n(rst_n),
 
@@ -174,10 +149,10 @@ module openriscv_min_sopc(
 	);
 
 	//连接 uart
-	wire[63:0] s1_data_i;
-	wire[63:0] s1_data_o;
-	wire[63:0] s1_addr_o;
-	wire[7:0]  s1_sel_o;
+	wire[31:0] s1_data_i;
+	wire[31:0] s1_data_o;
+	wire[31:0] s1_addr_o;
+	wire[3:0]  s1_sel_o;
 	wire       s1_we_o; 
 	wire       s1_cyc_o; 
 	wire       s1_stb_o;
@@ -187,13 +162,13 @@ module openriscv_min_sopc(
 		.wb_clk_i(wishbone_clk), 
 		.wb_rst_i(~rst_n),
 		.wb_adr_i(s1_addr_o[4:0]),
-		.wb_dat_i(s1_data_o[31:0]),
-		.wb_dat_o(s1_data_i[31:0]), 
+		.wb_dat_i(s1_data_o),
+		.wb_dat_o(s1_data_i), 
 		.wb_we_i(s1_we_o), 
 		.wb_stb_i(s1_stb_o), 
 		.wb_cyc_i(s1_cyc_o),
 		.wb_ack_o(s1_ack_i),
-		.wb_sel_i(s1_sel_o[3:0]),
+		.wb_sel_i(s1_sel_o),
 		.int_o(uart_int),
 
 		.stx_pad_o(uart_txd_o),
@@ -205,6 +180,33 @@ module openriscv_min_sopc(
 		.rts_pad_o(uart_rts_o),
 		.dtr_pad_o()
 	);
+	
+	/*
+	//连接指令数据存储器
+	wire[31:0] s3_data_i;
+	wire[31:0] s3_data_o;
+	wire[31:0] s3_addr_o;
+	wire[3:0]  s3_sel_o;
+	wire       s3_we_o; 
+	wire       s3_cyc_o; 
+	wire       s3_stb_o;
+	wire       s3_ack_i;
+
+	data_ram data_ram1(
+		.clk(wishbone_clk),
+		.rst_n(rst_n),
+
+		.wishbone_addr_i(s3_addr_o),
+		.wishbone_data_i(s3_data_o),
+		.wishbone_we_i(s3_we_o),
+		.wishbone_sel_i(s3_sel_o),
+		.wishbone_stb_i(s3_stb_o),
+		.wishbone_cyc_i(s3_cyc_o),
+
+		.wishbone_data_o(s3_data_i),
+		.wishbone_ack_o(s3_ack_i)
+	);
+	*/
 
 	// bus arbiter
 	wb_conmax_top wb_conmax_top0(
@@ -236,10 +238,10 @@ module openriscv_min_sopc(
 		.m1_rty_o(),
 
 		// Master 2 Interface
-		.m2_data_i(`ZeroDoubleWord),
+		.m2_data_i(`ZeroWord),
 		.m2_data_o(),
-		.m2_addr_i(`ZeroDoubleWord),
-		.m2_sel_i(8'b0000_0000),
+		.m2_addr_i(`ZeroWord),
+		.m2_sel_i(4'b0000),
 		.m2_we_i(1'b0), 
 		.m2_cyc_i(1'b0), 
 		.m2_stb_i(1'b0),
@@ -248,10 +250,10 @@ module openriscv_min_sopc(
 		.m2_rty_o(),
 
 		// Master 3 Interface
-		.m3_data_i(`ZeroDoubleWord),
+		.m3_data_i(`ZeroWord),
 		.m3_data_o(),
-		.m3_addr_i(`ZeroDoubleWord),
-		.m3_sel_i(8'b0000_0000),
+		.m3_addr_i(`ZeroWord),
+		.m3_sel_i(4'b0000),
 		.m3_we_i(1'b0), 
 		.m3_cyc_i(1'b0), 
 		.m3_stb_i(1'b0),
@@ -260,10 +262,10 @@ module openriscv_min_sopc(
 		.m3_rty_o(),
 
 		// Master 4 Interface
-		.m4_data_i(`ZeroDoubleWord),
+		.m4_data_i(`ZeroWord),
 		.m4_data_o(),
-		.m4_addr_i(`ZeroDoubleWord),
-		.m4_sel_i(8'b0000_0000),
+		.m4_addr_i(`ZeroWord),
+		.m4_sel_i(4'b0000),
 		.m4_we_i(1'b0), 
 		.m4_cyc_i(1'b0), 
 		.m4_stb_i(1'b0),
@@ -272,10 +274,10 @@ module openriscv_min_sopc(
 		.m4_rty_o(),
 
 		// Master 5 Interface
-		.m5_data_i(`ZeroDoubleWord),
+		.m5_data_i(`ZeroWord),
 		.m5_data_o(),
-		.m5_addr_i(`ZeroDoubleWord),
-		.m5_sel_i(8'b0000_0000),
+		.m5_addr_i(`ZeroWord),
+		.m5_sel_i(4'b0000),
 		.m5_we_i(1'b0), 
 		.m5_cyc_i(1'b0), 
 		.m5_stb_i(1'b0),
@@ -284,10 +286,10 @@ module openriscv_min_sopc(
 		.m5_rty_o(),
 
 		// Master 6 Interface
-		.m6_data_i(`ZeroDoubleWord),
+		.m6_data_i(`ZeroWord),
 		.m6_data_o(),
-		.m6_addr_i(`ZeroDoubleWord),
-		.m6_sel_i(8'b0000_0000),
+		.m6_addr_i(`ZeroWord),
+		.m6_sel_i(4'b0000),
 		.m6_we_i(1'b0), 
 		.m6_cyc_i(1'b0), 
 		.m6_stb_i(1'b0),
@@ -296,10 +298,10 @@ module openriscv_min_sopc(
 		.m6_rty_o(),
 
 		// Master 7 Interface
-		.m7_data_i(`ZeroDoubleWord),
+		.m7_data_i(`ZeroWord),
 		.m7_data_o(),
-		.m7_addr_i(`ZeroDoubleWord),
-		.m7_sel_i(8'b0000_0000),
+		.m7_addr_i(`ZeroWord),
+		.m7_sel_i(4'b0000),
 		.m7_we_i(1'b0), 
 		.m7_cyc_i(1'b0), 
 		.m7_stb_i(1'b0),

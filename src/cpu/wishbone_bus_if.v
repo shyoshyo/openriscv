@@ -52,18 +52,18 @@ module wishbone_bus_if(
 	input wire[`RegBus]           cpu_data_i,
 	input wire[`RegBus]           cpu_addr_i,
 	input wire                    cpu_we_i,
-	input wire[7:0]               cpu_sel_i,
+	input wire[`RegSel]           cpu_sel_i,
 	output reg[`RegBus]           cpu_data_o,
 	
 	//Wishbone interface
-	input wire[`RegBus]           wishbone_data_i,
+	input wire[`WishboneDataBus]  wishbone_data_i,
 	input wire                    wishbone_ack_i,
-	output wire[`RegBus]           wishbone_addr_o,
-	output wire[`RegBus]           wishbone_data_o,
-	output wire                    wishbone_we_o,
-	output wire[7:0]               wishbone_sel_o,
-	output wire                    wishbone_stb_o,
-	output wire                    wishbone_cyc_o,
+	output wire[`RegBus]          wishbone_addr_o,
+	output wire[`WishboneDataBus] wishbone_data_o,
+	output wire                   wishbone_we_o,
+	output wire[`WishboneSelBus]  wishbone_sel_o,
+	output wire                   wishbone_stb_o,
+	output wire                   wishbone_cyc_o,
 
 	output wire                    stallreq	       
 	
@@ -113,14 +113,15 @@ module wishbone_bus_if(
 			cpu_data_o <= wishbone_data_i;
 		end
 
+	// TODO
 	assign wishbone_addr_o = cpu_addr_i;
-	assign wishbone_data_o = cpu_data_i;
+	assign wishbone_data_o = cpu_data_i[`WishboneDataBus];
 
 	// 竞争与冒险？
 	assign wishbone_cyc_o = ((request_bus) | ((flush_i == `NoFlush) & ~(&req_cnt) & (stallreq == `Stop || stall_this_i == `NoStop)));
 	assign wishbone_stb_o = request_bus; 
 	assign wishbone_we_o = cpu_we_i;
-	assign wishbone_sel_o = cpu_sel_i;
+	assign wishbone_sel_o = cpu_sel_i[`WishboneSelBus];
 
 	reg[delay:0] stall_delay;
 	reg not_use;

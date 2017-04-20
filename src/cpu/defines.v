@@ -1,32 +1,48 @@
+// define RV32 for 32 bits, or ISA is 64 bits
+`define RV32
+
 //全局
 `define RstEnable 1'b0
 `define RstDisable 1'b1
+
 `define ZeroWord 32'h00000000
-`define ZeroDoubleWord 64'h00000000_00000000
+
 `define WriteEnable 1'b1
 `define WriteDisable 1'b0
+
 `define ReadEnable 1'b1
 `define ReadDisable 1'b0
+
 `define AluOpBus 7:0
 `define AluSelBus 2:0
+
 `define InstValid 1'b0
 `define InstInvalid 1'b1
+
 `define Stop 1'b1
 `define NoStop 1'b0
+
 `define InDelaySlot 1'b1
 `define NotInDelaySlot 1'b0
+
 `define Branch 1'b1
 `define NotBranch 1'b0
+
 `define InterruptAssert 1'b1
 `define InterruptNotAssert 1'b0
+
 `define TrapAssert 1'b1
 `define TrapNotAssert 1'b0
+
 `define OverflowAssert 1'b1
 `define OverflowNotAssert 1'b0
+
 `define True_v 1'b1
 `define False_v 1'b0
+
 `define ChipEnable 1'b1
 `define ChipDisable 1'b0
+
 // 清空流水线
 `define Flush 1'b1
 // 不清空流水线
@@ -202,10 +218,11 @@
 `define EXE_RES_NOP 3'b000
 
 //AluOp
+/* EXE_RES_NOP */
+
 /* EXE_RES_LOGIC */
 `define EXE_OR_OP    8'b00100101
 `define EXE_AND_OP   8'b00100100
-`define EXE_NOR_OP  8'b00100111
 `define EXE_XOR_OP  8'b00100110
 
 /* EXE_RES_SHIFT */
@@ -280,15 +297,20 @@
 `define EXE_NOP_OP    8'b00000000
 
 
-
-
-
 //通用寄存器regfile
-`define RegBus 63:0
-`define RegWidth 64
+`ifdef RV32
+	`define RegBus 31:0
+	`define RegWidth 32
+	`define RegSel 3:0
+`else
+	`define RegBus 63:0
+	`define RegWidth 64
+	`define RegSel 7:0
+`endif
+
 `define InstBus 31:0
-`define DoubleRegBus 127:0
-`define DoubleRegWidth 128
+`define DoubleRegBus 63:0
+`define DoubleRegWidth 64
 
 `define RegAddrBus 4:0
 `define RegNum 32
@@ -296,6 +318,10 @@
 
 `define ZeroRegAddr 5'b00000
 `define NOPRegAddr 5'b00000
+
+`define WishboneAddrBus 31:0
+`define WishboneDataBus 31:0
+`define WishboneSelBus 3:0
 
 //除法div
 `define DivFree 2'b00
