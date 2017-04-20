@@ -177,6 +177,18 @@
 `define EXE_BGE          3'b101
 `define EXE_BLTU         3'b110
 `define EXE_BGEU         3'b111
+
+`define EXE_LOAD         7'b0000011
+`define EXE_LB           3'b000
+`define EXE_LH           3'b001
+`define EXE_LW           3'b010
+`define EXE_LBU          3'b100
+`define EXE_LHU          3'b101
+
+`define EXE_STORE        7'b0100011
+`define EXE_SB           3'b000
+`define EXE_SH           3'b001
+`define EXE_SW           3'b010
  
 //AluSel
 `define EXE_RES_LOGIC 3'b001
@@ -201,7 +213,7 @@
 `define EXE_SRL_OP  8'b00000010
 `define EXE_SRA_OP  8'b00000011
 
-
+/* EXE_RES_MOVE */
 `define EXE_MOVZ_OP  8'b00001010
 `define EXE_MOVN_OP  8'b00001011
 `define EXE_MFHI_OP  8'b00010000
@@ -215,6 +227,7 @@
 `define EXE_ADD_OP  8'b00100000
 `define EXE_SUB_OP  8'b00100010
 
+/* EXE_RES_MUL */
 `define EXE_MULT_OP  8'b00011000
 `define EXE_MULTU_OP  8'b00011001
 `define EXE_MUL_OP  8'b10101001
@@ -228,20 +241,8 @@
 
 /* EXE_RES_JUMP_BRANCH */
 `define EXE_JAL_OP  8'b01010000
-/*
-`define EXE_J_OP  8'b01001111
-`define EXE_JALR_OP  8'b00001001
-`define EXE_JR_OP  8'b00001000
-`define EXE_BEQ_OP  8'b01010001
-`define EXE_BGEZ_OP  8'b01000001
-`define EXE_BGEZAL_OP  8'b01001011
-`define EXE_BGTZ_OP  8'b01010100
-`define EXE_BLEZ_OP  8'b01010011
-`define EXE_BLTZ_OP  8'b01000000
-`define EXE_BLTZAL_OP  8'b01001010
-`define EXE_BNE_OP  8'b01010010
-*/
 
+/* EXE_RES_LOAD_STORE */
 `define EXE_LB_OP  8'b11100000
 `define EXE_LBU_OP  8'b11100100
 `define EXE_LH_OP  8'b11100001

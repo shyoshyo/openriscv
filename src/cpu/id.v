@@ -83,6 +83,7 @@ module id(
 	// 参与计算的寄存器
 	output reg[`RegBus] reg1_o,
 	output reg[`RegBus] reg2_o,
+	output wire[`RegBus] imm_o,
 	
 	// 需要写回的寄存器，以及是否需要写回
 	output wire[`RegAddrBus] wd_o,
@@ -121,9 +122,6 @@ module id(
 	// 源寄存器
 	assign reg1_addr_o = inst_i[19:15];
 	assign reg2_addr_o = inst_i[24:20];
-
-	// 若 reg1_read_o == 0 即不读，则 reg1 读不读 pc
-	reg reg1_read_pc;
 
 	// 目標寄存器
 	assign wd_o = inst_i[11:7];
@@ -195,7 +193,6 @@ module id(
 			
 			reg1_read_o <= `ReadDisable;
 			reg2_read_o <= `ReadDisable;
-			reg1_read_pc <= `ReadDisable;
 			
 			imm <= `ZeroDoubleWord;
 
@@ -218,10 +215,9 @@ module id(
 			// 是否写入寄存器
 			wreg_o <= `WriteDisable;
 			
-			// 是否读取寄存器，reg1 读不读 pc
+			// 是否读取寄存器
 			reg1_read_o <= `ReadDisable;
 			reg2_read_o <= `ReadDisable;
-			reg1_read_pc <= `ReadDisable;
 			
 			imm <= `ZeroDoubleWord;
 
@@ -386,15 +382,13 @@ module id(
 				
 				`EXE_AUIPC:
 				begin
-					aluop_o <= `EXE_ADD_OP;
-					alusel_o <= `EXE_RES_ARITHMETIC;
+					aluop_o <= `EXE_OR_OP;
+					alusel_o <= `EXE_RES_LOGIC;
 					instvalid <= `InstValid;
 					
 					wreg_o <= `WriteEnable;
 
-					reg1_read_pc <= `ReadEnable;
-
-					imm <= imm_u_type;
+					imm <= imm_u_type + pc_i;
 				end
 				
 				`EXE_OP:
@@ -765,11 +759,129 @@ module id(
 							end
 						end
 
+						default:
+						begin
+						end
+					endcase
 
+				`EXE_LOAD:
+					case(funct3)
+						`EXE_LB:
+						begin
+							aluop_o <= `EXE_LB_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+							
+							reg1_read_o <= `ReadEnable;
+							
+							imm <= imm_i_type + reg1_o;
+						end
+
+						`EXE_LH:
+						begin
+							aluop_o <= `EXE_LH_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+							
+							reg1_read_o <= `ReadEnable;
+							
+							imm <= imm_i_type + reg1_o;
+						end
+
+						`EXE_LW:
+						begin
+							aluop_o <= `EXE_LW_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+							
+							reg1_read_o <= `ReadEnable;
+							
+							imm <= imm_i_type + reg1_o;
+						end
+						
+						`EXE_LBU:
+						begin
+							aluop_o <= `EXE_LBU_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+							
+							reg1_read_o <= `ReadEnable;
+							
+							imm <= imm_i_type + reg1_o;
+						end
+
+						`EXE_LHU:
+						begin
+							aluop_o <= `EXE_LBU_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+							
+							reg1_read_o <= `ReadEnable;
+							
+							imm <= imm_i_type + reg1_o;
+						end
+
+						default:
+						begin
+						end
+					endcase
+
+				`EXE_STORE:
+					case(funct3)
+						`EXE_SB:
+						begin
+							aluop_o <= `EXE_SB_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+							
+							imm <= imm_s_type + reg1_o;
+						end
+
+						`EXE_SH:
+						begin
+							aluop_o <= `EXE_SH_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+							
+							imm <= imm_s_type + reg1_o;
+						end
+
+						`EXE_SW:
+						begin
+							aluop_o <= `EXE_SW_OP;
+							alusel_o <= `EXE_RES_LOAD_STORE;
+							instvalid <= `InstValid;
+							
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+							
+							imm <= imm_s_type + reg1_o;
+						end
+
+						default:
+						begin
+						end
 					endcase
 
 				default:
 				begin
+
 				end
 			endcase
 		end
@@ -797,8 +909,6 @@ module id(
 			reg1_o <= mem_wdata_i;
 		else if(reg1_read_o == 1'b1)
 			reg1_o <= reg1_data_i;
-		else if(reg1_read_pc == `ReadEnable)
-			reg1_o <= pc_i;
 		else if(reg1_read_o == 1'b0)
 			reg1_o <= imm;
 		else
@@ -831,6 +941,10 @@ module id(
 		else
 			reg2_o <= `ZeroDoubleWord;
 	end
+
+	/***************** 确定源 imm ******************/
+
+	assign imm_o = imm;
 	
 	/*********** 确定这一条指令是否在延迟槽中 **********/
 

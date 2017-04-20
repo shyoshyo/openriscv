@@ -41,6 +41,7 @@ module ex(
 	input wire[`AluSelBus] alusel_i,
 	input wire[`RegBus] reg1_i,
 	input wire[`RegBus] reg2_i,
+	input wire[`RegBus] imm_i,
 	input wire[`RegAddrBus] wd_i,
 	input wire wreg_i,
 	input wire[`InstBus] inst_i,
@@ -672,7 +673,7 @@ module ex(
 	assign aluop_o = aluop_i;
 
 	//mem_addr传递到访存阶段，是加载、存储指令对应的存储器地址
-	assign mem_addr_o = reg1_i + {{16{inst_i[15]}},inst_i[15:0]};
+	assign mem_addr_o = imm_i;
 
 	//将两个操作数也传递到访存阶段，也是为记载、存储指令准备的
 	// 存储，lwl, lwr 指令需要
