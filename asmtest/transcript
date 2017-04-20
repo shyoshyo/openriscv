@@ -8,3 +8,403 @@
 # //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
 # //
 # Loading project riscv
+# Compile of cp0_reg.v was successful.
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of hilo_reg.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# 48 compiles, 0 failed with no errors. 
+vsim -voptargs=+acc work.openriscv_min_sopc_tb
+# vsim -voptargs=+acc work.openriscv_min_sopc_tb 
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Note: (vopt-143) Recognized 1 FSM in module "uart_receiver(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "wb_conmax_arb(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "uart_transmitter(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "openriscv_min_sopc_tb(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "uart_wb(fast)".
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.hilo_reg(fast)
+# Loading work.ctrl(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.cp0_reg(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+do /home/shyo/openriscv/modelsim/wave.do
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# Break in Module openriscv_min_sopc_tb at /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc_tb.v line 253
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.hilo_reg(fast)
+# Loading work.ctrl(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.cp0_reg(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# Break in Module openriscv_min_sopc_tb at /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc_tb.v line 253
+add wave -position 6  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/stall
+add wave -position 7  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/stallreq_from_ex
+add wave -position 8  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/stallreq_from_id
+add wave -position 9  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/stallreq_from_if
+add wave -position 10  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/stallreq_from_mem
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.hilo_reg(fast)
+# Loading work.ctrl(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.cp0_reg(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# Break in Module openriscv_min_sopc_tb at /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc_tb.v line 253
+# Compile of cp0_reg.v was successful.
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of hilo_reg.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# 48 compiles, 0 failed with no errors. 
+restart
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.hilo_reg(fast)
+# Loading work.ctrl(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.cp0_reg(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# Break in Module openriscv_min_sopc_tb at /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc_tb.v line 253
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.hilo_reg(fast)
+# Loading work.ctrl(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.cp0_reg(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# Break in Module openriscv_min_sopc_tb at /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc_tb.v line 253
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.hilo_reg(fast)
+# Loading work.ctrl(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.cp0_reg(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# Break in Module openriscv_min_sopc_tb at /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc_tb.v line 253

@@ -788,7 +788,7 @@ module id(
 
 						`EXE_LHU:
 						begin
-							aluop_o <= `EXE_LBU_OP;
+							aluop_o <= `EXE_LHU_OP;
 							alusel_o <= `EXE_RES_LOAD_STORE;
 							instvalid <= `InstValid;
 							
