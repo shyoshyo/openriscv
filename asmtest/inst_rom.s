@@ -7,7 +7,7 @@ _start:
 	ori x1, x1, 0x400
 	ori x1, x1, 0x044
 	ori x2, x1, 0
-	ori x3, x1, 0
+	ori x3, x1, 1
 
 
 _first_inst:

@@ -251,6 +251,8 @@ module openriscv(
 	wire is_in_delayslot_i;
 	wire is_in_delayslot_o;
 	wire next_inst_in_delayslot_o;
+	wire step_i;
+	wire step_o;
 	wire id_branch_flag_o;
 	wire[`RegBus] branch_target_address;
 
@@ -361,6 +363,7 @@ module openriscv(
 
 		// 如果上一条指令是转移指令，那么下一条指令在译码的时候 is_in_delayslot 为 true
 		.is_in_delayslot_i(is_in_delayslot_i),
+		.step_i(step_i),
 		
 		//送到regfile的信息
 		.reg1_read_o(reg1_read),
@@ -379,6 +382,7 @@ module openriscv(
 
 		// 下一条指令是否在延迟槽中
 		.next_inst_in_delayslot_o(next_inst_in_delayslot_o),
+		.step_o(step_o),
 
 		// 是否需要跳转，以及跳转地址，链接地址
 		.branch_flag_o(id_branch_flag_o),
@@ -435,6 +439,7 @@ module openriscv(
 
 		// 译码阶段要传回去的信息
 		.next_inst_in_delayslot_i(next_inst_in_delayslot_o),
+		.step_i(step_o),
 		
 		//传递到执行阶段EX模块的信息
 		.ex_aluop(ex_aluop_i),
@@ -451,8 +456,9 @@ module openriscv(
 		.ex_not_stall(ex_not_stall_i),
 
 		// 传回 id 阶段
-		.is_in_delayslot_o(is_in_delayslot_i)
-	);		
+		.is_in_delayslot_o(is_in_delayslot_i),
+		.step_o(step_i)
+	);
 
 
 	//EX模块

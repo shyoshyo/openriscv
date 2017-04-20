@@ -185,6 +185,8 @@ module ex(
 	assign current_inst_address_o = current_inst_address_i;
 	assign not_stall_o = not_stall_i;
 
+	/***********************************************************/
+
 	// logic op
 	always @ (*)
 		if(rst_n == `RstEnable)
@@ -198,22 +200,24 @@ module ex(
 				default: logicout <= `ZeroDoubleWord;
 			endcase
 	
+	/***********************************************************/
+
 	// shift op
 	always @ (*)
 		if(rst_n == `RstEnable)
 			shiftout <= `ZeroDoubleWord;
 		else
 			case (aluop_i)
-				`EXE_SLL_OP: shiftout <= reg2_i << reg1_i[5:0];
-				`EXE_SRL_OP: shiftout <= reg2_i >> reg1_i[5:0];
-				`EXE_SRA_OP: shiftout <= $signed(reg2_i) >>> reg1_i[5:0];
+				`EXE_SLL_OP: shiftout <= reg1_i << reg2_i[4:0];
+				`EXE_SRL_OP: shiftout <= reg1_i >> reg2_i[4:0];
+				`EXE_SRA_OP: shiftout <= $signed(reg1_i) >>> reg2_i[4:0];
 				default: shiftout <= `ZeroDoubleWord;
 			endcase
 
-	
+	/***********************************************************/
+
 	// arithmetic op
 	wire overflow_sum;
-	wire reg1_eq_reg2;
 	wire reg1_lt_reg2;
 	wire [`RegBus] reg2_i_mux;
 	wire [`RegBus] reg1_i_not;
@@ -221,7 +225,7 @@ module ex(
 
 	assign reg2_i_mux = 
 			(
-				aluop_i == `EXE_SUB_OP || aluop_i == `EXE_SUBU_OP || aluop_i == `EXE_SLT_OP ||
+				aluop_i == `EXE_SUB_OP || aluop_i == `EXE_SLT_OP ||
 				aluop_i == `EXE_TLT_OP || aluop_i == `EXE_TGE_OP 
 			) ? ((~reg2_i) + 1'b1) : reg2_i;
 
@@ -239,47 +243,20 @@ module ex(
 
 	always @ (*)
 		if(rst_n == `RstEnable)
-			arithout <= `ZeroWord;
+			arithout <= `ZeroDoubleWord;
 		else
 			case (aluop_i)
-				`EXE_SLT_OP,
-				`EXE_SLTU_OP: arithout <= reg1_lt_reg2;
+				`EXE_SLT_OP, `EXE_SLTU_OP:
+					arithout <= reg1_lt_reg2;
 
-				`EXE_ADD_OP,
-				`EXE_SUB_OP,
-				`EXE_SUBU_OP: arithout <= result_sum;
-				
-				`EXE_CLZ_OP:
-					arithout <= 
-							reg1_i[31] ? 0 : reg1_i[30] ? 1 : reg1_i[29] ? 2 :
-							reg1_i[28] ? 3 : reg1_i[27] ? 4 : reg1_i[26] ? 5 :
-							reg1_i[25] ? 6 : reg1_i[24] ? 7 : reg1_i[23] ? 8 : 
-							reg1_i[22] ? 9 : reg1_i[21] ? 10 : reg1_i[20] ? 11 :
-							reg1_i[19] ? 12 : reg1_i[18] ? 13 : reg1_i[17] ? 14 : 
-							reg1_i[16] ? 15 : reg1_i[15] ? 16 : reg1_i[14] ? 17 : 
-							reg1_i[13] ? 18 : reg1_i[12] ? 19 : reg1_i[11] ? 20 :
-							reg1_i[10] ? 21 : reg1_i[9] ? 22 : reg1_i[8] ? 23 : 
-							reg1_i[7] ? 24 : reg1_i[6] ? 25 : reg1_i[5] ? 26 : 
-							reg1_i[4] ? 27 : reg1_i[3] ? 28 : reg1_i[2] ? 29 : 
-							reg1_i[1] ? 30 : reg1_i[0] ? 31 : 32;
-
-				`EXE_CLO_OP:
-					arithout <= 
-							reg1_i_not[31] ? 0 : reg1_i_not[30] ? 1 : reg1_i_not[29] ? 2 :
-							reg1_i_not[28] ? 3 : reg1_i_not[27] ? 4 : reg1_i_not[26] ? 5 :
-							reg1_i_not[25] ? 6 : reg1_i_not[24] ? 7 : reg1_i_not[23] ? 8 : 
-							reg1_i_not[22] ? 9 : reg1_i_not[21] ? 10 : reg1_i_not[20] ? 11 :
-							reg1_i_not[19] ? 12 : reg1_i_not[18] ? 13 : reg1_i_not[17] ? 14 : 
-							reg1_i_not[16] ? 15 : reg1_i_not[15] ? 16 : reg1_i_not[14] ? 17 : 
-							reg1_i_not[13] ? 18 : reg1_i_not[12] ? 19 : reg1_i_not[11] ? 20 :
-							reg1_i_not[10] ? 21 : reg1_i_not[9] ? 22 : reg1_i_not[8] ? 23 : 
-							reg1_i_not[7] ? 24 : reg1_i_not[6] ? 25 : reg1_i_not[5] ? 26 : 
-							reg1_i_not[4] ? 27 : reg1_i_not[3] ? 28 : reg1_i_not[2] ? 29 : 
-							reg1_i_not[1] ? 30 : reg1_i_not[0] ? 31 : 32;
+				`EXE_ADD_OP, `EXE_SUB_OP:
+					arithout <= result_sum;
 
 				default: arithout <= `ZeroWord;
 			endcase
 	
+	/***********************************************************/
+
 	// trap op
 	always @ (*)
 		if(rst_n == `RstEnable)

@@ -55,7 +55,8 @@ module id_ex(
 	input wire[31:0] id_excepttype,
 
 	// 译码阶段要传回去的信息
-	input wire next_inst_in_delayslot_i,	
+	input wire next_inst_in_delayslot_i,
+	input wire step_i,
 	
 	//传递到执行阶段的信息
 	output reg[`AluOpBus] ex_aluop,
@@ -72,7 +73,8 @@ module id_ex(
 	output reg ex_not_stall,
 
 	// 传回 id 阶段
-	output reg is_in_delayslot_o
+	output reg is_in_delayslot_o,
+	output reg step_o
 );
 
 	always @ (posedge clk or negedge rst_n) begin
@@ -93,6 +95,7 @@ module id_ex(
 			ex_not_stall <= `False_v;
 
 			is_in_delayslot_o <= `NotInDelaySlot;
+			step_o <= 1'b0;
 		end
 		else if(flush == `Flush)
 		begin
@@ -111,6 +114,7 @@ module id_ex(
 			ex_not_stall <= `False_v;
 
 			is_in_delayslot_o <= `NotInDelaySlot;
+			step_o <= 1'b0;
 		end
 		else if(stall[2] == `Stop && stall[3] == `NoStop)
 		begin
@@ -129,6 +133,7 @@ module id_ex(
 			ex_not_stall <= `False_v;
 
 			is_in_delayslot_o <= `NotInDelaySlot;
+			step_o <= step_i;
 		end
 		else if(stall[2] == `NoStop)
 		begin
@@ -147,6 +152,11 @@ module id_ex(
 			ex_not_stall <= id_not_stall;
 
 			is_in_delayslot_o <= next_inst_in_delayslot_i;
+			step_o <= step_i;
+		end
+		else // stall[2] 停，stall[3] 也停，exe_* 保持不变
+		begin
+			step_o <= step_i;
 		end
 	end
 	

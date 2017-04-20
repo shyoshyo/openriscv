@@ -1,4 +1,4 @@
-# //  ModelSim SE-64 10.2c Jul 18 2013 Linux 3.16.0-77-generic
+# //  ModelSim SE-64 10.2c Jul 18 2013 Linux 4.4.0-72-generic
 # //
 # //  Copyright 1991-2013 Mentor Graphics Corporation
 # //  All Rights Reserved.
@@ -7,15 +7,7 @@
 # //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
 # //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
 # //
-# Loading project BAKA-MiPS
-# reading /home/shyo/modelsim_linux/modeltech/linux_x86_64/../modelsim.ini
 # Loading project riscv
-# Compile of bootloader_rom.v failed with 1 errors.
-# Compile of data_ram.v was successful.
-# Compile of flash_rom.v was successful.
-# Compile of openmips_min_sopc.v failed with 1 errors.
-# Compile of openmips_min_sopc_tb.v was successful.
-# Compile of phy_bus_addr_conv.v was successful.
 # Compile of cp0_reg.v was successful.
 # Compile of ctrl.v was successful.
 # Compile of defines.v was successful.
@@ -23,19 +15,25 @@
 # Compile of ex.v was successful.
 # Compile of ex_mem.v was successful.
 # Compile of hilo_reg.v was successful.
-# Compile of id.v was successful.
+# Compile of id.v failed with 1 errors.
 # Compile of id_ex.v was successful.
 # Compile of if_id.v was successful.
 # Compile of llbit_reg.v was successful.
 # Compile of mem.v was successful.
 # Compile of mem_wb.v was successful.
-# Compile of openmips.v was successful.
+# Compile of openriscv.v was successful.
 # Compile of pc_reg.v was successful.
 # Compile of regfile.v was successful.
 # Compile of wishbone_bus_if.v was successful.
 # Compile of mmu.v was successful.
 # Compile of mmu_conv.v was successful.
 # Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
 # Compile of async.v was successful.
 # Compile of raminfr.v was successful.
 # Compile of timescale.v was successful.
@@ -58,25 +56,56 @@
 # Compile of wb_conmax_rf.v was successful.
 # Compile of wb_conmax_slave_if.v was successful.
 # Compile of wb_conmax_top.v was successful.
-# 48 compiles, 2 failed with 2 errors. 
+# 48 compiles, 1 failed with 1 error. 
+# Compile of cp0_reg.v was successful.
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of hilo_reg.v was successful.
+# Compile of id.v failed with 1 errors.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
 # Compile of bootloader_rom.v was successful.
-# Compile of openmips_min_sopc.v was successful.
-# 2 compiles, 0 failed with no errors. 
-vsim -voptargs=+acc work.openriscv_min_sopc_tb
-# vsim -voptargs=+acc work.openriscv_min_sopc_tb 
-# ** Note: (vsim-3812) Design is being optimized...
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_receiver(fast)".
-# ** Warning: /home/shyo/openriscv/src/openmips_min_sopc.v(122): (vopt-2685) [TFMPC] - Too few port connections for 'openriscv0'.  Expected 22, found 21.
-# ** Warning: /home/shyo/openriscv/src/openmips_min_sopc.v(122): (vopt-2718) [TFMPC] - Missing connection for port 'pc_o'.
-# ** Note: (vopt-143) Recognized 1 FSM in module "wb_conmax_arb(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_transmitter(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "openriscv_min_sopc_tb(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_wb(fast)".
-# ** Error: (vopt-8602) /home/shyo/openriscv/src/cpu/wishbone_bus_if.v(130): Replication multiplier (0) should be greater than zero.  Using 1.
-# ** Error: (vopt-8602) /home/shyo/openriscv/src/cpu/wishbone_bus_if.v(132): Replication multiplier (0) should be greater than zero.  Using 1.
-# ** Note: (vopt-143) Recognized 1 FSM in module "div(fast)".
-# ** Error: (vopt-2064) Compiler back-end code generation process terminated with code 2.
-# Error loading design
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# 48 compiles, 1 failed with 1 error. 
 # Compile of cp0_reg.v was successful.
 # Compile of ctrl.v was successful.
 # Compile of defines.v was successful.
@@ -126,115 +155,3 @@ vsim -voptargs=+acc work.openriscv_min_sopc_tb
 # Compile of wb_conmax_slave_if.v was successful.
 # Compile of wb_conmax_top.v was successful.
 # 48 compiles, 0 failed with no errors. 
-vsim -voptargs=+acc work.openriscv_min_sopc_tb
-# vsim -voptargs=+acc work.openriscv_min_sopc_tb 
-# ** Note: (vsim-3812) Design is being optimized...
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_receiver(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "wb_conmax_arb(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_transmitter(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "openriscv_min_sopc_tb(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_wb(fast)".
-# ** Error: (vopt-8602) /home/shyo/openriscv/src/cpu/wishbone_bus_if.v(130): Replication multiplier (0) should be greater than zero.  Using 1.
-# ** Error: (vopt-8602) /home/shyo/openriscv/src/cpu/wishbone_bus_if.v(132): Replication multiplier (0) should be greater than zero.  Using 1.
-# ** Note: (vopt-143) Recognized 1 FSM in module "div(fast)".
-# ** Error: (vopt-2064) Compiler back-end code generation process terminated with code 2.
-# Error loading design
-# Compile of wishbone_bus_if.v was successful.
-vsim -voptargs=+acc work.openriscv_min_sopc_tb
-# vsim -voptargs=+acc work.openriscv_min_sopc_tb 
-# ** Note: (vsim-3812) Design is being optimized...
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_receiver(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "wb_conmax_arb(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_transmitter(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "openriscv_min_sopc_tb(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "uart_wb(fast)".
-# ** Note: (vopt-143) Recognized 1 FSM in module "div(fast)".
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.openriscv_min_sopc(fast)
-# Loading work.phy_bus_addr_conv(fast)
-# Loading work.openriscv(fast)
-# Loading work.pc_reg(fast)
-# Loading work.if_id(fast)
-# Loading work.id(fast)
-# Loading work.regfile(fast)
-# Loading work.id_ex(fast)
-# Loading work.ex(fast)
-# Loading work.ex_mem(fast)
-# Loading work.mem(fast)
-# Loading work.mem_wb(fast)
-# Loading work.hilo_reg(fast)
-# Loading work.ctrl(fast)
-# Loading work.div(fast)
-# Loading work.LLbit_reg(fast)
-# Loading work.cp0_reg(fast)
-# Loading work.mmu(fast)
-# Loading work.mmu_conv(fast)
-# Loading work.tlb(fast)
-# Loading work.wishbone_bus_if(fast)
-# Loading work.wishbone_bus_if(fast__1)
-# Loading work.data_ram(fast)
-# Loading work.uart_top(fast)
-# Loading work.uart_wb(fast)
-# Loading work.uart_regs(fast)
-# Loading work.uart_transmitter(fast)
-# Loading work.uart_tfifo(fast)
-# Loading work.raminfr(fast)
-# Loading work.uart_sync_flops(fast)
-# Loading work.uart_receiver(fast)
-# Loading work.uart_rfifo(fast)
-# Loading work.uart_debug_if(fast)
-# Loading work.wb_conmax_top(fast)
-# Loading work.wb_conmax_master_if(fast)
-# Loading work.wb_conmax_slave_if(fast)
-# Loading work.wb_conmax_arb(fast)
-# Loading work.wb_conmax_msel(fast)
-# Loading work.wb_conmax_pri_enc(fast)
-# Loading work.wb_conmax_pri_dec(fast)
-# Loading work.wb_conmax_rf(fast)
-run -step
-run -over
-quit -sim
-vsim -voptargs=+acc work.openriscv_min_sopc_tb
-# vsim -voptargs=+acc work.openriscv_min_sopc_tb 
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.openriscv_min_sopc(fast)
-# Loading work.phy_bus_addr_conv(fast)
-# Loading work.openriscv(fast)
-# Loading work.pc_reg(fast)
-# Loading work.if_id(fast)
-# Loading work.id(fast)
-# Loading work.regfile(fast)
-# Loading work.id_ex(fast)
-# Loading work.ex(fast)
-# Loading work.ex_mem(fast)
-# Loading work.mem(fast)
-# Loading work.mem_wb(fast)
-# Loading work.hilo_reg(fast)
-# Loading work.ctrl(fast)
-# Loading work.div(fast)
-# Loading work.LLbit_reg(fast)
-# Loading work.cp0_reg(fast)
-# Loading work.mmu(fast)
-# Loading work.mmu_conv(fast)
-# Loading work.tlb(fast)
-# Loading work.wishbone_bus_if(fast)
-# Loading work.wishbone_bus_if(fast__1)
-# Loading work.data_ram(fast)
-# Loading work.uart_top(fast)
-# Loading work.uart_wb(fast)
-# Loading work.uart_regs(fast)
-# Loading work.uart_transmitter(fast)
-# Loading work.uart_tfifo(fast)
-# Loading work.raminfr(fast)
-# Loading work.uart_sync_flops(fast)
-# Loading work.uart_receiver(fast)
-# Loading work.uart_rfifo(fast)
-# Loading work.uart_debug_if(fast)
-# Loading work.wb_conmax_top(fast)
-# Loading work.wb_conmax_master_if(fast)
-# Loading work.wb_conmax_slave_if(fast)
-# Loading work.wb_conmax_arb(fast)
-# Loading work.wb_conmax_msel(fast)
-# Loading work.wb_conmax_pri_enc(fast)
-# Loading work.wb_conmax_pri_dec(fast)
-# Loading work.wb_conmax_rf(fast)

@@ -61,7 +61,7 @@ module pc_reg(
 	// 指令存储器是否使能
 	output reg ce,
 
-	// 接到 MEM 提前查物理地址
+	// 接到 MMU 提前查物理地址
 	output reg[`RegBus] next_inst_vir_addr_o,
 	output wire pc_ce_o,
 
@@ -78,13 +78,10 @@ module pc_reg(
 			next_inst_vir_addr_o <= `StartInstAddr;
 		else if(flush == `Flush)
 			next_inst_vir_addr_o <= new_pc;
-		else 
-		begin
-			if(branch_flag_i == `Branch)
-				next_inst_vir_addr_o <= branch_target_address_i;
-			else
-		 		next_inst_vir_addr_o <= pc + 4'h4;
-		end
+		else if(branch_flag_i == `Branch)
+			next_inst_vir_addr_o <= branch_target_address_i;
+		else
+	 		next_inst_vir_addr_o <= pc + 4'h4;
 
 	// exceptiontype
 	//   0   machine check   TLB write that conflicts with an existing entry
@@ -117,6 +114,14 @@ module pc_reg(
 			ce <= `ChipDisable;
 		end
 		else if(flush == `Flush)
+		begin
+			pc <= next_inst_vir_addr_o;
+
+			inst_phy_addr_o <= next_inst_phy_addr_i;
+			excepttype_o <= excepttype;
+			ce <= `ChipEnable;
+		end
+		else if(branch_flag_i == `Branch)
 		begin
 			pc <= next_inst_vir_addr_o;
 
