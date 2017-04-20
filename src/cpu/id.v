@@ -128,6 +128,16 @@ module id(
 	
 	// 立即數
 	reg [`RegBus] imm;
+
+`ifdef RV32
+	wire [`RegBus] imm_i_type  = {{20{inst_i[31]}}, inst_i[31:20]};
+	wire [`RegBus] imm_s_type  = {{20{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
+	wire [`RegBus] imm_u_type  = {inst_i[31:12], 12'b0};
+	wire [`RegBus] imm_sb_type =
+		{{19{inst_i[31]}}, inst_i[31], inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
+	wire [`RegBus] imm_uj_type =
+		{{11{inst_i[31]}}, inst_i[31], inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
+`else
 	wire [`RegBus] imm_i_type  = {{52{inst_i[31]}}, inst_i[31:20]};
 	wire [`RegBus] imm_s_type  = {{52{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
 	wire [`RegBus] imm_u_type  = {{32{inst_i[31]}}, inst_i[31:12], 12'b0};
@@ -135,7 +145,8 @@ module id(
 		{{51{inst_i[31]}}, inst_i[31], inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
 	wire [`RegBus] imm_uj_type =
 		{{43{inst_i[31]}}, inst_i[31], inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
-	
+`endif
+
 	reg instvalid;
 
 	reg stallreq_for_reg1_loadrelate;
@@ -144,6 +155,7 @@ module id(
 	wire pre_inst_is_load;
 	reg excepttype_is_syscall;
 	reg excepttype_is_eret;
+	reg excepttype_is_fence_i;
 
 	assign link_addr_o = pc_i + 4'd4;
 
@@ -175,7 +187,8 @@ module id(
 	//   18  TLBS            Store TLB miss
 	//   19  TLB Mod         Store to TLB page with D=0
 	// * 20  ERET
-	assign excepttype_o = {excepttype_i[31:21], excepttype_is_eret, excepttype_i[19:13], instvalid, excepttype_is_syscall, excepttype_i[10:0]};
+	// * 21  FENCE.I
+	assign excepttype_o = {excepttype_i[31:22], excepttype_is_fence_i, excepttype_is_eret, excepttype_i[19:13], instvalid, excepttype_is_syscall, excepttype_i[10:0]};
 	 
 	assign current_inst_address_o = pc_i;
 	assign not_stall_o = not_stall_i;
@@ -204,6 +217,7 @@ module id(
 
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_eret <= `False_v;
+			excepttype_is_fence_i <= `False_v;
 		end
 		else
 		begin
@@ -231,6 +245,7 @@ module id(
 			// 是否触发 syscall, eret 异常
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_eret <= `False_v;
+			excepttype_is_fence_i <= `False_v;
 
 			case (opcode)
 				`EXE_OP_IMM:
@@ -846,6 +861,28 @@ module id(
 						begin
 						end
 					endcase
+
+				`EXE_MISC_MEM:
+					case(funct3)
+						`EXE_FENCE:
+							if(reg1_addr_o == 5'b0 && wd_o == 5'b0 && inst_i[31:28] == 4'b0)
+							begin
+								instvalid <= `InstValid;
+							end
+
+						`EXE_FENCE_I:
+							if(reg1_addr_o == 5'b0 && wd_o == 5'b0 && imm_i_type == 4'b0)
+							begin
+								instvalid <= `InstValid;
+
+								excepttype_is_fence_i <= `True_v;
+							end
+							
+						default:
+						begin
+						end
+					endcase
+
 
 				default:
 				begin

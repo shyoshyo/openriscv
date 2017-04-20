@@ -1,6 +1,19 @@
 .org 0x0
 .global _start
 _start:
+	
+	nop
+	nop
+	nop
+	auipc x3, 0x0
+	lui x4, 0x54321
+	ori x4, x4, 0x137
+	sw x4, 0x14(x3)
+	fence.i
+	lui x2, 0x12345
+	lw x1, 0x14(x3)
+
+/*
 	ori x1, x0, 0x300
 	lw x2, 0x4(x1)
 	lh x2, 0x4(x1)
@@ -42,6 +55,7 @@ _start:
 	lw x2, 0x308(x0)
 
 	lw x4, 0x380(x0)
+*/
 
 _spin:
 	j _spin
@@ -54,4 +68,3 @@ _spin:
 
 .org 0x380
 	.long 0x12345
-	

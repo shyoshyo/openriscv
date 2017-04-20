@@ -99,6 +99,7 @@ module pc_reg(
 	//   18  TLBS            Store TLB miss
 	//   19  TLB Mod         Store to TLB page with D=0
 	//   20  ERET
+	//   21  FENCE.I
 
 	wire [31:0]excepttype;
 	assign excepttype = {21'b0, next_inst_tlb_r_miss_exception_i, next_inst_vir_addr_o[1:0] != 2'b00, 9'b0};

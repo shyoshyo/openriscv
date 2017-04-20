@@ -205,6 +205,15 @@
 `define EXE_SB           3'b000
 `define EXE_SH           3'b001
 `define EXE_SW           3'b010
+
+`define EXE_MISC_MEM     7'b0001111
+`define EXE_FENCE        3'b000
+`define EXE_FENCE_I      3'b001
+
+/*
+0000 pred succ 00000 000 00000 0001111 FENCE
+0000 0000 0000 00000 001 00000 0001111 FENCE.I
+ */ 
  
 //AluSel
 `define EXE_RES_LOGIC 3'b001

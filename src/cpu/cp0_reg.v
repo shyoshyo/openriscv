@@ -366,6 +366,7 @@ module cp0_reg(
 			// * 18  TLBS            Store TLB miss
 			// * 19  TLB Mod         Store to TLB page with D=0
 			// * 20  ERET
+			// * 21  FENCE.I
 
 			if(excepttype_i[20] == 1'b1 && excepttype_i[19:0] == 20'h0)
 			begin
@@ -388,9 +389,6 @@ module cp0_reg(
 				end
 				
 				status_exl <= 1'b1;
-				
-
-
 
 				if(excepttype_i[0])
 				begin
@@ -468,6 +466,18 @@ module cp0_reg(
 	else
 	begin
 		exception_new_pc_o <= `ZeroWord;
+
+		if(excepttype_i[21] == 1'b1)
+		begin
+			exception_new_pc_o <= current_inst_addr_i + 4'd4;
+		end
+		else
+		begin
+			// TODO: fix me
+			exception_new_pc_o <= 32'h0x00000001;
+		end
+
+		/*
 		if(excepttype_i[20] == 1'b1 && excepttype_i[19:0] == 20'h0)
 		begin
 			exception_new_pc_o <= epc_latest;
@@ -545,6 +555,9 @@ module cp0_reg(
 				exception_new_pc_o <= ebase_latest + 32'h180;
 			end
 		end
+		*/
+	
+
 	end
 
 	always @(*)

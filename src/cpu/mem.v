@@ -552,6 +552,7 @@ module mem(
 	// * 18  TLBS            Store TLB miss
 	// * 19  TLB Mod         Store to TLB page with D=0
 	// . 20  ERET
+	// . 21  FENCE.I
 	assign excepttype_o = (~not_stall_i) ? 32'h0 : 
 		{
 			excepttype_i[31:20], (data_tlb_mod_exception_i & mem_ce), 

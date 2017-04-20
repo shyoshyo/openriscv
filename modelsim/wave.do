@@ -12,15 +12,16 @@ add wave -noupdate -expand -group reg -label {reg x2, sp} -radix hexadecimal {/o
 add wave -noupdate -expand -group reg -label {reg x3, gp} -radix hexadecimal {/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/regfile1/regs[3]}
 add wave -noupdate -expand -group reg -label {reg x4, tp} -radix hexadecimal {/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/regfile1/regs[4]}
 add wave -noupdate -expand -group reg -label {reg x31, t6} -radix hexadecimal {/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/regfile1/regs[31]}
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/imm_i_type
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/imm_s_type
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/imm_sb_type
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/imm_u_type
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/imm_uj_type
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_i
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_o
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/excepttype_i
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/excepttype_o
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/flush
+add wave -noupdate -expand /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/stall
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {first {640487 ps} 1} {{Cursor 2} {315046 ps} 0}
+WaveRestoreCursors {first {640487 ps} 1} {{Cursor 2} {1561229 ps} 0}
 quietly wave cursor active 2
-configure wave -namecolwidth 150
+configure wave -namecolwidth 200
 configure wave -valuecolwidth 156
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -34,4 +35,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {783617 ps}
+WaveRestoreZoom {0 ps} {2705130 ps}

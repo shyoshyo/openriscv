@@ -180,6 +180,7 @@ module ex(
 	//   18  TLBS            Store TLB miss
 	//   19  TLB Mod         Store to TLB page with D=0
 	// . 20  ERET
+	// . 21  FENCE.I
 	assign excepttype_o = {excepttype_i[31:15], trapassert, ovassert, excepttype_i[12:0]};
 
 	assign is_in_delayslot_o = is_in_delayslot_i;
