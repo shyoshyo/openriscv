@@ -50,15 +50,15 @@ module mmu
 	output wire data_tlb_w_miss_exception_o,
 	output wire data_tlb_mod_exception_o,
 
-	input wire cp0_write_tlb_index_i,
-	input wire cp0_write_tlb_random_i,
+	input wire csr_write_tlb_index_i,
+	input wire csr_write_tlb_random_i,
 
-	input wire[`RegBus] cp0_index_i,
-	input wire[`RegBus] cp0_random_i,
-	input wire[`RegBus] cp0_entrylo0_i,
-	input wire[`RegBus] cp0_entrylo1_i,
-	input wire[`RegBus] cp0_entryhi_i,
-	input wire[`RegBus] cp0_pagemask_i,
+	input wire[`RegBus] csr_index_i,
+	input wire[`RegBus] csr_random_i,
+	input wire[`RegBus] csr_entrylo0_i,
+	input wire[`RegBus] csr_entrylo1_i,
+	input wire[`RegBus] csr_entryhi_i,
+	input wire[`RegBus] csr_pagemask_i,
 
 	output wire tlb_machine_check_exception_o
 );
@@ -69,8 +69,8 @@ module mmu
 		.rst_n(rst_n),
 
 		.tlb_entry_i(tlb_entry),
-		.cp0_pagemask_i(cp0_pagemask_i),
-		.cp0_entryhi_i(cp0_entryhi_i),
+		.csr_pagemask_i(csr_pagemask_i),
+		.csr_entryhi_i(csr_entryhi_i),
 
 		.ce_i(inst_ce_i),
 		.we_i(`WriteDisable),
@@ -86,8 +86,8 @@ module mmu
 		.rst_n(rst_n),
 
 		.tlb_entry_i(tlb_entry),
-		.cp0_pagemask_i(cp0_pagemask_i),
-		.cp0_entryhi_i(cp0_entryhi_i),
+		.csr_pagemask_i(csr_pagemask_i),
+		.csr_entryhi_i(csr_entryhi_i),
 
 		.ce_i(data_ce_i),
 		.we_i(data_we_i),
@@ -104,15 +104,15 @@ module mmu
 		.clk(clk),
 		.rst_n(rst_n),
 
-		.cp0_write_tlb_index_i(cp0_write_tlb_index_i),
-		.cp0_write_tlb_random_i(cp0_write_tlb_random_i),
+		.csr_write_tlb_index_i(csr_write_tlb_index_i),
+		.csr_write_tlb_random_i(csr_write_tlb_random_i),
 
-		.cp0_index_i(cp0_index_i),
-		.cp0_random_i(cp0_random_i),
-		.cp0_entrylo0_i(cp0_entrylo0_i),
-		.cp0_entrylo1_i(cp0_entrylo1_i),
-		.cp0_entryhi_i(cp0_entryhi_i),
-		.cp0_pagemask_i(cp0_pagemask_i),
+		.csr_index_i(csr_index_i),
+		.csr_random_i(csr_random_i),
+		.csr_entrylo0_i(csr_entrylo0_i),
+		.csr_entrylo1_i(csr_entrylo1_i),
+		.csr_entryhi_i(csr_entryhi_i),
+		.csr_pagemask_i(csr_pagemask_i),
 
 		.tlb_entry_o(tlb_entry),
 

@@ -6,6 +6,17 @@ add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_pc
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_inst
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_pc
+add wave -noupdate -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id_ex0/id_csr_reg_we
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_current_inst_address
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_data
+add wave -noupdate -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_we
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_write_addr
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_data
+add wave -noupdate -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_we
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_write_addr
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_data
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_we
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_write_addr
 add wave -noupdate -expand -group reg -label {reg x0, zero} -radix hexadecimal {/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/regfile1/regs[0]}
 add wave -noupdate -expand -group reg -label {reg x1, ra} -radix hexadecimal {/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/regfile1/regs[1]}
 add wave -noupdate -expand -group reg -label {reg x2, sp} -radix hexadecimal {/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/regfile1/regs[2]}
@@ -18,8 +29,15 @@ add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/e
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/excepttype_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/flush
 add wave -noupdate -expand /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/stall
+add wave -noupdate -expand -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/we_i
+add wave -noupdate -expand -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/waddr_i
+add wave -noupdate -expand -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_i
+add wave -noupdate -expand -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mscratch
+add wave -noupdate -expand -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/re_i
+add wave -noupdate -expand -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/raddr_i
+add wave -noupdate -expand -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {first {640487 ps} 1} {{Cursor 2} {1561229 ps} 0}
+WaveRestoreCursors {first {640487 ps} 1} {{Cursor 2} {907671 ps} 0}
 quietly wave cursor active 2
 configure wave -namecolwidth 200
 configure wave -valuecolwidth 156
@@ -35,4 +53,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {2705130 ps}
+WaveRestoreZoom {567920 ps} {906061 ps}

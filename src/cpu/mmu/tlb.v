@@ -37,15 +37,15 @@ module tlb
 	input wire clk,
 	input wire rst_n,
 
-	input wire cp0_write_tlb_index_i,
-	input wire cp0_write_tlb_random_i,
+	input wire csr_write_tlb_index_i,
+	input wire csr_write_tlb_random_i,
 
-	input wire[`RegBus] cp0_index_i,
-	input wire[`RegBus] cp0_random_i,
-	input wire[`RegBus] cp0_entrylo0_i,
-	input wire[`RegBus] cp0_entrylo1_i,
-	input wire[`RegBus] cp0_entryhi_i,
-	input wire[`RegBus] cp0_pagemask_i,
+	input wire[`RegBus] csr_index_i,
+	input wire[`RegBus] csr_random_i,
+	input wire[`RegBus] csr_entrylo0_i,
+	input wire[`RegBus] csr_entrylo1_i,
+	input wire[`RegBus] csr_entryhi_i,
+	input wire[`RegBus] csr_pagemask_i,
 
 	output wire[1151:0] tlb_entry_o,
 
@@ -80,19 +80,19 @@ module tlb
 
 	wire [71:0]tlb_entry_i =
 	{
-		cp0_entryhi_i[31:13] & ~cp0_pagemask_i[31:13], // vpn
-		cp0_entryhi_i[7:0], // now ASID
-		cp0_entrylo0_i[0] & cp0_entrylo1_i[0], // G
+		csr_entryhi_i[31:13] & ~csr_pagemask_i[31:13], // vpn
+		csr_entryhi_i[7:0], // now ASID
+		csr_entrylo0_i[0] & csr_entrylo1_i[0], // G
 		
-		cp0_entrylo1_i[25:6] & ~cp0_pagemask_i[25:6], // pfn1
-		cp0_entrylo1_i[2:1], // {D, V}1
+		csr_entrylo1_i[25:6] & ~csr_pagemask_i[25:6], // pfn1
+		csr_entrylo1_i[2:1], // {D, V}1
 
-		cp0_entrylo0_i[25:6] & ~cp0_pagemask_i[25:6], // pfn0
-		cp0_entrylo0_i[2:1] // {D, V}0
+		csr_entrylo0_i[25:6] & ~csr_pagemask_i[25:6], // pfn0
+		csr_entrylo0_i[2:1] // {D, V}0
 	};
 
 	wire [3:0]tlb_index_i = 
-		cp0_write_tlb_index_i ? (cp0_index_i[3:0]) : (cp0_random_i[3:0]);
+		csr_write_tlb_index_i ? (csr_index_i[3:0]) : (csr_random_i[3:0]);
 
 
 	/********************** 檢查有沒有衝突 *********************/
@@ -144,7 +144,7 @@ module tlb
 
 			tlb_machine_check_exception_o <= `False_v;
 		end
-		else if (cp0_write_tlb_index_i || cp0_write_tlb_random_i)
+		else if (csr_write_tlb_index_i || csr_write_tlb_random_i)
 		begin
 			if(|machine_check_err)
 			begin

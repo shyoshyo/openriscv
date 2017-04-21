@@ -37,8 +37,8 @@ module mmu_conv
 	input wire rst_n,
 
 	input wire[1151:0] tlb_entry_i,
-	input wire[`RegBus] cp0_pagemask_i,
-	input wire[`RegBus] cp0_entryhi_i,
+	input wire[`RegBus] csr_pagemask_i,
+	input wire[`RegBus] csr_entryhi_i,
 
 	input wire ce_i,
 	input wire we_i,
@@ -106,8 +106,8 @@ module mmu_conv
 
 			assign match[i] =
 			(
-				((tlb_entry[i][71:53] & ~cp0_pagemask_i[31:13]) == (vir_addr_i[31:13] & ~cp0_pagemask_i[31:13])) &&
-				((tlb_entry[i][52:45] == cp0_entryhi_i[7:0]) || tlb_entry[i][44] == 1'b1) &&
+				((tlb_entry[i][71:53] & ~csr_pagemask_i[31:13]) == (vir_addr_i[31:13] & ~csr_pagemask_i[31:13])) &&
+				((tlb_entry[i][52:45] == csr_entryhi_i[7:0]) || tlb_entry[i][44] == 1'b1) &&
 				(tlb_entry[i][(vir_addr_i[12] == 1'b0) ? (0) : (22)] == 1'b1)
 			);
 

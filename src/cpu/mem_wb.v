@@ -48,11 +48,11 @@ module mem_wb(
 	input wire mem_LLbit_we,
 	input wire mem_LLbit_value,
 	
-	input wire mem_cp0_reg_we,
-	input wire[7:0] mem_cp0_reg_write_addr,
-	input wire[`RegBus] mem_cp0_reg_data,
-	input wire mem_cp0_write_tlb_index,
-	input wire mem_cp0_write_tlb_random,
+	input wire[`CSRWriteTypeBus] mem_csr_reg_we,
+	input wire[`CSRAddrBus] mem_csr_reg_write_addr,
+	input wire[`RegBus] mem_csr_reg_data,
+	input wire mem_csr_write_tlb_index,
+	input wire mem_csr_write_tlb_random,
 
 	//送到回写阶段的信息
 	output reg[`RegAddrBus] wb_wd,
@@ -64,11 +64,11 @@ module mem_wb(
 	output reg wb_LLbit_we,
 	output reg wb_LLbit_value,
 
-	output reg wb_cp0_reg_we,
-	output reg[7:0] wb_cp0_reg_write_addr,
-	output reg[`RegBus] wb_cp0_reg_data,
-	output reg wb_cp0_write_tlb_index,
-	output reg wb_cp0_write_tlb_random
+	output reg[`CSRWriteTypeBus] wb_csr_reg_we,
+	output reg[`CSRAddrBus] wb_csr_reg_write_addr,
+	output reg[`RegBus] wb_csr_reg_data,
+	output reg wb_csr_write_tlb_index,
+	output reg wb_csr_write_tlb_random
 );
 
 
@@ -86,11 +86,11 @@ module mem_wb(
 			wb_LLbit_we <= 1'b0;
 			wb_LLbit_value <= 1'b0;
 			
-			wb_cp0_reg_we <= `WriteDisable;
-			wb_cp0_reg_write_addr <= `NOPRegAddr;
-			wb_cp0_reg_data <= `ZeroWord;
-			wb_cp0_write_tlb_index <= `False_v;
-			wb_cp0_write_tlb_random <= `False_v;
+			wb_csr_reg_we <= `CSRWriteDisable;
+			wb_csr_reg_write_addr <= `NOPRegAddr;
+			wb_csr_reg_data <= `ZeroWord;
+			wb_csr_write_tlb_index <= `False_v;
+			wb_csr_write_tlb_random <= `False_v;
 		end
 		else if(flush == `Flush)
 		begin
@@ -104,11 +104,11 @@ module mem_wb(
 			wb_LLbit_we <= 1'b0;
 			wb_LLbit_value <= 1'b0;
 
-			wb_cp0_reg_we <= `WriteDisable;
-			wb_cp0_reg_write_addr <= `NOPRegAddr;
-			wb_cp0_reg_data <= `ZeroWord;
-			wb_cp0_write_tlb_index <= `False_v;
-			wb_cp0_write_tlb_random <= `False_v;
+			wb_csr_reg_we <= `CSRWriteDisable;
+			wb_csr_reg_write_addr <= `NOPRegAddr;
+			wb_csr_reg_data <= `ZeroWord;
+			wb_csr_write_tlb_index <= `False_v;
+			wb_csr_write_tlb_random <= `False_v;
 		end
 		else if(stall[4] == `Stop && stall[5] == `NoStop)
 		begin
@@ -122,11 +122,11 @@ module mem_wb(
 			wb_LLbit_we <= 1'b0;
 			wb_LLbit_value <= 1'b0;
 
-			wb_cp0_reg_we <= `WriteDisable;
-			wb_cp0_reg_write_addr <= `NOPRegAddr;
-			wb_cp0_reg_data <= `ZeroWord;
-			wb_cp0_write_tlb_index <= `False_v;
-			wb_cp0_write_tlb_random <= `False_v;
+			wb_csr_reg_we <= `CSRWriteDisable;
+			wb_csr_reg_write_addr <= `NOPRegAddr;
+			wb_csr_reg_data <= `ZeroWord;
+			wb_csr_write_tlb_index <= `False_v;
+			wb_csr_write_tlb_random <= `False_v;
 		end
 		else if(stall[4] == `NoStop)
 		begin
@@ -140,11 +140,11 @@ module mem_wb(
 			wb_LLbit_we <= mem_LLbit_we;
 			wb_LLbit_value <= mem_LLbit_value;
 
-			wb_cp0_reg_we <= mem_cp0_reg_we;
-			wb_cp0_reg_write_addr <= mem_cp0_reg_write_addr;
-			wb_cp0_reg_data <= mem_cp0_reg_data;
-			wb_cp0_write_tlb_index <= mem_cp0_write_tlb_index;
-			wb_cp0_write_tlb_random <= mem_cp0_write_tlb_random;
+			wb_csr_reg_we <= mem_csr_reg_we;
+			wb_csr_reg_write_addr <= mem_csr_reg_write_addr;
+			wb_csr_reg_data <= mem_csr_reg_data;
+			wb_csr_write_tlb_index <= mem_csr_write_tlb_index;
+			wb_csr_write_tlb_random <= mem_csr_write_tlb_random;
 		end
 	end
 endmodule

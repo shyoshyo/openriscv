@@ -47,7 +47,7 @@ module ex(
 	input wire[`InstBus] inst_i,
 
 	// 已经检测到的异常和指令地址及其是否合法
-	input wire[31:0] excepttype_i,
+	input wire[`ExceptionTypeBus] excepttype_i,
 	input wire[`RegBus] current_inst_address_i,
 	input wire not_stall_i,
 
@@ -78,15 +78,21 @@ module ex(
 	input wire[`RegBus] link_address_i,
 	input wire is_in_delayslot_i,
 
-	//访存阶段的指令是否要写CP0，用来检测数据相关
-	input wire mem_cp0_reg_we,
-	input wire[7:0] mem_cp0_reg_write_addr,
-	input wire[`RegBus] mem_cp0_reg_data,
+	/*
+	//访存阶段的指令是否要写csr，用来检测数据相关
+	input wire mem_csr_reg_we,
+	input wire[`CSRAddrBus] mem_csr_reg_write_addr,
+	input wire[`RegBus] mem_csr_reg_data,
 	
-	//回写阶段的指令是否要写CP0，用来检测数据相关
-	input wire wb_cp0_reg_we,
-	input wire[7:0] wb_cp0_reg_write_addr,
-	input wire[`RegBus] wb_cp0_reg_data,
+	//回写阶段的指令是否要写csr，用来检测数据相关
+	input wire wb_csr_reg_we,
+	input wire[`CSRAddrBus] wb_csr_reg_write_addr,
+	input wire[`RegBus] wb_csr_reg_data,
+	*/
+
+	//csr
+	input wire[`CSRWriteTypeBus] csr_reg_we_i,
+	input wire[`RegBus] csr_reg_data_i,
 
 	// TLB 提供的物理地址
 	input wire[`RegBus] mem_phy_addr_i,
@@ -94,16 +100,12 @@ module ex(
 	input wire data_tlb_w_miss_exception_i,
 	input wire data_tlb_mod_exception_i, 
 
-	//与CP0相连，读取其中CP0寄存器的值
-	input wire[`RegBus] cp0_reg_data_i,
-	output reg[7:0] cp0_reg_read_addr_o,
-
-	//向下一流水级传递，用于写CP0中的寄存器
-	output reg cp0_reg_we_o,
-	output reg[7:0] cp0_reg_write_addr_o,
-	output reg[`RegBus] cp0_reg_data_o,
-	output reg cp0_write_tlb_index_o,
-	output reg cp0_write_tlb_random_o,
+	//向下一流水级传递，用于写csr中的寄存器
+	output wire[`CSRWriteTypeBus] csr_reg_we_o,
+	output wire[`CSRAddrBus] csr_reg_write_addr_o,
+	output wire[`RegBus] csr_reg_data_o,
+	output reg csr_write_tlb_index_o,
+	output reg csr_write_tlb_random_o,
 
 	// 是否写寄存器，以及寄存器的地址和要写的值
 	output reg[`RegAddrBus] wd_o,
@@ -136,7 +138,7 @@ module ex(
 	output wire[`RegBus] reg2_o,
 	
 	// 新检测出的异常类型
-	output wire[31:0] excepttype_o,
+	output wire[`ExceptionTypeBus] excepttype_o,
 	// 当前指令是否在延迟槽中
 	output wire is_in_delayslot_o,
 	// 当前指令地址以及其是否合法
@@ -292,204 +294,7 @@ module ex(
 		end
 	end
 	
-	reg[`RegBus] cp0regout;
-	always @ (*)
-		if(rst_n == `RstEnable)
-		begin
-			cp0regout <= `ZeroWord;
-			cp0_reg_read_addr_o <= 8'h0;
-		end
-		else
-		begin
-			cp0_reg_read_addr_o <= {inst_i[15:11], inst_i[2:0]};
-			cp0regout <= cp0_reg_data_i;
-
-			if({inst_i[15:11], inst_i[2:0]} == `CP0_REG_RANDOM)
-				cp0regout <= {28'h0, cp0_reg_data_i[3:0] - 4'h3};
-			else if({inst_i[15:11], inst_i[2:0]} == `CP0_REG_COUNT)
-				cp0regout <= cp0_reg_data_i + 32'h3;
-			
-			if(mem_cp0_reg_we == `WriteEnable && mem_cp0_reg_write_addr == {inst_i[15:11], inst_i[2:0]})
-			begin
-				cp0regout <= cp0_reg_data_i;
-				case ({inst_i[15:11], inst_i[2:0]})
-					`CP0_REG_INDEX:
-					begin
-						cp0regout[3:0] <= mem_cp0_reg_data[3:0];
-					end
-
-					`CP0_REG_RANDOM:
-					begin
-						cp0regout <= {28'h0, cp0_reg_data_i[3:0] - 4'h3};
-					end
-
-					`CP0_REG_ENTRYLO0, `CP0_REG_ENTRYLO1:
-					begin
-						cp0regout[25:6] <= mem_cp0_reg_data[25:6];  // pfn
-						cp0regout[2:0] <= mem_cp0_reg_data[2:0];    // {dirty, valid, global}
-					end
-
-					`CP0_REG_PAGEMASK:
-					begin
-					end
-
-					`CP0_REG_BadVAddr:
-					begin
-					end
-
-					`CP0_REG_ENTRYHI:
-					begin
-						cp0regout[31:13] <= mem_cp0_reg_data[31:13];  // vpn2
-						cp0regout[7:0] <= mem_cp0_reg_data[7:0];      // asid
-					end
-
-					`CP0_REG_EBASE:
-					begin
-						cp0regout[29:12] <= mem_cp0_reg_data[29:12];
-					end
-
-					`CP0_REG_COUNT:
-					begin
-						cp0regout <= mem_cp0_reg_data + 32'h1;
-					end
-					
-					`CP0_REG_COMPARE:
-					begin
-						cp0regout <= mem_cp0_reg_data;
-					end
-					
-					`CP0_REG_STATUS:
-					begin
-						// cp0regout <= mem_cp0_reg_data;
-
-						// {ERL, EXL, IE}
-						cp0regout[2:0] <= mem_cp0_reg_data[2:0];
-
-						// {UM}
-						cp0regout[4] <= mem_cp0_reg_data[4];
-
-						// {InterruptMask}
-						cp0regout[15:8] <= mem_cp0_reg_data[15:8];
-
-						// {BEV}
-						cp0regout[22] <= mem_cp0_reg_data[22];
-					end
-					
-					`CP0_REG_CAUSE:
-					begin
-						//cause寄存器只有IP[1:0]、IV、WP字段是可写的
-						cp0regout[9:8] <= mem_cp0_reg_data[9:8];
-						cp0regout[22] <= mem_cp0_reg_data[22];
-						cp0regout[23] <= mem_cp0_reg_data[23];
-						cp0regout[27] <= mem_cp0_reg_data[27];
-					end
-					
-					`CP0_REG_EPC:
-					begin
-						cp0regout <= mem_cp0_reg_data;
-					end
-					
-					`CP0_REG_PrId, `CP0_REG_CONFIG:
-					begin
-					end
-
-					default:
-					begin
-						cp0regout <= `ZeroWord;
-					end
-				endcase
-			end
-			else if(wb_cp0_reg_we == `WriteEnable && wb_cp0_reg_write_addr == {inst_i[15:11], inst_i[2:0]})
-			begin
-				cp0regout <= cp0_reg_data_i;
-				case ({inst_i[15:11], inst_i[2:0]})
-					`CP0_REG_INDEX:
-					begin
-						cp0regout[3:0] <= wb_cp0_reg_data[3:0];
-					end
-
-					`CP0_REG_RANDOM:
-					begin
-						cp0regout <= {28'h0, cp0_reg_data_i[3:0] - 4'h3};
-					end
-
-					`CP0_REG_ENTRYLO0, `CP0_REG_ENTRYLO1:
-					begin
-						cp0regout[25:6] <= wb_cp0_reg_data[25:6];  // pfn
-						cp0regout[2:0] <= wb_cp0_reg_data[2:0];    // {dirty, valid, global}
-					end
-
-					`CP0_REG_PAGEMASK:
-					begin
-					end
-
-					`CP0_REG_BadVAddr:
-					begin
-					end
-
-					`CP0_REG_ENTRYHI:
-					begin
-						cp0regout[31:13] <= wb_cp0_reg_data[31:13];  // vpn2
-						cp0regout[7:0] <= wb_cp0_reg_data[7:0];      // asid
-					end
-
-					`CP0_REG_EBASE:
-					begin
-						cp0regout[29:12] <= wb_cp0_reg_data[29:12];
-					end
-
-					`CP0_REG_COUNT:
-					begin
-						cp0regout <= wb_cp0_reg_data + 32'h2;
-					end
-					
-					`CP0_REG_COMPARE:
-					begin
-						cp0regout <= wb_cp0_reg_data;
-					end
-					
-					`CP0_REG_STATUS:
-					begin
-						// cp0regout <= wb_cp0_reg_data;
-
-						// {ERL, EXL, IE}
-						cp0regout[2:0] <= mem_cp0_reg_data[2:0];
-
-						// {UM}
-						cp0regout[4] <= mem_cp0_reg_data[4];
-
-						// {InterruptMask}
-						cp0regout[15:8] <= mem_cp0_reg_data[15:8];
-
-						// {BEV}
-						cp0regout[22] <= mem_cp0_reg_data[22];
-					end
-					
-					`CP0_REG_CAUSE:
-					begin
-						//cause寄存器只有IP[1:0]、IV、WP字段是可写的
-						cp0regout[9:8] <= wb_cp0_reg_data[9:8];
-						cp0regout[22] <= wb_cp0_reg_data[22];
-						cp0regout[23] <= wb_cp0_reg_data[23];
-						cp0regout[27] <= wb_cp0_reg_data[27];
-					end
-					
-					`CP0_REG_EPC:
-					begin
-						cp0regout <= wb_cp0_reg_data;
-					end
-					
-					`CP0_REG_PrId, `CP0_REG_CONFIG:
-					begin
-					end
-
-					default:
-					begin
-						cp0regout <= `ZeroWord;
-					end
-				endcase
-			end
-		end
+	
 
 	// move op
 	always @ (*)
@@ -499,8 +304,12 @@ module ex(
 			case (aluop_i)
 				`EXE_MFHI_OP: moveout <= HI;
 				`EXE_MFLO_OP: moveout <= LO;
-				`EXE_MOVZ_OP, `EXE_MOVN_OP: moveout <= reg1_i;
-				`EXE_MFC0_OP: moveout <= cp0regout;
+
+				`EXE_MOVZ_OP, `EXE_MOVN_OP:
+					moveout <= reg1_i;
+				
+				`EXE_CSRRW_OP, `EXE_CSRRS_OP, `EXE_CSRRC_OP:
+					moveout <= csr_reg_data_i;
 
 				default: moveout <= `ZeroWord;
 			endcase
@@ -781,40 +590,26 @@ module ex(
 			lo_o <= `ZeroWord;
 		end
 
+	/******************* 这条指令要写到 csr 的内容 **********************/
+	assign csr_reg_write_addr_o = inst_i[31:20];
+	assign csr_reg_data_o = reg1_i;
+	assign csr_reg_we_o = csr_reg_we_i;
 
-	/******************* 这条指令要写到 cp0 的内容 **********************/
 	always @ (*)
 		if(rst_n == `RstEnable)
 		begin
-			cp0_reg_write_addr_o <= 8'b00000_000;
-			cp0_reg_we_o <= `WriteDisable;
-			cp0_reg_data_o <= `ZeroWord;
-
-			cp0_write_tlb_index_o <= `False_v;
-			cp0_write_tlb_random_o <= `False_v;
+			csr_write_tlb_index_o <= `False_v;
+			csr_write_tlb_random_o <= `False_v;
 		end
 		else
 		begin
-			cp0_reg_write_addr_o <= 8'b00000_000;
-			cp0_reg_we_o <= `WriteDisable;
-			cp0_reg_data_o <= `ZeroWord;
-
-			cp0_write_tlb_index_o <= `False_v;
-			cp0_write_tlb_random_o <= `False_v;
+			csr_write_tlb_index_o <= `False_v;
+			csr_write_tlb_random_o <= `False_v;
 
 			case(aluop_i)
-				`EXE_MTC0_OP:
+				`EXE_CSRRW_OP:
 				begin
-					cp0_reg_write_addr_o <= {{inst_i[15:11], inst_i[2:0]}};
-					cp0_reg_we_o <= `WriteEnable;
-					cp0_reg_data_o <= reg1_i;
 				end
-
-				`EXE_TLBWI_OP:
-					cp0_write_tlb_index_o <= `True_v;
-				
-				`EXE_TLBWR_OP:
-					cp0_write_tlb_random_o <= `True_v;
 
 				default:
 				begin

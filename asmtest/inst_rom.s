@@ -2,6 +2,14 @@
 .global _start
 _start:
 	
+	lui x2, 0x12345
+	lui x3, 0x54321
+	CSRRW x3, mscratch, x2
+	add x2, x2, 0x1
+	CSRRW x3, mscratch, x2
+	mv x4, x3
+
+/*
 	nop
 	nop
 	nop
@@ -12,6 +20,7 @@ _start:
 	fence.i
 	lui x2, 0x12345
 	lw x1, 0x14(x3)
+*/
 
 /*
 	ori x1, x0, 0x300

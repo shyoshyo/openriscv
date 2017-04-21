@@ -44,7 +44,7 @@ module pc_reg(
 	input wire[5:0] stall,
 
 	input wire flush,
-	input wire[`RegBus] new_pc,
+	input wire[`RegBus] exception_new_pc,
 
 	//来自译码阶段的信息
 	input wire branch_flag_i,
@@ -66,7 +66,7 @@ module pc_reg(
 	output wire pc_ce_o,
 
 	// pc_reg 做虚实地址转换的时候发生的异常
-	output reg[31:0] excepttype_o
+	output reg[`ExceptionTypeBus] excepttype_o
 );
 	// 在 rst 的时候我也要提前查第一条指令的物理地址
 	assign pc_ce_o = `ChipEnable;
@@ -77,7 +77,7 @@ module pc_reg(
 		else if (ce == `ChipDisable)
 			next_inst_vir_addr_o <= `StartInstAddr;
 		else if(flush == `Flush)
-			next_inst_vir_addr_o <= new_pc;
+			next_inst_vir_addr_o <= exception_new_pc;
 		else if(branch_flag_i == `Branch)
 			next_inst_vir_addr_o <= branch_target_address_i;
 		else
@@ -101,7 +101,7 @@ module pc_reg(
 	//   20  ERET
 	//   21  FENCE.I
 
-	wire [31:0]excepttype;
+	wire [`ExceptionTypeBus]excepttype;
 	assign excepttype = {21'b0, next_inst_tlb_r_miss_exception_i, next_inst_vir_addr_o[1:0] != 2'b00, 9'b0};
 
 	always @ (posedge clk or negedge rst_n)

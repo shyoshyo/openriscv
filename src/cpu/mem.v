@@ -60,28 +60,32 @@ module mem(
 	//LLbit_i是LLbit寄存器的值
 	input wire LLbit_i,
 
-	//协处理器CP0的写信号
-	input wire cp0_reg_we_i,
-	input wire[7:0] cp0_reg_write_addr_i,
-	input wire[`RegBus] cp0_reg_data_i,
-	input wire cp0_write_tlb_index_i,
-	input wire cp0_write_tlb_random_i,
+	//协处理器csr的写信号
+	input wire[`CSRWriteTypeBus] csr_reg_we_i,
+	input wire[`CSRAddrBus] csr_reg_write_addr_i,
+	input wire[`RegBus] csr_reg_data_i,
+	input wire csr_write_tlb_index_i,
+	input wire csr_write_tlb_random_i,
 
 
-	input wire[31:0] excepttype_i,
+	input wire[`ExceptionTypeBus] excepttype_i,
 	input wire is_in_delayslot_i,
 	input wire[`RegBus] current_inst_address_i,
 	input wire not_stall_i,
 	
-	//CP0的各个寄存器的值，但不一定是最新的值，要防止回写阶段指令写CP0
-	input wire[`RegBus] cp0_status_i,
-	input wire[`RegBus] cp0_cause_i,
-	input wire[`RegBus] cp0_epc_i,
+	//csr的各个寄存器的值，但不一定是最新的值，要防止回写阶段指令写csr
+	input wire[`RegBus] csr_status_i,
+	input wire[`RegBus] csr_cause_i,
+	/*
+	input wire[`RegBus] csr_epc_i,
+	*/
 
-	//回写阶段的指令是否要写CP0，用来检测数据相关
-	input wire wb_cp0_reg_we,
-	input wire[7:0] wb_cp0_reg_write_addr,
-	input wire[`RegBus] wb_cp0_reg_data,
+	/*
+	//回写阶段的指令是否要写csr，用来检测数据相关
+	input wire wb_csr_reg_we,
+	input wire[`CSRAddrBus] wb_csr_reg_write_addr,
+	input wire[`RegBus] wb_csr_reg_data,
+	*/
 
 	//送到回写阶段的信息
 	output reg[`RegAddrBus] wd_o,
@@ -95,22 +99,24 @@ module mem(
 	output reg LLbit_we_o,
 	output reg LLbit_value_o,
 
-	//协处理器CP0的写信号
-	output reg cp0_reg_we_o,
-	output reg[7:0] cp0_reg_write_addr_o,
-	output reg[`RegBus] cp0_reg_data_o,
-	output reg cp0_write_tlb_index_o,
-	output reg cp0_write_tlb_random_o,
+	//协处理器csr的写信号
+	output reg[`CSRWriteTypeBus] csr_reg_we_o,
+	output reg[`CSRAddrBus] csr_reg_write_addr_o,
+	output reg[`RegBus] csr_reg_data_o,
+	output reg csr_write_tlb_index_o,
+	output reg csr_write_tlb_random_o,
 
 	// 最终确认的异常类型
-	output wire[31:0] excepttype_o,
+	output wire[`ExceptionTypeBus] excepttype_o,
 	output wire is_in_delayslot_o,
 	// 当前指令的地址 以及此指令要訪問的數據地址
 	output wire[`RegBus] current_inst_address_o,
 	output wire[`RegBus] current_data_address_o,
 	
+	/*
 	// 最新的 EPC 值
-	output wire[`RegBus] cp0_epc_o,
+	output wire[`RegBus] csr_epc_o,
+	*/
 
 	//送到memory的信息
 	output reg[`RegBus] mem_addr_o,
@@ -124,17 +130,21 @@ module mem(
 	reg mem_we;
 	reg mem_ce;
 
-	// CP0 中相关信号的最新值
-	reg[`RegBus] cp0_status;
-	reg[`RegBus] cp0_cause;
-	reg[`RegBus] cp0_epc;
-	
+	// csr 中相关信号的最新值
+	reg[`RegBus] csr_status;
+	reg[`RegBus] csr_cause;
+	/*
+	reg[`RegBus] csr_epc;
+	*/
+
 	assign mem_we_o = mem_we;
 	assign mem_ce_o = mem_ce;
 	assign is_in_delayslot_o = is_in_delayslot_i;
 	assign current_inst_address_o = current_inst_address_i;
 	assign current_data_address_o = mem_addr_i;
-	assign cp0_epc_o = cp0_epc;
+	/*
+	assign csr_epc_o = csr_epc;
+	*/
 
 	reg load_alignment_error;
 	reg store_alignment_error;
@@ -149,11 +159,11 @@ module mem(
 			lo_o <= `ZeroWord;
 			whilo_o <= `WriteDisable;
 
-			cp0_reg_we_o <= `WriteDisable;
-			cp0_reg_write_addr_o <= `NOPRegAddr;
-			cp0_reg_data_o <= `ZeroWord;
-			cp0_write_tlb_index_o <= `False_v;
-			cp0_write_tlb_random_o <= `False_v;
+			csr_reg_we_o <= `CSRWriteDisable;
+			csr_reg_write_addr_o <= `NOPRegAddr;
+			csr_reg_data_o <= `ZeroWord;
+			csr_write_tlb_index_o <= `False_v;
+			csr_write_tlb_random_o <= `False_v;
 
 			mem_addr_o <= `ZeroWord;
 			mem_phy_addr_o <= `ZeroWord;
@@ -177,11 +187,11 @@ module mem(
 			lo_o <= lo_i;
 			whilo_o <= whilo_i;
 
-			cp0_reg_we_o <= cp0_reg_we_i;
-			cp0_reg_write_addr_o <= cp0_reg_write_addr_i;
-			cp0_reg_data_o <= cp0_reg_data_i;
-			cp0_write_tlb_index_o <= cp0_write_tlb_index_i;
-			cp0_write_tlb_random_o <= cp0_write_tlb_random_i;
+			csr_reg_we_o <= csr_reg_we_i;
+			csr_reg_write_addr_o <= csr_reg_write_addr_i;
+			csr_reg_data_o <= csr_reg_data_i;
+			csr_write_tlb_index_o <= csr_write_tlb_index_i;
+			csr_write_tlb_random_o <= csr_write_tlb_random_i;
 
 			mem_addr_o <= `ZeroWord;
 			mem_phy_addr_o <= `ZeroWord;
@@ -508,33 +518,46 @@ module mem(
 		end
 
 
-	// 通过数据旁路求得最新的 CP0 相关寄存器的值
 	always @ (*)
 		if(rst_n == `RstEnable)
-			cp0_status <= `ZeroWord;
-		else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_write_addr == `CP0_REG_STATUS))
-			cp0_status <= wb_cp0_reg_data;
+			csr_status <= `ZeroWord;
 		else
-			cp0_status <= cp0_status_i;
+			csr_status <= csr_status_i;
 
 	always @ (*)
 		if(rst_n == `RstEnable)
-			cp0_epc <= `ZeroWord;
-		else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_write_addr == `CP0_REG_EPC))
-			cp0_epc <= wb_cp0_reg_data;
+			csr_cause <= `ZeroWord;
 		else
-			cp0_epc <= cp0_epc_i;
+			csr_cause <= csr_cause_i;
+	/*
+	// 通过数据旁路求得最新的 csr 相关寄存器的值
+	always @ (*)
+		if(rst_n == `RstEnable)
+			csr_status <= `ZeroWord;
+		else if((wb_csr_reg_we == `WriteEnable) && (wb_csr_reg_write_addr == `csr_REG_STATUS))
+			csr_status <= wb_csr_reg_data;
+		else
+			csr_status <= csr_status_i;
 
 	always @ (*)
 		if(rst_n == `RstEnable)
-			cp0_cause <= `ZeroWord;
-		else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_write_addr == `CP0_REG_CAUSE))
+			csr_epc <= `ZeroWord;
+		else if((wb_csr_reg_we == `WriteEnable) && (wb_csr_reg_write_addr == `csr_REG_EPC))
+			csr_epc <= wb_csr_reg_data;
+		else
+			csr_epc <= csr_epc_i;
+
+	always @ (*)
+		if(rst_n == `RstEnable)
+			csr_cause <= `ZeroWord;
+		else if((wb_csr_reg_we == `WriteEnable) && (wb_csr_reg_write_addr == `csr_REG_CAUSE))
 		begin
-			cp0_cause <= cp0_cause_i;
-			{cp0_cause[23], cp0_cause[22], cp0_cause[9:8]} <= {wb_cp0_reg_data[23], wb_cp0_reg_data[22], wb_cp0_reg_data[9:8]};
+			csr_cause <= csr_cause_i;
+			{csr_cause[23], csr_cause[22], csr_cause[9:8]} <= {wb_csr_reg_data[23], wb_csr_reg_data[22], wb_csr_reg_data[9:8]};
 		end
 		else
-			cp0_cause <= cp0_cause_i;
+			csr_cause <= csr_cause_i;
+	*/
 	
 	// exceptiontype
 	// * 0   machine check   TLB write that conflicts with an existing entry
@@ -559,7 +582,7 @@ module mem(
 			(data_tlb_w_miss_exception_i & mem_ce), (data_tlb_r_miss_exception_i & mem_ce),
 			store_alignment_error, load_alignment_error,
 			excepttype_i[14:9], 
-			(cp0_cause[15:8] & cp0_status[15:8]) & ({8{~cp0_status[1]}}) & ({8{cp0_status[0]}}),
+			(csr_cause[15:8] & csr_status[15:8]) & ({8{~csr_status[1]}}) & ({8{csr_status[0]}}),
 			tlb_machine_check_exception_i
 		};
 endmodule

@@ -49,7 +49,7 @@ module openriscv_min_sopc(
 	output wire uart_txd_o,
 	output wire uart_rts_o
 );
-	wire[5:0] int;
+	wire[`IntSourceBus] int;
 	wire timer_int;
 	wire uart_int;
 

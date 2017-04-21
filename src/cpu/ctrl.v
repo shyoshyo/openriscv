@@ -37,7 +37,7 @@ module ctrl(
 	input wire rst_n,
 	
 
-	input wire[31:0] excepttype_i,
+	input wire[`ExceptionTypeBus] excepttype_i,
 	
 	//来自取址阶段的暂停请求
 	input wire stallreq_from_if,

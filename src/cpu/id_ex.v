@@ -53,7 +53,10 @@ module id_ex(
 	input wire[`InstBus] id_inst,
 	input wire[`RegBus] id_current_inst_address,
 	input wire id_not_stall,
-	input wire[31:0] id_excepttype,
+	input wire[`ExceptionTypeBus] id_excepttype,
+
+	input wire[`CSRWriteTypeBus] id_csr_reg_we,
+	input wire[`RegBus] id_csr_reg_data,
 
 	// 译码阶段要传回去的信息
 	input wire next_inst_in_delayslot_i,
@@ -70,9 +73,12 @@ module id_ex(
 	output reg[`RegBus] ex_link_address,
 	output reg ex_is_in_delayslot,
 	output reg[`InstBus] ex_inst,
-	output reg[31:0] ex_excepttype,
+	output reg[`ExceptionTypeBus] ex_excepttype,
 	output reg[`RegBus] ex_current_inst_address,
 	output reg ex_not_stall,
+
+	output reg[`CSRWriteTypeBus] ex_csr_reg_we,
+	output reg[`RegBus] ex_csr_reg_data,
 
 	// 传回 id 阶段
 	output reg is_in_delayslot_o,
@@ -97,6 +103,9 @@ module id_ex(
 			ex_current_inst_address <= `ZeroWord;
 			ex_not_stall <= `False_v;
 
+			ex_csr_reg_we <= `CSRWriteDisable;
+			ex_csr_reg_data <= `ZeroWord;
+
 			is_in_delayslot_o <= `NotInDelaySlot;
 			step_o <= 1'b0;
 		end
@@ -116,6 +125,9 @@ module id_ex(
 			ex_excepttype <= `ZeroWord;
 			ex_current_inst_address <= `ZeroWord;
 			ex_not_stall <= `False_v;
+
+			ex_csr_reg_we <= `CSRWriteDisable;
+			ex_csr_reg_data <= `ZeroWord;
 
 			is_in_delayslot_o <= `NotInDelaySlot;
 			step_o <= 1'b0;
@@ -137,6 +149,9 @@ module id_ex(
 			ex_current_inst_address <= `ZeroWord;
 			ex_not_stall <= `False_v;
 
+			ex_csr_reg_we <= `CSRWriteDisable;
+			ex_csr_reg_data <= `ZeroWord;
+
 			is_in_delayslot_o <= `NotInDelaySlot;
 			step_o <= step_i;
 		end
@@ -156,6 +171,9 @@ module id_ex(
 			ex_excepttype <= id_excepttype;
 			ex_current_inst_address <= id_current_inst_address;
 			ex_not_stall <= id_not_stall;
+
+			ex_csr_reg_we <= id_csr_reg_we;
+			ex_csr_reg_data <= id_csr_reg_data;
 
 			is_in_delayslot_o <= next_inst_in_delayslot_i;
 			step_o <= step_i;

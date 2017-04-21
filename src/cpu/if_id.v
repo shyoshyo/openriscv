@@ -41,7 +41,7 @@ module if_id(
 	input wire rst_n,
 	input wire[5:0] stall,	
 	input wire flush,
-	input wire[31:0] if_excepttype,
+	input wire[`ExceptionTypeBus] if_excepttype,
 
 	// 取指阶段取得的指令对应的地址
 	input wire[`RegBus] if_pc,
@@ -58,7 +58,7 @@ module if_id(
 	output reg[`InstBus] id_inst,
 
 	// 新检测出的异常类型
-	output reg[31:0] id_excepttype,
+	output reg[`ExceptionTypeBus] id_excepttype,
 
 	output reg id_not_stall
 );

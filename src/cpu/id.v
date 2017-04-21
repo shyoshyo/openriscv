@@ -39,7 +39,7 @@ module id(
 	input wire[`InstBus] inst_i,
 	
 	// 已经检测到的异常
-	input wire[31:0] excepttype_i,
+	input wire[`ExceptionTypeBus] excepttype_i,
 
 	input wire not_stall_i,
 
@@ -57,6 +57,10 @@ module id(
 	input wire[`RegBus] mem_wdata_i,
 	input wire[`RegAddrBus] mem_wd_i,
 	
+	input wire[`CSRWriteTypeBus] ex_csr_reg_we_i,
+	input wire[`CSRWriteTypeBus] mem_csr_reg_we_i,
+	input wire[`CSRWriteTypeBus] wb_csr_reg_we_i,
+
 	input wire[`RegBus] reg1_data_i,
 	input wire[`RegBus] reg2_data_i,
 
@@ -66,6 +70,13 @@ module id(
 	// 如果跳轉 則暫停一拍流水線，即要分两个步骤跑。
 	// step_i 表示之前处于那个步骤
 	input wire step_i,
+
+	//与csr相连，读取其中csr寄存器的值
+	input wire[`RegBus] csr_reg_data_i,
+	output wire[`RegBus] csr_reg_data_o,
+	output reg csr_reg_read_o,
+	output wire[`CSRAddrBus] csr_reg_read_addr_o,
+	output reg[`CSRWriteTypeBus] csr_reg_we_o,
 
 	//送到 regfile 的信息，用于访问寄存器
 	output reg reg1_read_o,
@@ -104,7 +115,7 @@ module id(
 	// 这条指令是否在延迟槽中
 	output reg is_in_delayslot_o,
 
-	output wire[31:0] excepttype_o,
+	output wire[`ExceptionTypeBus] excepttype_o,
 	output wire[`RegBus] current_inst_address_o,
 	output wire not_stall_o,
 
@@ -122,6 +133,7 @@ module id(
 	// 源寄存器
 	assign reg1_addr_o = inst_i[19:15];
 	assign reg2_addr_o = inst_i[24:20];
+	assign csr_reg_read_addr_o = inst_i[31:20];
 
 	// 目標寄存器
 	assign wd_o = inst_i[11:7];
@@ -137,6 +149,7 @@ module id(
 		{{19{inst_i[31]}}, inst_i[31], inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
 	wire [`RegBus] imm_uj_type =
 		{{11{inst_i[31]}}, inst_i[31], inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
+	wire [`RegBus] zimm = {27'd0, inst_i[19:15]};
 `else
 	wire [`RegBus] imm_i_type  = {{52{inst_i[31]}}, inst_i[31:20]};
 	wire [`RegBus] imm_s_type  = {{52{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
@@ -145,13 +158,17 @@ module id(
 		{{51{inst_i[31]}}, inst_i[31], inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
 	wire [`RegBus] imm_uj_type =
 		{{43{inst_i[31]}}, inst_i[31], inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
+	wire [`RegBus] zimm = {32'd0, 27'd0, inst_i[19:15]};
 `endif
 
+	assign csr_reg_data_o = csr_reg_data_i;
+	
 	reg instvalid;
 
 	reg stallreq_for_reg1_loadrelate;
 	reg stallreq_for_reg2_loadrelate;
 	reg stallreq_for_jump_and_branch;
+	wire stallreq_for_csr_relate;
 	wire pre_inst_is_load;
 	reg excepttype_is_syscall;
 	reg excepttype_is_eret;
@@ -159,8 +176,11 @@ module id(
 
 	assign link_addr_o = pc_i + 4'd4;
 
+	assign stallreq_for_csr_relate =
+		({ex_csr_reg_we_i, mem_csr_reg_we_i, wb_csr_reg_we_i} == {`CSRWriteDisable, `CSRWriteDisable, `CSRWriteDisable}) ? 1'b0 : 1'b1;
+
 	assign stallreq = 
-		stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate | stallreq_for_jump_and_branch;
+		stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate | stallreq_for_jump_and_branch | stallreq_for_csr_relate;
 
 	assign pre_inst_is_load = 
 		(
@@ -218,6 +238,9 @@ module id(
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_eret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
+
+			csr_reg_read_o <= `ReadDisable;
+			csr_reg_we_o <= `CSRWriteDisable;
 		end
 		else
 		begin
@@ -246,6 +269,9 @@ module id(
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_eret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
+
+			csr_reg_read_o <= `ReadDisable;
+			csr_reg_we_o <= `CSRWriteDisable;
 
 			case (opcode)
 				`EXE_OP_IMM:
@@ -883,6 +909,102 @@ module id(
 						end
 					endcase
 
+				`EXE_SYSTEM:
+					case(funct3)
+						`EXE_CSRRW:
+						begin
+							aluop_o <= `EXE_CSRRW_OP;
+							alusel_o <= `EXE_RES_MOVE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+
+							reg1_read_o <= `ReadEnable;
+
+							if(wd_o != `ZeroRegAddr)
+								csr_reg_read_o <= `ReadEnable;
+							csr_reg_we_o <= `CSRWrite;
+						end
+
+						`EXE_CSRRS:
+						begin
+							aluop_o <= `EXE_CSRRW_OP;
+							alusel_o <= `EXE_RES_MOVE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+
+							reg1_read_o <= `ReadEnable;
+
+							csr_reg_read_o <= `ReadEnable;
+							if(wd_o != `ZeroRegAddr)
+								csr_reg_we_o <= `CSRSet;
+						end
+						
+						`EXE_CSRRC:
+						begin
+							aluop_o <= `EXE_CSRRW_OP;
+							alusel_o <= `EXE_RES_MOVE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+
+							reg1_read_o <= `ReadEnable;
+
+							csr_reg_read_o <= `ReadEnable;
+							if(wd_o != `ZeroRegAddr)
+								csr_reg_we_o <= `CSRClear;
+						end
+						
+						`EXE_CSRRWI:
+						begin
+							aluop_o <= `EXE_CSRRW_OP;
+							alusel_o <= `EXE_RES_MOVE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+
+							imm <= zimm;
+
+							if(wd_o != `ZeroRegAddr)
+								csr_reg_read_o <= `ReadEnable;
+							csr_reg_we_o <= `CSRWrite;
+						end
+						
+						`EXE_CSRRSI:
+						begin
+							aluop_o <= `EXE_CSRRW_OP;
+							alusel_o <= `EXE_RES_MOVE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+
+							imm <= zimm;
+
+							csr_reg_read_o <= `ReadEnable;
+							if(wd_o != `ZeroRegAddr)
+								csr_reg_we_o <= `CSRSet;
+						end
+
+						`EXE_CSRRCI:
+						begin
+							aluop_o <= `EXE_CSRRW_OP;
+							alusel_o <= `EXE_RES_MOVE;
+							instvalid <= `InstValid;
+							
+							wreg_o <= `WriteEnable;
+
+							imm <= zimm;
+
+							csr_reg_read_o <= `ReadEnable;
+							if(wd_o != `ZeroRegAddr)
+								csr_reg_we_o <= `CSRClear;
+						end
+						default:
+						begin
+
+						end
+					endcase
 
 				default:
 				begin

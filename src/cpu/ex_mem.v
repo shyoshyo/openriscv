@@ -58,12 +58,12 @@ module ex_mem(
 	input wire[1:0] cnt_i,
 	input wire div_started_i,
 
-	// 要写入 cp0 的信息
-	input wire ex_cp0_reg_we,
-	input wire[7:0] ex_cp0_reg_write_addr,
-	input wire[`RegBus] ex_cp0_reg_data,
-	input wire ex_cp0_write_tlb_index,
-	input wire ex_cp0_write_tlb_random,
+	// 要写入 csr 的信息
+	input wire[`CSRWriteTypeBus] ex_csr_reg_we,
+	input wire[`CSRAddrBus] ex_csr_reg_write_addr,
+	input wire[`RegBus] ex_csr_reg_data,
+	input wire ex_csr_write_tlb_index,
+	input wire ex_csr_write_tlb_random,
 
 	// 要写入的物理地址
 	input wire [`RegBus]ex_mem_phy_addr,
@@ -73,7 +73,7 @@ module ex_mem(
 
 
 	// 收集到的异常的信息
-	input wire[31:0] ex_excepttype,
+	input wire[`ExceptionTypeBus] ex_excepttype,
 	input wire ex_is_in_delayslot,
 	input wire[`RegBus] ex_current_inst_address,
 	input wire ex_not_stall,
@@ -90,15 +90,15 @@ module ex_mem(
 	output reg[`RegBus] mem_mem_addr,
 	output reg[`RegBus] mem_reg2,
 
-	// 要写入 cp0 的信息
-	output reg mem_cp0_reg_we,
-	output reg[7:0] mem_cp0_reg_write_addr,
-	output reg[`RegBus] mem_cp0_reg_data,
-	output reg mem_cp0_write_tlb_index,
-	output reg mem_cp0_write_tlb_random,
+	// 要写入 csr 的信息
+	output reg[`CSRWriteTypeBus] mem_csr_reg_we,
+	output reg[`CSRAddrBus] mem_csr_reg_write_addr,
+	output reg[`RegBus] mem_csr_reg_data,
+	output reg mem_csr_write_tlb_index,
+	output reg mem_csr_write_tlb_random,
 
 	// 送到下一阶段的异常的信息
-	output reg[31:0] mem_excepttype,
+	output reg[`ExceptionTypeBus] mem_excepttype,
 	output reg mem_is_in_delayslot,
 	output reg[`RegBus] mem_current_inst_address,
 	output reg mem_not_stall,
@@ -132,11 +132,11 @@ module ex_mem(
 			mem_mem_addr <= `ZeroWord;
 			mem_reg2 <= `ZeroWord;
 
-			mem_cp0_reg_we <= `WriteDisable;
-			mem_cp0_reg_write_addr <= `NOPRegAddr;
-			mem_cp0_reg_data <= `ZeroWord;
-			mem_cp0_write_tlb_index <= `False_v;
-			mem_cp0_write_tlb_random <= `False_v;
+			mem_csr_reg_we <= `CSRWriteDisable;
+			mem_csr_reg_write_addr <= `NOPRegAddr;
+			mem_csr_reg_data <= `ZeroWord;
+			mem_csr_write_tlb_index <= `False_v;
+			mem_csr_write_tlb_random <= `False_v;
 
 			mem_excepttype <= `ZeroWord;
 			mem_is_in_delayslot <= `NotInDelaySlot;
@@ -166,11 +166,11 @@ module ex_mem(
 			mem_mem_addr <= `ZeroWord;
 			mem_reg2 <= `ZeroWord;
 
-			mem_cp0_reg_we <= `WriteDisable;
-			mem_cp0_reg_write_addr <= `NOPRegAddr;
-			mem_cp0_reg_data <= `ZeroWord;
-			mem_cp0_write_tlb_index <= `False_v;
-			mem_cp0_write_tlb_random <= `False_v;
+			mem_csr_reg_we <= `CSRWriteDisable;
+			mem_csr_reg_write_addr <= `NOPRegAddr;
+			mem_csr_reg_data <= `ZeroWord;
+			mem_csr_write_tlb_index <= `False_v;
+			mem_csr_write_tlb_random <= `False_v;
 
 			mem_excepttype <= `ZeroWord;
 			mem_is_in_delayslot <= `NotInDelaySlot;
@@ -199,11 +199,11 @@ module ex_mem(
 			mem_mem_addr <= `ZeroWord;
 			mem_reg2 <= `ZeroWord;
 
-			mem_cp0_reg_we <= `WriteDisable;
-			mem_cp0_reg_write_addr <= `NOPRegAddr;
-			mem_cp0_reg_data <= `ZeroWord;
-			mem_cp0_write_tlb_index <= `False_v;
-			mem_cp0_write_tlb_random <= `False_v;
+			mem_csr_reg_we <= `CSRWriteDisable;
+			mem_csr_reg_write_addr <= `NOPRegAddr;
+			mem_csr_reg_data <= `ZeroWord;
+			mem_csr_write_tlb_index <= `False_v;
+			mem_csr_write_tlb_random <= `False_v;
 
 			mem_excepttype <= `ZeroWord;
 			mem_is_in_delayslot <= `NotInDelaySlot;
@@ -232,11 +232,11 @@ module ex_mem(
 			mem_mem_addr <= ex_mem_addr;
 			mem_reg2 <= ex_reg2;
 			
-			mem_cp0_reg_we <= ex_cp0_reg_we;
-			mem_cp0_reg_write_addr <= ex_cp0_reg_write_addr;
-			mem_cp0_reg_data <= ex_cp0_reg_data;
-			mem_cp0_write_tlb_index <= ex_cp0_write_tlb_index;
-			mem_cp0_write_tlb_random <= ex_cp0_write_tlb_random;
+			mem_csr_reg_we <= ex_csr_reg_we;
+			mem_csr_reg_write_addr <= ex_csr_reg_write_addr;
+			mem_csr_reg_data <= ex_csr_reg_data;
+			mem_csr_write_tlb_index <= ex_csr_write_tlb_index;
+			mem_csr_write_tlb_random <= ex_csr_write_tlb_random;
 
 			mem_excepttype <= ex_excepttype;
 			mem_is_in_delayslot <= ex_is_in_delayslot;

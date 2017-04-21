@@ -559,3 +559,4 @@ run -a
 # 
 # Break in Module openriscv_min_sopc_tb at /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc_tb.v line 253
 write format wave -window .main_pane.wave.interior.cs.body.pw.wf /home/shyo/openriscv/modelsim/wave.do
+# Causality operation skipped due to absence of debug database file
