@@ -37,29 +37,42 @@ module csr(
 	input wire clk,
 	input wire rst_n,
 	
+	// CSR write port
 	input wire[`CSRWriteTypeBus] we_i,
 	input wire[`CSRAddrBus] waddr_i,
 	input wire[`RegBus] data_i,
 
+	// CSR read port
 	input wire re_i,
 	input wire[`CSRAddrBus] raddr_i,
 	
 
+	// Exception
 	input wire[`ExceptionTypeBus] excepttype_i,
+	
+	// Interrupt source
 	input wire[`IntSourceBus] int_i,
+
+	// inst vaddr & data vaddr
 	input wire[`RegBus] current_inst_addr_i,
 	input wire[`RegBus] current_data_addr_i,
+
+	// delatslot(TODO: FIXME)
 	input wire is_in_delayslot_i,
 
-
+	// CSR read port
 	output reg[`RegBus] data_o,
 
+	// next pc for excpetion
 	output reg[`RegBus] exception_new_pc_o,
 
+	// timer interrupt output
 	output reg timer_int_o
 );
 	reg[`RegBus] mscratch;
 
+
+	// write & modify CSR
 	always @ (posedge clk or negedge rst_n)
 		if (rst_n == `RstEnable)
 		begin
@@ -109,7 +122,6 @@ module csr(
 
 				default:
 				begin
-
 				end
 			endcase
 
@@ -132,6 +144,7 @@ module csr(
 			// * 20  ERET
 			// * 21  FENCE.I
 
+			/*
 			if(excepttype_i[20] == 1'b1 && excepttype_i[19:0] == 20'h0)
 			begin
 
@@ -140,6 +153,7 @@ module csr(
 			begin
 				
 			end
+			*/
 		end
 
 
@@ -153,7 +167,7 @@ module csr(
 	begin
 		exception_new_pc_o <= `ZeroWord;
 
-		if(excepttype_i[21] == 1'b1)
+		if(excepttype_i[`Exception_FENCEI] == 1'b1)
 		begin
 			exception_new_pc_o <= current_inst_addr_i + 4'd4;
 		end
@@ -164,6 +178,7 @@ module csr(
 		end
 	end
 
+	// CSR read
 	always @(*)
 		if (rst_n == `RstEnable)
 			data_o <= `ZeroWord;

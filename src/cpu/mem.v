@@ -107,7 +107,7 @@ module mem(
 	output reg csr_write_tlb_random_o,
 
 	// 最终确认的异常类型
-	output wire[`ExceptionTypeBus] excepttype_o,
+	output reg[`ExceptionTypeBus] excepttype_o,
 	output wire is_in_delayslot_o,
 	// 当前指令的地址 以及此指令要訪問的數據地址
 	output wire[`RegBus] current_inst_address_o,
@@ -576,13 +576,30 @@ module mem(
 	// * 19  TLB Mod         Store to TLB page with D=0
 	// . 20  ERET
 	// . 21  FENCE.I
-	assign excepttype_o = (~not_stall_i) ? 32'h0 : 
-		{
-			excepttype_i[31:20], (data_tlb_mod_exception_i & mem_ce), 
-			(data_tlb_w_miss_exception_i & mem_ce), (data_tlb_r_miss_exception_i & mem_ce),
-			store_alignment_error, load_alignment_error,
-			excepttype_i[14:9], 
-			(csr_cause[15:8] & csr_status[15:8]) & ({8{~csr_status[1]}}) & ({8{csr_status[0]}}),
-			tlb_machine_check_exception_i
-		};
+	always @(*)
+		if (rst_n == `RstEnable)
+		begin
+			excepttype_o <= `ZeroWord;
+		end
+		else if(!not_stall_i)
+		begin
+			excepttype_o <= `ZeroWord;
+		end
+		else
+		begin
+			excepttype_o <= excepttype_i;
+
+			/*
+			
+			TODO: FIXME
+
+			excepttype_o[0] <= data_tlb_mod_exception_i & mem_ce;
+			excepttype_o[0] <= data_tlb_r_miss_exception_i & mem_ce;
+			excepttype_o[0] <= data_tlb_w_miss_exception_i & mem_ce;
+			excepttype_o[0] <= store_alignment_error;
+			excepttype_o[0] <= load_alignment_error;
+			excepttype_o[0] <= (csr_cause[15:8] & csr_status[15:8]) & ({8{~csr_status[1]}}) & ({8{csr_status[0]}});
+			excepttype_o[0] <= tlb_machine_check_exception_i;
+			*/
+		end
 endmodule

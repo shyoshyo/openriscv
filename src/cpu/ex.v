@@ -138,7 +138,7 @@ module ex(
 	output wire[`RegBus] reg2_o,
 	
 	// 新检测出的异常类型
-	output wire[`ExceptionTypeBus] excepttype_o,
+	output reg[`ExceptionTypeBus] excepttype_o,
 	// 当前指令是否在延迟槽中
 	output wire is_in_delayslot_o,
 	// 当前指令地址以及其是否合法
@@ -166,25 +166,24 @@ module ex(
 	// 溢出异常
 	reg ovassert;
 
-	// exceptiontype
-	//   0   machine check   TLB write that conflicts with an existing entry
-	//   1-8 外部中斷         Assertion of unmasked HW or SW interrupt signal.
-	// . 9   adEl            Fetch address alignment error.
-	// . 10  TLBL            Fetch TLB miss, Fetch TLB hit to page with V=0 (inst)
-	// . 11  syscall
-	// . 12  RI              無效指令 Reserved Instruction
-	// * 13  ov              溢出
-	// * 14  trap
-	//   15  AdEL            Load address alignment error,  
-	//   16  adES            Store address alignment error.
-	//                       User mode store to kernel address.
-	//   17  TLBL            Load TLB miss,  (4Kc core). (data)
-	//   18  TLBS            Store TLB miss
-	//   19  TLB Mod         Store to TLB page with D=0
-	// . 20  ERET
-	// . 21  FENCE.I
-	assign excepttype_o = {excepttype_i[31:15], trapassert, ovassert, excepttype_i[12:0]};
+	always @(*)
+		if (rst_n == `RstEnable)
+		begin
+			excepttype_o <= `ZeroWord;
+		end
+		else
+		begin
+			excepttype_o <= excepttype_i;
 
+			/*
+			
+			TODO: FIXME
+
+			excepttype_o[0] <= trapassert;
+			excepttype_o[0] <= ovassert;
+			*/
+		end
+	
 	assign is_in_delayslot_o = is_in_delayslot_i;
 	assign current_inst_address_o = current_inst_address_i;
 	assign not_stall_o = not_stall_i;

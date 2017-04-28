@@ -201,7 +201,7 @@
    
 `define EXE_ERET_OP 8'b01101011
 
-`define EXE_NOP_OP    8'b00000000
+`define EXE_NOP_OP 8'b00000000
 
 
 //通用寄存器regfile
@@ -243,10 +243,11 @@
 // 中斷源
 `define IntSourceBus 5:0
 
-// TODO: test ExceptionTypeBus for other bus size
 // 異常類型
 `define ExceptionTypeBus 31:0
+`define Exception_FENCEI 21
 
+// CSR Wirte
 `define CSRWriteTypeBus  1:0
 `define CSRWriteDisable  2'h0
 `define CSRWrite         2'h1
@@ -397,6 +398,7 @@ sscratch
 sstatus
 stvec
 */
+
 
 `define CAUSE_INT  5'd0
 `define CAUSE_MOD  5'd1

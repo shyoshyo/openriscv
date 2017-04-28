@@ -83,26 +83,21 @@ module pc_reg(
 		else
 	 		next_inst_vir_addr_o <= pc + 4'h4;
 
-	// exceptiontype
-	//   0   machine check   TLB write that conflicts with an existing entry
-	//   1-8 外部中斷         Assertion of unmasked HW or SW interrupt signal.
-	// * 9   adEl            Fetch address alignment error.
-	// * 10  TLBL            Fetch TLB miss, Fetch TLB hit to page with V=0 (inst)
-	//   11  syscall
-	//   12  RI              無效指令 Reserved Instruction
-	//   13  ov              溢出
-	//   14  trap
-	//   15  AdEL            Load address alignment error,  
-	//   16  adES            Store address alignment error.
-	//                       User mode store to kernel address.
-	//   17  TLBL            Load TLB miss,  (4Kc core). (data)
-	//   18  TLBS            Store TLB miss
-	//   19  TLB Mod         Store to TLB page with D=0
-	//   20  ERET
-	//   21  FENCE.I
 
-	wire [`ExceptionTypeBus]excepttype;
-	assign excepttype = {21'b0, next_inst_tlb_r_miss_exception_i, next_inst_vir_addr_o[1:0] != 2'b00, 9'b0};
+	always @(*)
+		if (rst_n == `RstEnable)
+		begin
+			excepttype_o <= `ZeroWord;
+		end
+		else
+		begin
+			excepttype_o <= `ZeroWord;
+
+			/*
+			excepttype_o[0] <= next_inst_tlb_r_miss_exception_i;
+			excepttype_o[0] <=  next_inst_vir_addr_o[1:0] != 2'b00;
+			*/
+		end
 
 	always @ (posedge clk or negedge rst_n)
 	begin
@@ -111,7 +106,6 @@ module pc_reg(
 			pc <= `StartInstAddr;
 
 			inst_phy_addr_o <= `ZeroWord;
-			excepttype_o <= 32'b0;
 			ce <= `ChipDisable;
 		end
 		else if(flush == `Flush)
@@ -119,7 +113,6 @@ module pc_reg(
 			pc <= next_inst_vir_addr_o;
 
 			inst_phy_addr_o <= next_inst_phy_addr_i;
-			excepttype_o <= excepttype;
 			ce <= `ChipEnable;
 		end
 		else if(branch_flag_i == `Branch)
@@ -127,7 +120,6 @@ module pc_reg(
 			pc <= next_inst_vir_addr_o;
 
 			inst_phy_addr_o <= next_inst_phy_addr_i;
-			excepttype_o <= excepttype;
 			ce <= `ChipEnable;
 		end
 		else if(stall[0] == `NoStop)
@@ -135,7 +127,6 @@ module pc_reg(
 			pc <= next_inst_vir_addr_o;
 
 			inst_phy_addr_o <= next_inst_phy_addr_i;
-			excepttype_o <= excepttype;
 			ce <= `ChipEnable;
 		end
 
