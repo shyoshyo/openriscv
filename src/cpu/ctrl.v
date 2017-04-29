@@ -82,7 +82,7 @@ module ctrl(
 
 				(stallreq_from_ex == `Stop || stallreq_from_mem == `Stop || stallreq_from_wb == `Stop) ? `Stop : `NoStop,
 
-				(stallreq_from_id == `Stop || stallreq_from_ex == `Stop ||
+				(stallreq_from_if == `Stop || stallreq_from_id == `Stop || stallreq_from_ex == `Stop ||
 					stallreq_from_mem == `Stop || stallreq_from_wb == `Stop) ? `Stop : `NoStop,
 
 				(stallreq_from_if == `Stop || stallreq_from_id == `Stop || stallreq_from_ex == `Stop ||

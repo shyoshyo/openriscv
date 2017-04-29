@@ -7,6 +7,8 @@ add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_pc
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_inst
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_pc
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/is_in_delayslot_i
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/is_in_delayslot_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/branch_flag_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/stallreq_for_reg1_loadrelate
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/stallreq_for_reg2_loadrelate
@@ -77,6 +79,7 @@ add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/o
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/excepttype_o
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/flush
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/stall
+add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/stx_pad_o
 add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_ack_o
 add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_adr_i
 add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_adr_int
@@ -93,7 +96,7 @@ add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc
 add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_we_i
 add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/we_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {first {640487 ps} 1} {output {6689872 ps} 1} {{Cursor 3} {7801373 ps} 0}
+WaveRestoreCursors {first {640487 ps} 1} {output {6689872 ps} 1} {problem {3268971 ps} 1} {{Cursor 4} {3194550 ps} 0}
 quietly wave cursor active 3
 configure wave -namecolwidth 173
 configure wave -valuecolwidth 97
@@ -109,4 +112,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {4031229 ps} {9626917 ps}
+WaveRestoreZoom {3010097 ps} {3527845 ps}

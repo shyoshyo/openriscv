@@ -78,11 +78,13 @@ module pc_reg(
 			next_inst_vir_addr_o <= `StartInstAddr;
 		else if(flush == `Flush)
 			next_inst_vir_addr_o <= exception_new_pc;
-		else if(branch_flag_i == `Branch)
-			next_inst_vir_addr_o <= branch_target_address_i;
 		else
-	 		next_inst_vir_addr_o <= pc + 4'h4;
-
+		begin
+			if(branch_flag_i == `Branch)
+				next_inst_vir_addr_o <= branch_target_address_i;
+			else
+	 			next_inst_vir_addr_o <= pc + 4'h4;
+	 	end
 
 	always @(*)
 		if (rst_n == `RstEnable)
@@ -109,13 +111,6 @@ module pc_reg(
 			ce <= `ChipDisable;
 		end
 		else if(flush == `Flush)
-		begin
-			pc <= next_inst_vir_addr_o;
-
-			inst_phy_addr_o <= next_inst_phy_addr_i;
-			ce <= `ChipEnable;
-		end
-		else if(branch_flag_i == `Branch)
 		begin
 			pc <= next_inst_vir_addr_o;
 

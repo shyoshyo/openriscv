@@ -71,20 +71,42 @@ module wishbone_bus_if(
 	// 留几个总线周期的缓冲
 	parameter delay = 10;
 
-	reg cpu_ack_id;
-
-	reg wishbone_ack_id;
-	reg wishbone_ack_valid;
-
+	// to process or not
 	wire process;
 	assign process = (cpu_ce_i == 1'b1) && (flush_i == `NoFlush);
 
+	// shake hand protocol:
+	//     cpu req,
+	//     cpu ack(what wants wishbone to ack)
+	//     wishbone ack(ack response from wishbone)
+	// 
+	// def what_wants_wishbone_to_ack:
+	//     if process:
+	//         ack = req + 1
+	//     else:
+	//         ack = req
+	//     return ack
+	reg cpu_ack_id;
 	wire cpu_req_id;
+	reg wishbone_ack_id;
 	assign cpu_req_id = (process == 1'b1) ? (cpu_ack_id ^ 1'b1) : cpu_ack_id;
 
+	// wishbone acked or not
+	reg wishbone_ack_valid;
+
+    // is requesting or not
+    // 
+    // if process == 0:
+    //     not req
+    // 
+	// if ack == req && wishbone_ack_valid == 1:
+	//     not req
+	// else
+	//     req
 	wire request_bus;
 	assign request_bus = (process == 1'b1) && (wishbone_ack_id != cpu_req_id || wishbone_ack_valid == 1'b0); 
 
+	// request for maximum 2^cyc_len_log_2 consequential bus access
 	parameter cyc_len_log_2 = 8;
 	reg [(cyc_len_log_2 - 1) : 0] req_cnt;
 	always @ (posedge cpu_clk or negedge rst_n)

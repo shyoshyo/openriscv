@@ -152,7 +152,8 @@ module id_ex(
 			ex_csr_reg_we <= `CSRWriteDisable;
 			ex_csr_reg_data <= `ZeroWord;
 
-			is_in_delayslot_o <= `NotInDelaySlot;
+			// no is_in_delayslot_o, for inputs of id must be kept
+			// step_o has to be set, for continuing to next stage of id  
 			step_o <= step_i;
 		end
 		else if(stall[2] == `NoStop)

@@ -89,6 +89,9 @@ module if_id(
 		end
 		else if(stall[1] == `Stop && stall[2] == `NoStop)
 		begin
+			$display("should never arrive here");
+			$stop;
+
 			id_pc <= `ZeroWord;
 			id_inst <= `ZeroWord;
 			id_not_stall <= `False_v;

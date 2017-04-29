@@ -67,7 +67,6 @@ module id(
 	// 如果上一条指令是转移指令，那么下一条指令在译码的时候 is_in_delayslot 为 true
 	input wire is_in_delayslot_i,
 
-	// 如果跳轉 則暫停一拍流水線，即要分两个步骤跑。
 	// step_i 表示之前处于那个步骤
 	input wire step_i,
 
@@ -119,7 +118,6 @@ module id(
 	output wire[`RegBus] current_inst_address_o,
 	output wire not_stall_o,
 
-	// 如果跳轉 則暫停一拍流水線，即要分两个步骤跑。
 	// step_o 表示当前处于那个步骤
 	output reg step_o,
 
@@ -167,7 +165,7 @@ module id(
 
 	reg stallreq_for_reg1_loadrelate;
 	reg stallreq_for_reg2_loadrelate;
-	reg stallreq_for_jump_and_branch;
+
 	wire stallreq_for_csr_relate;
 	wire pre_inst_is_load;
 	reg excepttype_is_syscall;
@@ -180,7 +178,7 @@ module id(
 		({ex_csr_reg_we_i, mem_csr_reg_we_i, wb_csr_reg_we_i} == {`CSRWriteDisable, `CSRWriteDisable, `CSRWriteDisable}) ? 1'b0 : 1'b1;
 
 	assign stallreq = 
-		stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate | stallreq_for_jump_and_branch | stallreq_for_csr_relate;
+		stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate | stallreq_for_csr_relate;
 
 	assign pre_inst_is_load = 
 		(
@@ -231,7 +229,31 @@ module id(
 			branch_target_address_o <= `ZeroWord;
 			branch_flag_o <= `NotBranch;
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
-			stallreq_for_jump_and_branch <= `NoStop;
+			step_o <= 1'b0;
+
+			excepttype_is_syscall <= `False_v;
+			excepttype_is_eret <= `False_v;
+			excepttype_is_fence_i <= `False_v;
+
+			csr_reg_read_o <= `ReadDisable;
+			csr_reg_we_o <= `CSRWriteDisable;
+		end
+		else if(is_in_delayslot_i == `InDelaySlot)
+		begin
+			aluop_o <= `EXE_NOP_OP;
+			alusel_o <= `EXE_RES_NOP;
+			instvalid <= `InstValid;
+			
+			wreg_o <= `WriteDisable;
+			
+			reg1_read_o <= `ReadDisable;
+			reg2_read_o <= `ReadDisable;
+			
+			imm <= `ZeroWord;
+
+			branch_target_address_o <= `ZeroWord;
+			branch_flag_o <= `NotBranch;
+			next_inst_in_delayslot_o <= `NotInDelaySlot;
 			step_o <= 1'b0;
 
 			excepttype_is_syscall <= `False_v;
@@ -261,7 +283,6 @@ module id(
 			branch_target_address_o <= `ZeroWord;
 			branch_flag_o <= `NotBranch;
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
-			stallreq_for_jump_and_branch <= `NoStop;
 			step_o <= 1'b0;
 
 			// 是否触发 syscall, eret 异常
@@ -614,14 +635,9 @@ module id(
 
 					wreg_o <= `WriteEnable;
 
-					if(step_i == 1'b0)
-					begin
-						branch_target_address_o <= pc_i + imm_uj_type;
-						branch_flag_o <= `Branch;
-						stallreq_for_jump_and_branch <= `Stop;
-
-						step_o <= 1'b1;
-					end
+					branch_target_address_o <= pc_i + imm_uj_type;
+					branch_flag_o <= `Branch;
+					next_inst_in_delayslot_o <= `InDelaySlot;
 				end
  
 				`EXE_JALR:
@@ -635,16 +651,10 @@ module id(
 
 						reg1_read_o <= `ReadEnable;
 
-						if(step_i == 1'b0)
-						begin
-							branch_target_address_o <= reg1_o + imm_i_type;
-							branch_target_address_o[0] <= 1'b0;
-
-							branch_flag_o <= `Branch;
-							stallreq_for_jump_and_branch <= `Stop;
-
-							step_o <= 1'b1;
-						end
+						branch_target_address_o <= reg1_o + imm_i_type;
+						branch_target_address_o[0] <= 1'b0;
+						branch_flag_o <= `Branch;
+						next_inst_in_delayslot_o <= `InDelaySlot;
 					end
 
 				`EXE_BRANCH:
@@ -653,19 +663,14 @@ module id(
 						begin
 							instvalid <= `InstValid;
 
-							if(step_i == 1'b0)
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+
+							if(reg1_o == reg2_o)
 							begin
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-
-								if(reg1_o == reg2_o)
-								begin
-									branch_target_address_o <= pc_i + imm_sb_type;
-									branch_flag_o <= `Branch;
-									stallreq_for_jump_and_branch <= `Stop;
-
-									step_o <= 1'b1;
-								end
+								branch_target_address_o <= pc_i + imm_sb_type;
+								branch_flag_o <= `Branch;
+								next_inst_in_delayslot_o <= `InDelaySlot;
 							end
 						end
 
@@ -673,19 +678,14 @@ module id(
 						begin
 							instvalid <= `InstValid;
 
-							if(step_i == 1'b0)
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+
+							if(reg1_o != reg2_o)
 							begin
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-
-								if(reg1_o != reg2_o)
-								begin
-									branch_target_address_o <= pc_i + imm_sb_type;
-									branch_flag_o <= `Branch;
-									stallreq_for_jump_and_branch <= `Stop;
-
-									step_o <= 1'b1;
-								end
+								branch_target_address_o <= pc_i + imm_sb_type;
+								branch_flag_o <= `Branch;
+								next_inst_in_delayslot_o <= `InDelaySlot;
 							end
 						end
 
@@ -693,19 +693,14 @@ module id(
 						begin
 							instvalid <= `InstValid;
 
-							if(step_i == 1'b0)
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+
+							if($signed(reg1_o) < $signed(reg2_o))
 							begin
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-
-								if($signed(reg1_o) < $signed(reg2_o))
-								begin
-									branch_target_address_o <= pc_i + imm_sb_type;
-									branch_flag_o <= `Branch;
-									stallreq_for_jump_and_branch <= `Stop;
-
-									step_o <= 1'b1;
-								end
+								branch_target_address_o <= pc_i + imm_sb_type;
+								branch_flag_o <= `Branch;
+								next_inst_in_delayslot_o <= `InDelaySlot;
 							end
 						end
 
@@ -713,19 +708,14 @@ module id(
 						begin
 							instvalid <= `InstValid;
 
-							if(step_i == 1'b0)
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+
+							if(reg1_o < reg2_o)
 							begin
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-
-								if(reg1_o < reg2_o)
-								begin
-									branch_target_address_o <= pc_i + imm_sb_type;
-									branch_flag_o <= `Branch;
-									stallreq_for_jump_and_branch <= `Stop;
-
-									step_o <= 1'b1;
-								end
+								branch_target_address_o <= pc_i + imm_sb_type;
+								branch_flag_o <= `Branch;
+								next_inst_in_delayslot_o <= `InDelaySlot;
 							end
 						end
 
@@ -733,19 +723,14 @@ module id(
 						begin
 							instvalid <= `InstValid;
 
-							if(step_i == 1'b0)
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+
+							if($signed(reg1_o) >= $signed(reg2_o))
 							begin
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-
-								if($signed(reg1_o) >= $signed(reg2_o))
-								begin
-									branch_target_address_o <= pc_i + imm_sb_type;
-									branch_flag_o <= `Branch;
-									stallreq_for_jump_and_branch <= `Stop;
-
-									step_o <= 1'b1;
-								end
+								branch_target_address_o <= pc_i + imm_sb_type;
+								branch_flag_o <= `Branch;
+								next_inst_in_delayslot_o <= `InDelaySlot;
 							end
 						end
 
@@ -753,19 +738,14 @@ module id(
 						begin
 							instvalid <= `InstValid;
 
-							if(step_i == 1'b0)
+							reg1_read_o <= `ReadEnable;
+							reg2_read_o <= `ReadEnable;
+
+							if(reg1_o >= reg2_o)
 							begin
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-
-								if(reg1_o >= reg2_o)
-								begin
-									branch_target_address_o <= pc_i + imm_sb_type;
-									branch_flag_o <= `Branch;
-									stallreq_for_jump_and_branch <= `Stop;
-
-									step_o <= 1'b1;
-								end
+								branch_target_address_o <= pc_i + imm_sb_type;
+								branch_flag_o <= `Branch;
+								next_inst_in_delayslot_o <= `InDelaySlot;
 							end
 						end
 

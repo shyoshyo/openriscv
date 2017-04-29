@@ -40,7 +40,16 @@ module openriscv_min_sopc_tb();
 	reg CLOCK_25;
 	reg CLOCK_12_5;
 	reg CLOCK_1;
+	reg CLOCK_0_1;
 	reg rst_n;
+
+	initial begin
+		CLOCK_0_1 = 1'b1;
+		forever #5000 CLOCK_0_1 = ~CLOCK_0_1;
+		
+		// 2 * 40ns = 80ns ~ 12.5Mhz
+	end
+
 
 	initial begin
 		CLOCK_1 = 1'b1;
