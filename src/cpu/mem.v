@@ -47,9 +47,6 @@ module mem(
 	input wire[`RegAddrBus] wd_i,
 	input wire wreg_i,
 	input wire[`RegBus] wdata_i,
-	input wire[`RegBus] hi_i,
-	input wire[`RegBus] lo_i,
-	input wire whilo_i,	
 	input wire[`AluOpBus] aluop_i,
 	input wire[`RegBus] mem_addr_i,
 	input wire[`RegBus] reg2_i,
@@ -91,9 +88,6 @@ module mem(
 	output reg[`RegAddrBus] wd_o,
 	output reg wreg_o,
 	output reg[`RegBus] wdata_o,
-	output reg[`RegBus] hi_o,
-	output reg[`RegBus] lo_o,
-	output reg whilo_o,
 
 	// LLbit µÄÊä³ö
 	output reg LLbit_we_o,
@@ -155,9 +149,6 @@ module mem(
 			wd_o <= `NOPRegAddr;
 			wreg_o <= `WriteDisable;
 			wdata_o <= `ZeroWord;
-			hi_o <= `ZeroWord;
-			lo_o <= `ZeroWord;
-			whilo_o <= `WriteDisable;
 
 			csr_reg_we_o <= `CSRWriteDisable;
 			csr_reg_write_addr_o <= `NOPRegAddr;
@@ -183,9 +174,6 @@ module mem(
 			wd_o <= wd_i;
 			wreg_o <= wreg_i;
 			wdata_o <= wdata_i;
-			hi_o <= hi_i;
-			lo_o <= lo_i;
-			whilo_o <= whilo_i;
 
 			csr_reg_we_o <= csr_reg_we_i;
 			csr_reg_write_addr_o <= csr_reg_write_addr_i;

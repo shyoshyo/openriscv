@@ -454,7 +454,7 @@ module id(
 				
 				`EXE_OP:
 					case (funct3)
-						`EXE_ADD_SUB:
+						`EXE_ADD_SUB_MUL:
 						begin
 							if(inst_i[31:25] == 7'b0000000)
 							begin
@@ -478,17 +478,10 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 							end
-							else
+							else if(inst_i[31:25] == 7'b0000001)
 							begin
-							end
-						end
-
-						`EXE_SLT:
-						begin
-							if(inst_i[31:25] == 7'b0000000)
-							begin
-								aluop_o <= `EXE_SLT_OP;
-								alusel_o <= `EXE_RES_ARITHMETIC;
+								aluop_o <= `EXE_MUL_OP;
+								alusel_o <= `EXE_RES_MUL;
 								instvalid <= `InstValid;
 								
 								wreg_o <= `WriteEnable;
@@ -501,79 +494,7 @@ module id(
 							end
 						end
 
-						`EXE_SLTU:
-						begin
-							if(inst_i[31:25] == 7'b0000000)
-							begin
-								aluop_o <= `EXE_SLTU_OP;
-								alusel_o <= `EXE_RES_ARITHMETIC;
-								instvalid <= `InstValid;
-								
-								wreg_o <= `WriteEnable;
-								
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-							end
-							else
-							begin
-							end
-						end
-
-						`EXE_AND:
-						begin
-							if(inst_i[31:25] == 7'b0000000)
-							begin
-								aluop_o <= `EXE_AND_OP;
-								alusel_o <= `EXE_RES_LOGIC;
-								instvalid <= `InstValid;
-								
-								wreg_o <= `WriteEnable;
-								
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-							end
-							else
-							begin
-							end
-						end
-
-						`EXE_OR:
-						begin
-							if(inst_i[31:25] == 7'b0000000)
-							begin
-								aluop_o <= `EXE_OR_OP;
-								alusel_o <= `EXE_RES_LOGIC;
-								instvalid <= `InstValid;
-								
-								wreg_o <= `WriteEnable;
-								
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-							end
-							else
-							begin
-							end
-						end
-
-						`EXE_XOR:
-						begin
-							if(inst_i[31:25] == 7'b0000000)
-							begin
-								aluop_o <= `EXE_XOR_OP;
-								alusel_o <= `EXE_RES_LOGIC;
-								instvalid <= `InstValid;
-								
-								wreg_o <= `WriteEnable;
-								
-								reg1_read_o <= `ReadEnable;
-								reg2_read_o <= `ReadEnable;
-							end
-							else
-							begin
-							end
-						end
-
-						`EXE_SLL:
+						`EXE_SLL_MULH:
 						begin
 							if(inst_i[31:25] == 7'b0000000)
 							begin
@@ -586,12 +507,111 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 							end
+							else if(inst_i[31:25] == 7'b0000001)
+							begin
+								aluop_o <= `EXE_MULH_OP;
+								alusel_o <= `EXE_RES_MUL;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
 							else
 							begin
 							end
 						end
 
-						`EXE_SRL_SRA:
+						`EXE_SLT_MULHSU:
+						begin
+							if(inst_i[31:25] == 7'b0000000)
+							begin
+								aluop_o <= `EXE_SLT_OP;
+								alusel_o <= `EXE_RES_ARITHMETIC;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else if(inst_i[31:25] == 7'b0000001)
+							begin
+								aluop_o <= `EXE_MULHSU_OP;
+								alusel_o <= `EXE_RES_MUL;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else
+							begin
+							end
+						end
+
+						`EXE_SLTU_MULHU:
+						begin
+							if(inst_i[31:25] == 7'b0000000)
+							begin
+								aluop_o <= `EXE_SLTU_OP;
+								alusel_o <= `EXE_RES_ARITHMETIC;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else if(inst_i[31:25] == 7'b0000001)
+							begin
+								aluop_o <= `EXE_MULHU_OP;
+								alusel_o <= `EXE_RES_MUL;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else
+							begin
+							end
+						end
+
+						`EXE_XOR_DIV:
+						begin
+							if(inst_i[31:25] == 7'b0000000)
+							begin
+								aluop_o <= `EXE_XOR_OP;
+								alusel_o <= `EXE_RES_LOGIC;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else if(inst_i[31:25] == 7'b0000001)
+							begin
+								aluop_o <= `EXE_DIV_OP;
+								alusel_o <= `EXE_RES_MUL;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else
+							begin
+							end
+						end
+
+
+						`EXE_SRL_SRA_DIVU:
 						begin
 							if(inst_i[31:25] == 7'b0000000)
 							begin
@@ -608,6 +628,75 @@ module id(
 							begin
 								aluop_o <= `EXE_SRA_OP;
 								alusel_o <= `EXE_RES_SHIFT;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else if(inst_i[31:25] == 7'b0000001)
+							begin
+								aluop_o <= `EXE_DIVU_OP;
+								alusel_o <= `EXE_RES_MUL;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else
+							begin
+							end
+						end
+
+						`EXE_OR_REM:
+						begin
+							if(inst_i[31:25] == 7'b0000000)
+							begin
+								aluop_o <= `EXE_OR_OP;
+								alusel_o <= `EXE_RES_LOGIC;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else if(inst_i[31:25] == 7'b0000001)
+							begin
+								aluop_o <= `EXE_REM_OP;
+								alusel_o <= `EXE_RES_MUL;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else
+							begin
+							end
+						end
+
+						`EXE_AND_REMU:
+						begin
+							if(inst_i[31:25] == 7'b0000000)
+							begin
+								aluop_o <= `EXE_AND_OP;
+								alusel_o <= `EXE_RES_LOGIC;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+							end
+							else if(inst_i[31:25] == 7'b0000001)
+							begin
+								aluop_o <= `EXE_REMU_OP;
+								alusel_o <= `EXE_RES_MUL;
 								instvalid <= `InstValid;
 								
 								wreg_o <= `WriteEnable;

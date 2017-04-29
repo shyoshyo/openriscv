@@ -1,12 +1,13 @@
 .global _start
 _start:
-	ori x1, x0, 0x123
-	ori x2, x0, 0x123
+	li x1, 0x87213672
+	li x2, 0x0
+	li x4, 0x80000000
+	li x5, -12
 
-	bge x1, x2, _spin
-	ori x3, x0, 0x789
-	ori x4, x0, 0x789
-	ori x5, x0, 0x789
+	# div x3, x1, x2
+
+	rem x3, x4, x5
 
 _spin:
 	j _spin

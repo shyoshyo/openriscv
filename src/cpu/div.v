@@ -40,8 +40,8 @@ module div(
 	input wire signed_div_i,
 	
 	// 两个 32 位的输入
-	input wire[63:0] opdata1_i,
-	input wire[63:0] opdata2_i,
+	input wire[`RegBus] opdata1_i,
+	input wire[`RegBus] opdata2_i,
 
 	// 开始信号
 	// 与书上不同，这里开始信号给一周期就可以了。
@@ -53,13 +53,13 @@ module div(
 	
 
 	// 结果寄存器
-	output reg[127:0] result_o,
+	output reg[`RegBus] rem_o,
+	output reg[`RegBus] div_o,
+
 	// 除法运算是否结束
 	output reg ready_o
 );
-	// 32 bit divisor
-	
-	/*
+	// 32 bits divisor 
 
 	wire[32:0] div_temp;
 
@@ -77,17 +77,21 @@ module div(
 
 	reg[1:0] state;
 
-	reg[31:0] opdata1;
-	reg[31:0] opdata2;
+	reg[`RegBus] opdata1;
+	reg[`RegBus] opdata2;
 	reg signed_div;
 
 
 	always @ (posedge clk or negedge rst_n) begin
-		if (rst_n == `RstEnable)begin
+		if (rst_n == `RstEnable)
+		begin
 			state <= `DivFree;
 			ready_o <= `DivResultNotReady;
-			result_o <= {`ZeroWord,`ZeroWord};
-		end else begin
+			rem_o <= `ZeroWord;
+			div_o <= `ZeroWord;
+		end
+		else
+		begin
 			case (state)
 				`DivFree:  //DivFree状态
 				begin
@@ -110,14 +114,19 @@ module div(
 						opdata2 <= opdata2_i;
 						signed_div <= signed_div_i;
 						ready_o <= `DivResultNotReady;
-						result_o <= {`ZeroWord,`ZeroWord};
+
+						rem_o <= `ZeroWord;
+						div_o <= `ZeroWord;
 					end
 				end
 
 				`DivByZero:  //DivByZero状态
 				begin
-				 	dividend <= {`ZeroWord,`ZeroWord};
-					state <= `DivEnd;
+					ready_o <= `DivResultReady;
+					state <= `DivFree;
+					
+					rem_o <= opdata1;
+					div_o <= `MinusOne;
 				end
 
 				`DivOn:  //DivOn状态
@@ -154,17 +163,27 @@ module div(
 					begin
 						state <= `DivFree;
 						ready_o <= `DivResultNotReady;
-						result_o <= {`ZeroWord,`ZeroWord};
+
+						rem_o <= `ZeroWord;
+						div_o <= `ZeroWord;
 					end
 				end
+
 				`DivEnd:  //DivEnd状态
 				begin
-					result_o <= {dividend[64:33], dividend[31:0]};	
 					ready_o <= `DivResultReady;
 					state <= `DivFree;
+
+					rem_o <= dividend[64:33];
+					div_o <= dividend[31:0];
+				end
+
+				default:
+				begin
+
 				end
 			endcase
 		end
 	end
-	*/
+
 endmodule

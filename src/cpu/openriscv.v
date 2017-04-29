@@ -133,9 +133,6 @@ module openriscv(
 	wire ex_wreg_o;
 	wire[`RegAddrBus] ex_wd_o;
 	wire[`RegBus] ex_wdata_o;
-	wire[`RegBus] ex_hi_o;
-	wire[`RegBus] ex_lo_o;
-	wire ex_whilo_o;
 	wire[`AluOpBus] ex_aluop_o;
 	wire[`RegBus] ex_mem_addr_o;
 	wire ex_mem_we_o;
@@ -161,9 +158,6 @@ module openriscv(
 	wire mem_wreg_i;
 	wire[`RegAddrBus] mem_wd_i;
 	wire[`RegBus] mem_wdata_i;
-	wire[`RegBus] mem_hi_i;
-	wire[`RegBus] mem_lo_i;
-	wire mem_whilo_i;
 	wire[`AluOpBus] mem_aluop_i;
 	wire[`RegBus] mem_mem_addr_i;
 	wire[`RegBus] mem_reg1_i;
@@ -187,9 +181,6 @@ module openriscv(
 	wire mem_wreg_o;
 	wire[`RegAddrBus] mem_wd_o;
 	wire[`RegBus] mem_wdata_o;
-	wire[`RegBus] mem_hi_o;
-	wire[`RegBus] mem_lo_o;
-	wire mem_whilo_o;
 	wire mem_LLbit_value_o;
 	wire mem_LLbit_we_o;
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_o;
@@ -206,9 +197,6 @@ module openriscv(
 	wire wb_wreg_i;
 	wire[`RegAddrBus] wb_wd_i;
 	wire[`RegBus] wb_wdata_i;
-	wire[`RegBus] wb_hi_i;
-	wire[`RegBus] wb_lo_i;
-	wire wb_whilo_i;
 	wire wb_LLbit_value_i;
 	wire wb_LLbit_we_i;
 	wire[`CSRWriteTypeBus] wb_csr_reg_we_i;
@@ -227,16 +215,9 @@ module openriscv(
 	wire[`RegAddrBus] reg1_addr;
 	wire[`RegAddrBus] reg2_addr;
 	
-	//连接执行阶段与hilo模块的输出，读取HI、LO寄存器
-	wire[`RegBus] hi;
-	wire[`RegBus] lo;
-	wire whilo;
-	
 	// 连接执行阶段与ex_reg模块，用于多周期的MADD、MADDU、MSUB、MSUBU指令
-	wire[`DoubleRegBus] hilo_temp_o;
 	wire[1:0] cnt_o;
 	
-	wire[`DoubleRegBus] hilo_temp_i;
 	wire[1:0] cnt_i;
 
 	// 连接执行阶段与ex_reg模块，用于多周期的DIV, DIVU指令
@@ -244,7 +225,8 @@ module openriscv(
 	wire div_started_o;
 
 	// ex 连接 除法器
-	wire[`DoubleRegBus] div_result;
+	wire[`RegBus] div_result_rem;
+	wire[`RegBus] div_result_div;
 	wire div_ready;
 	wire[`RegBus] div_opdata1;
 	wire[`RegBus] div_opdata2;
@@ -479,28 +461,15 @@ module openriscv(
 		.imm_i(ex_imm_i),
 		.wd_i(ex_wd_i),
 		.wreg_i(ex_wreg_i),
-		
-		.hi_i(hi),
-		.lo_i(lo),
 
 		.inst_i(ex_inst_i),
 
-		//回写阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
-		.wb_hi_i(wb_hi_i),
-		.wb_lo_i(wb_lo_i),
-		.wb_whilo_i(wb_whilo_i),
-
-		//访存阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
-		.mem_hi_i(mem_hi_o),
-		.mem_lo_i(mem_lo_o),
-		.mem_whilo_i(mem_whilo_o),
-
-		.hilo_temp_i(hilo_temp_i),
 		.cnt_i(cnt_i),
 		.div_started_i(div_started_i),
 
 		// 除法模块给的结果
-		.div_result_i(div_result),
+		.div_result_rem_i(div_result_rem),
+		.div_result_div_i(div_result_div),
 		.div_ready_i(div_ready), 
 		
 		// 是否在延迟槽中、以及link address
@@ -542,11 +511,7 @@ module openriscv(
 		.wd_o(ex_wd_o),
 		.wreg_o(ex_wreg_o),
 		.wdata_o(ex_wdata_o),
-		.hi_o(ex_hi_o),
-		.lo_o(ex_lo_o),
-		.whilo_o(ex_whilo_o),
 
-		.hilo_temp_o(hilo_temp_o),
 		.cnt_o(cnt_o),
 		.div_started_o(div_started_o),
 
@@ -589,9 +554,6 @@ module openriscv(
 		.ex_wd(ex_wd_o),
 		.ex_wreg(ex_wreg_o),
 		.ex_wdata(ex_wdata_o),
-		.ex_hi(ex_hi_o),
-		.ex_lo(ex_lo_o),
-		.ex_whilo(ex_whilo_o),
 		.ex_aluop(ex_aluop_o),
 		.ex_mem_addr(ex_mem_addr_o),
 		.ex_reg2(ex_reg2_o),
@@ -611,7 +573,6 @@ module openriscv(
 
 
 
-		.hilo_i(hilo_temp_o),	
 		.cnt_i(cnt_o),
 		.div_started_i(div_started_o),
 
@@ -620,9 +581,6 @@ module openriscv(
 		.mem_wd(mem_wd_i),
 		.mem_wreg(mem_wreg_i),
 		.mem_wdata(mem_wdata_i),
-		.mem_hi(mem_hi_i),
-		.mem_lo(mem_lo_i),
-		.mem_whilo(mem_whilo_i),
 		.mem_aluop(mem_aluop_i),
 		.mem_mem_addr(mem_mem_addr_i),
 		.mem_reg2(mem_reg2_i),
@@ -642,7 +600,6 @@ module openriscv(
 		.mem_data_tlb_w_miss_exception(mem_data_tlb_w_miss_exception_i),
 		.mem_data_tlb_mod_exception(mem_data_tlb_mod_exception_i),
 
-		.hilo_o(hilo_temp_i),
 		.cnt_o(cnt_i),
 		.div_started_o(div_started_i)
 	);
@@ -672,9 +629,6 @@ module openriscv(
 		.wd_i(mem_wd_i),
 		.wreg_i(mem_wreg_i),
 		.wdata_i(mem_wdata_i),
-		.hi_i(mem_hi_i),
-		.lo_i(mem_lo_i),
-		.whilo_i(mem_whilo_i),
 		.aluop_i(mem_aluop_i),
 		.mem_addr_i(mem_mem_addr_i),
 		.reg2_i(mem_reg2_i),
@@ -715,9 +669,6 @@ module openriscv(
 		.wd_o(mem_wd_o),
 		.wreg_o(mem_wreg_o),
 		.wdata_o(mem_wdata_o),
-		.hi_o(mem_hi_o),
-		.lo_o(mem_lo_o),
-		.whilo_o(mem_whilo_o),
 		// LLbit 的输出
 		.LLbit_we_o(mem_LLbit_we_o),
 		.LLbit_value_o(mem_LLbit_value_o),
@@ -760,9 +711,6 @@ module openriscv(
 		.mem_wd(mem_wd_o),
 		.mem_wreg(mem_wreg_o),
 		.mem_wdata(mem_wdata_o),
-		.mem_hi(mem_hi_o),
-		.mem_lo(mem_lo_o),
-		.mem_whilo(mem_whilo_o),
 		.mem_LLbit_we(mem_LLbit_we_o),
 		.mem_LLbit_value(mem_LLbit_value_o),
 		.mem_csr_reg_we(mem_csr_reg_we_o),
@@ -775,9 +723,6 @@ module openriscv(
 		.wb_wd(wb_wd_i),
 		.wb_wreg(wb_wreg_i),
 		.wb_wdata(wb_wdata_i),
-		.wb_hi(wb_hi_i),
-		.wb_lo(wb_lo_i),
-		.wb_whilo(wb_whilo_i),
 		.wb_LLbit_we(wb_LLbit_we_i),
 		.wb_LLbit_value(wb_LLbit_value_i),
 		.wb_csr_reg_we(wb_csr_reg_we_i),
@@ -785,19 +730,6 @@ module openriscv(
 		.wb_csr_reg_data(wb_csr_reg_data_i),
 		.wb_csr_write_tlb_index(wb_csr_write_tlb_index_i),
 		.wb_csr_write_tlb_random(wb_csr_write_tlb_random_i)
-	);
-
-	//HILO寄存器例化
-	hilo_reg hilo_reg0(
-		.clk (clk),
-		.rst_n (rst_n),
-		
-		.we(wb_whilo_i),
-		.hi_i(wb_hi_i),
-		.lo_i(wb_lo_i),
-	
-		.hi_o(hi),
-		.lo_o(lo)
 	);
 
 	ctrl ctrl0(
@@ -824,7 +756,7 @@ module openriscv(
 		.stall(stall)
 	);
 
-	/*
+	
 	div div0(
 		.clk(clk),
 		.rst_n(rst_n),
@@ -835,10 +767,10 @@ module openriscv(
 		.start_i(div_start),
 		.annul_i(flush),
 	
-		.result_o(div_result),
+		.rem_o(div_result_rem),
+		.div_o(div_result_div),
 		.ready_o(div_ready)
 	);
-	*/
 
 	LLbit_reg LLbit_reg0(
 		.clk(clk),

@@ -63,14 +63,14 @@
 `define EXE_AUIPC        7'b0010111
 
 `define EXE_OP           7'b0110011
-`define EXE_ADD_SUB      3'b000
-`define EXE_SLL          3'b001
-`define EXE_SLT          3'b010
-`define EXE_SLTU         3'b011
-`define EXE_XOR          3'b100
-`define EXE_SRL_SRA      3'b101
-`define EXE_OR           3'b110
-`define EXE_AND          3'b111
+`define EXE_ADD_SUB_MUL  3'b000
+`define EXE_SLL_MULH     3'b001
+`define EXE_SLT_MULHSU   3'b010
+`define EXE_SLTU_MULHU   3'b011
+`define EXE_XOR_DIV      3'b100
+`define EXE_SRL_SRA_DIVU 3'b101
+`define EXE_OR_REM       3'b110
+`define EXE_AND_REMU     3'b111
 
 `define EXE_JAL          7'b1101111
 `define EXE_JALR         7'b1100111
@@ -156,16 +156,15 @@
 `define EXE_SUB_OP  8'b00100010
 
 /* EXE_RES_MUL */
-`define EXE_MULT_OP  8'b00011000
-`define EXE_MULTU_OP  8'b00011001
-`define EXE_MUL_OP  8'b10101001
-`define EXE_MADD_OP  8'b10100110
-`define EXE_MADDU_OP  8'b10101000
-`define EXE_MSUB_OP  8'b10101010
-`define EXE_MSUBU_OP  8'b10101011
+`define EXE_MUL_OP  8'b00011000
+`define EXE_MULH_OP  8'b00011001
+`define EXE_MULHSU_OP  8'b10101001
+`define EXE_MULHU_OP  8'b10100110
 
 `define EXE_DIV_OP  8'b00011010
 `define EXE_DIVU_OP  8'b00011011
+`define EXE_REM_OP  8'b10101000
+`define EXE_REMU_OP  8'b10101010
 
 /* EXE_RES_JUMP_BRANCH */
 `define EXE_JAL_OP  8'b01010000
@@ -209,15 +208,21 @@
 	`define RegBus 31:0
 	`define RegWidth 32
 	`define RegSel 3:0
+	`define DoubleRegBus 63:0
+	`define DoubleRegWidth 64
+	`define HighRegBus 63:32
+	`define MinusOne 32'hffff_ffff
 `else
 	`define RegBus 63:0
 	`define RegWidth 64
 	`define RegSel 7:0
+	`define DoubleRegBus 127:0
+	`define DoubleRegWidth 128
+	`define HighRegBus 127:64
+	`define MinusOne 64'hffff_ffff_ffff_ffff
 `endif
 
 `define InstBus 31:0
-`define DoubleRegBus 63:0
-`define DoubleRegWidth 64
 
 `define RegAddrBus 4:0
 `define RegNum 32

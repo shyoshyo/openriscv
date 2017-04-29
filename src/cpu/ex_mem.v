@@ -45,16 +45,12 @@ module ex_mem(
 	input wire[`RegAddrBus] ex_wd,
 	input wire ex_wreg,
 	input wire[`RegBus] ex_wdata,
-	input wire[`RegBus] ex_hi,
-	input wire[`RegBus] ex_lo,
-	input wire ex_whilo,
 	//为实现加载、访存指令而添加
 	input wire[`AluOpBus] ex_aluop,
 	input wire[`RegBus] ex_mem_addr,
 	input wire[`RegBus] ex_reg2,
 
 	// 即将暂停的 ex 上一阶段保存的信息
-	input wire[`DoubleRegBus] hilo_i,	
 	input wire[1:0] cnt_i,
 	input wire div_started_i,
 
@@ -82,9 +78,6 @@ module ex_mem(
 	output reg[`RegAddrBus] mem_wd,
 	output reg mem_wreg,
 	output reg[`RegBus] mem_wdata,
-	output reg[`RegBus] mem_hi,
-	output reg[`RegBus] mem_lo,
-	output reg mem_whilo,
 	//为实现加载、访存指令而添加
 	output reg[`AluOpBus] mem_aluop,
 	output reg[`RegBus] mem_mem_addr,
@@ -111,7 +104,6 @@ module ex_mem(
 	output reg mem_data_tlb_mod_exception,
 
 	// 即将暂停的 ex 下一阶段需要的信息
-	output reg[`DoubleRegBus] hilo_o,
 	output reg[1:0] cnt_o,
 	output reg div_started_o
 );
@@ -124,9 +116,6 @@ module ex_mem(
 			mem_wd <= `NOPRegAddr;
 			mem_wreg <= `WriteDisable;
 			mem_wdata <= `ZeroWord;	
-			mem_hi <= `ZeroWord;
-			mem_lo <= `ZeroWord;
-			mem_whilo <= `WriteDisable;
 			
 			mem_aluop <= `EXE_NOP_OP;
 			mem_mem_addr <= `ZeroWord;
@@ -148,7 +137,6 @@ module ex_mem(
 			mem_data_tlb_w_miss_exception <= `False_v;
 			mem_data_tlb_mod_exception <= `False_v;
 
-			hilo_o <= {`ZeroWord, `ZeroWord};
 			cnt_o <= 2'b00;
 			div_started_o <= 1'b0;
 
@@ -157,10 +145,7 @@ module ex_mem(
 		begin
 			mem_wd <= `NOPRegAddr;
 			mem_wreg <= `WriteDisable;
-			mem_wdata <= `ZeroWord;	
-			mem_hi <= `ZeroWord;
-			mem_lo <= `ZeroWord;
-			mem_whilo <= `WriteDisable;
+			mem_wdata <= `ZeroWord;
 			
 			mem_aluop <= `EXE_NOP_OP;
 			mem_mem_addr <= `ZeroWord;
@@ -182,7 +167,6 @@ module ex_mem(
 			mem_data_tlb_w_miss_exception <= `False_v;
 			mem_data_tlb_mod_exception <= `False_v;
 
-			hilo_o <= {`ZeroWord, `ZeroWord};
 			cnt_o <= 2'b00;
 			div_started_o <= 1'b0;
 		end 
@@ -190,10 +174,7 @@ module ex_mem(
 		begin
 			mem_wd <= `NOPRegAddr;
 			mem_wreg <= `WriteDisable;
-			mem_wdata <= `ZeroWord;	
-			mem_hi <= `ZeroWord;
-			mem_lo <= `ZeroWord;
-			mem_whilo <= `WriteDisable;
+			mem_wdata <= `ZeroWord;
 
 			mem_aluop <= `EXE_NOP_OP;
 			mem_mem_addr <= `ZeroWord;
@@ -215,7 +196,6 @@ module ex_mem(
 			mem_data_tlb_w_miss_exception <= `False_v;
 			mem_data_tlb_mod_exception <= `False_v;
 
-			hilo_o <= hilo_i;
 			cnt_o <= cnt_i;
 			div_started_o <= div_started_i;
 		end
@@ -223,10 +203,7 @@ module ex_mem(
 		begin
 			mem_wd <= ex_wd;
 			mem_wreg <= ex_wreg;
-			mem_wdata <= ex_wdata;	
-			mem_hi <= ex_hi;
-			mem_lo <= ex_lo;
-			mem_whilo <= ex_whilo;
+			mem_wdata <= ex_wdata;
 
 			mem_aluop <= ex_aluop;
 			mem_mem_addr <= ex_mem_addr;
@@ -248,13 +225,11 @@ module ex_mem(
 			mem_data_tlb_w_miss_exception <= ex_data_tlb_w_miss_exception;
 			mem_data_tlb_mod_exception <= ex_data_tlb_mod_exception;
 
-			hilo_o <= {`ZeroWord, `ZeroWord};
 			cnt_o <= 2'b00;
 			div_started_o <= 1'b0;
 		end
 		else // stall[3] 停，stall[4] 也停，mem_* 保持不变 
 		begin
-			hilo_o <= hilo_i;
 			cnt_o <= cnt_i;
 			div_started_o <= div_started_i;
 		end

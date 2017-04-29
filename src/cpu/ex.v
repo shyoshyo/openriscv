@@ -50,28 +50,14 @@ module ex(
 	input wire[`ExceptionTypeBus] excepttype_i,
 	input wire[`RegBus] current_inst_address_i,
 	input wire not_stall_i,
-
-	// HILO 模块给出的 HI、LO 寄存器的值
-	input wire[`RegBus] hi_i,
-	input wire[`RegBus] lo_i,
-
-	//回写阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
-	input wire[`RegBus] wb_hi_i,
-	input wire[`RegBus] wb_lo_i,
-	input wire wb_whilo_i,
-	
-	//访存阶段的指令是否要写HI、LO，用于检测HI、LO的数据相关
-	input wire[`RegBus] mem_hi_i,
-	input wire[`RegBus] mem_lo_i,
-	input wire mem_whilo_i,
 	
 	// 暂停，上一次 ex 得到的结果
-	input wire[`DoubleRegBus] hilo_temp_i,
 	input wire[1:0] cnt_i,
 	input wire div_started_i,
 
 	// 除法模块给的结果
-	input wire[`DoubleRegBus] div_result_i,
+	input wire[`RegBus] div_result_rem_i,
+	input wire[`RegBus] div_result_div_i,
 	input wire div_ready_i,
 
 	// 是否在延迟槽中、以及link address
@@ -111,14 +97,8 @@ module ex(
 	output reg[`RegAddrBus] wd_o,
 	output reg wreg_o,
 	output reg[`RegBus] wdata_o,
-	
-	// 是否写入 hi, lo, 要写入的值
-	output reg[`RegBus] hi_o,
-	output reg[`RegBus] lo_o,
-	output reg whilo_o,
 
 	// 暂停，下一次 ex 需要的结果
-	output reg[`DoubleRegBus] hilo_temp_o,
 	output reg[1:0] cnt_o,
 	output reg div_started_o,
 
@@ -159,7 +139,7 @@ module ex(
 	reg[`RegBus] moveout;
 
 	reg[`RegBus] arithout;
-	reg[`DoubleRegBus] multiout;
+	reg[`RegBus] multiout;
 
 	// 自陷异常
 	reg trapassert;
@@ -274,24 +254,6 @@ module ex(
 					trapassert <= `TrapNotAssert;
 			endcase
 		end
-
-
-	reg[`RegBus] HI;
-	reg[`RegBus] LO;
-	
-	// HI、LO 寄存器数据旁路
-	// 得到最新的HI、LO寄存器的值，此处要解决指令数据相关问题
-	always @ (*) begin
-		if(rst_n == `RstEnable) begin
-			{HI, LO} <= {`ZeroWord, `ZeroWord};
-		end else if(mem_whilo_i == `WriteEnable) begin
-			{HI, LO} <= {mem_hi_i, mem_lo_i};
-		end else if(wb_whilo_i == `WriteEnable) begin
-			{HI, LO} <= {wb_hi_i, wb_lo_i};
-		end else begin
-			{HI, LO} <= {hi_i, lo_i};			
-		end
-	end
 	
 	
 
@@ -301,9 +263,6 @@ module ex(
 			moveout <= `ZeroWord;
 		else
 			case (aluop_i)
-				`EXE_MFHI_OP: moveout <= HI;
-				`EXE_MFLO_OP: moveout <= LO;
-
 				`EXE_MOVZ_OP, `EXE_MOVN_OP:
 					moveout <= reg1_i;
 				
@@ -320,26 +279,39 @@ module ex(
 
 	assign opdata1_mult = 
 		(
-			aluop_i == `EXE_MULT_OP || 
-			aluop_i == `EXE_MADD_OP || 
-			aluop_i == `EXE_MSUB_OP
+			aluop_i == `EXE_MULH_OP || 
+			aluop_i == `EXE_MULHSU_OP
 		) ? {{32{reg1_i[31]}}, reg1_i} : {`ZeroWord, reg1_i};
 
 	assign opdata2_mult = 
 		(
-			aluop_i == `EXE_MULT_OP || 
-			aluop_i == `EXE_MADD_OP || 
-			aluop_i == `EXE_MSUB_OP
+			aluop_i == `EXE_MULH_OP
 		) ? {{32{reg2_i[31]}}, reg2_i} : {`ZeroWord, reg2_i};
 
 	assign result_mul = opdata1_mult * opdata2_mult;
 	
 	always @ (*)
 		if(rst_n == `RstEnable)
-			multiout <= {`ZeroWord, `ZeroWord};
-		else 
-			multiout <= result_mul;
+			multiout <= `ZeroWord;
+		else
+			case (aluop_i)
+				`EXE_MUL_OP:
+					multiout <= result_mul[`RegBus];
+					
+				`EXE_MULH_OP, `EXE_MULHSU_OP, `EXE_MULHU_OP:
+					multiout <= result_mul[`HighRegBus];
+					
+				`EXE_DIV_OP, `EXE_DIVU_OP:
+					multiout <= div_result_div_i;
+					
+				`EXE_REM_OP, `EXE_REMU_OP:
+					multiout <= div_result_rem_i;
 
+				default:
+					multiout <= `ZeroWord;
+			endcase
+
+	/*
 	// madd op, msub op
 	reg [`DoubleRegBus]madd_msub_out;
 	reg stallreq_for_madd_msub;
@@ -414,6 +386,7 @@ module ex(
 				end
 			endcase
 		end
+	*/
 
 
 	reg stallreq_for_div;
@@ -439,14 +412,15 @@ module ex(
 			div_started_o <= 1'b0;
 
 			case (aluop_i) 
-				`EXE_DIV_OP, `EXE_DIVU_OP:
+				`EXE_DIV_OP, `EXE_DIVU_OP, `EXE_REM_OP, `EXE_REMU_OP:
 				begin
 					if(div_started_i == 1'b0)
 					begin
 						div_opdata1_o <= reg1_i;
 						div_opdata2_o <= reg2_i;
 						div_start_o <= `DivStart;
-						signed_div_o <= (aluop_i == `EXE_DIV_OP) ? 1'b1 : 1'b0;
+						signed_div_o <=
+							(aluop_i == `EXE_DIV_OP || aluop_i == `EXE_REM_OP) ? 1'b1 : 1'b0;
 						div_started_o <= 1'b1;
 						stallreq_for_div <= `Stop;
 					end
@@ -455,7 +429,8 @@ module ex(
 						div_opdata1_o <= reg1_i;
 						div_opdata2_o <= reg2_i;
 						div_start_o <= `DivStop;
-						signed_div_o <= (aluop_i == `EXE_DIV_OP) ? 1'b1 : 1'b0;
+						signed_div_o <=
+							(aluop_i == `EXE_DIV_OP || aluop_i == `EXE_REM_OP) ? 1'b1 : 1'b0;
 						div_started_o <= 1'b1;
 						stallreq_for_div <= (div_ready_i == `DivResultReady) ? `NoStop : `Stop;
 					end
@@ -502,7 +477,7 @@ module ex(
 
 	/************************** 暂停流水线 ******************************/
 	always @(*)
-	 	stallreq <= stallreq_for_madd_msub || stallreq_for_div; 
+	 	stallreq <= stallreq_for_div; 
 
 
 	/***************** 这条指令要写到 regfile 的内容 ********************/
@@ -535,7 +510,7 @@ module ex(
 					wdata_o <= arithout;
 
 				`EXE_RES_MUL:
-					wdata_o <= multiout[31:0];
+					wdata_o <= multiout;
 
 				`EXE_RES_JUMP_BRANCH:
 					wdata_o <= link_address_i;
@@ -543,50 +518,6 @@ module ex(
 				default:
 					wdata_o <= `ZeroWord;
 			endcase
-		end
-	
-	
-	/***************** 这条指令要写到 hi, lo 的内容 ********************/
-	always @ (*)
-		if(rst_n == `RstEnable)
-		begin
-			whilo_o <= `WriteDisable;
-			hi_o <= `ZeroWord;
-			lo_o <= `ZeroWord;		
-		end
-		else if(aluop_i == `EXE_MULT_OP || aluop_i == `EXE_MULTU_OP)
-		begin
-			whilo_o <= `WriteEnable;
-			{hi_o, lo_o} <= multiout;
-		end 
-		else if(aluop_i == `EXE_MADD_OP || aluop_i == `EXE_MADDU_OP ||
-				aluop_i == `EXE_MSUB_OP || aluop_i == `EXE_MSUBU_OP)
-		begin
-			whilo_o <= `WriteEnable;
-			{hi_o, lo_o} <= madd_msub_out;
-		end 
-		else if(aluop_i == `EXE_DIV_OP || aluop_i == `EXE_DIVU_OP)
-		begin
-			whilo_o <= `WriteEnable;
-			{hi_o, lo_o} <= div_result_i;
-		end
-		else if(aluop_i == `EXE_MTHI_OP)
-		begin
-			whilo_o <= `WriteEnable;
-			hi_o <= reg1_i;
-			lo_o <= LO;
-		end 
-		else if(aluop_i == `EXE_MTLO_OP)
-		begin
-			whilo_o <= `WriteEnable;
-			hi_o <= HI;
-			lo_o <= reg1_i;
-		end 
-		else 
-		begin
-			whilo_o <= `WriteDisable;
-			hi_o <= `ZeroWord;
-			lo_o <= `ZeroWord;
 		end
 
 	/******************* 这条指令要写到 csr 的内容 **********************/
