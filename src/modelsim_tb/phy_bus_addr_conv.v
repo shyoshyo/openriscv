@@ -31,10 +31,10 @@
 //////////////////////////////////////////////////////////////////////
 `include "defines.v"
 
-`define UART_PHYSICAL_ADDR_BEGIN 64'hffffffff_ffff1000
-`define UART_PHYSICAL_ADDR_LEN 64'h10
+`define UART_PHYSICAL_ADDR_BEGIN 32'hbfd003f8
+`define UART_PHYSICAL_ADDR_LEN 32'h20
 
-`define RAM_PHYSICAL_ADDR_BEGIN 32'h0000_0000
+`define RAM_PHYSICAL_ADDR_BEGIN 32'h8000_0000
 `define RAM_PHYSICAL_ADDR_LEN   32'h0800_0000
 
 

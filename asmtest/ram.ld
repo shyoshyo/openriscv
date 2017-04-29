@@ -27,7 +27,7 @@
 
 MEMORY
 {
-		ram		: ORIGIN = 0x00000000, LENGTH = 0x00001000
+		ram		: ORIGIN = 0x80000000, LENGTH = 0x00010000
 }
 
 SECTIONS
@@ -35,6 +35,8 @@ SECTIONS
 		/*
 		For some reason the linker script can't see the _reset_vector symbol 
 		(even if we declare it global), so we explicitly set it. */
+
+		. = 0x80000000;
 
 		.text :
 		{

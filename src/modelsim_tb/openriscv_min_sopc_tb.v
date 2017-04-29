@@ -95,8 +95,8 @@ module openriscv_min_sopc_tb();
 	// Testbench uses a 25 MHz clock (same as Go Board)
 	// Want to interface to 115200 baud UART
 	// 25000000 / 115200 = 217 Clocks Per Bit.
-	parameter CLOCK_PERIOD_NS = 20;
-	parameter CLKS_PER_BIT    = 868;
+	parameter CLOCK_PERIOD_NS = 10;
+	parameter CLKS_PER_BIT    = 868/2;
 	//parameter BIT_PERIOD      = 8600;
 	parameter c_BIT_PERIOD      = 8680;
 
@@ -250,7 +250,7 @@ module openriscv_min_sopc_tb();
 		#400 UART_WRITE_BYTE(8'h38);
 		@(posedge CLOCK_100);
 		#400 UART_WRITE_BYTE(8'h39);
-		#400 $stop;
+		// #400 $stop;
 	end
 
 

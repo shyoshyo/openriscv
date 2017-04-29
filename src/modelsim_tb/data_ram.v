@@ -35,8 +35,8 @@
 //数据存储器data_ram
 `define DataAddrBus 31:0
 `define DataBus 31:0
-`define DataMemNum 1024
-`define DataMemNumLog2 10
+`define DataMemNum (1024*1024)
+`define DataMemNumLog2 20
 `define ByteWidth 7:0
 
 `timescale 1ns/1ps

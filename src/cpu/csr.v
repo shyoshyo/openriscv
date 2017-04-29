@@ -70,7 +70,7 @@ module csr(
 	output reg timer_int_o
 );
 	reg[`RegBus] mscratch;
-
+	reg[`RegBus] mtvec;
 
 	// write & modify CSR
 	always @ (posedge clk or negedge rst_n)
@@ -79,6 +79,7 @@ module csr(
 			timer_int_o <= `InterruptNotAssert;
 
 			mscratch <= `ZeroWord;
+			mtvec <= `ZeroWord;
 		end
 		else
 		begin
@@ -94,6 +95,8 @@ module csr(
 					case (waddr_i)
 						`CSR_mscratch:
 							mscratch <= data_i;
+						`CSR_mtvec:
+							mtvec <= data_i;
 
 						default:
 						begin
@@ -104,6 +107,8 @@ module csr(
 					case (waddr_i)
 						`CSR_mscratch:
 							mscratch <= mscratch | data_i;
+						`CSR_mtvec:
+							mtvec <= mtvec | data_i;
 
 						default:
 						begin
@@ -114,7 +119,8 @@ module csr(
 					case (waddr_i)
 						`CSR_mscratch:
 							mscratch <= mscratch & ~data_i;
-
+						`CSR_mtvec:
+							mtvec <= mtvec & ~data_i;
 						default:
 						begin
 						end
@@ -124,25 +130,6 @@ module csr(
 				begin
 				end
 			endcase
-
-			// 处理异常
-			// exceptiontype
-			// * 0   machine check   TLB write that conflicts with an existing entry
-			// * 1-8 外部中斷         Assertion of unmasked HW or SW interrupt signal.
-			// * 9   adEl            Fetch address alignment error.
-			// * 10  TLBL            Fetch TLB miss, Fetch TLB hit to page with V=0 (inst)
-			// * 11  syscall
-			// * 12  RI              無效指令 Reserved Instruction
-			// * 13  ov              溢出
-			// * 14  trap
-			// * 15  AdEL            Load address alignment error,  
-			// * 16  adES            Store address alignment error.
-			//                       User mode store to kernel address.
-			// * 17  TLBL            Load TLB miss,  (4Kc core). (data)
-			// * 18  TLBS            Store TLB miss
-			// * 19  TLB Mod         Store to TLB page with D=0
-			// * 20  ERET
-			// * 21  FENCE.I
 
 			/*
 			if(excepttype_i[20] == 1'b1 && excepttype_i[19:0] == 20'h0)
@@ -188,6 +175,7 @@ module csr(
 		begin
 			case (raddr_i)
 				`CSR_mscratch: data_o <= mscratch;
+				`CSR_mtvec: data_o <= mtvec;
 
 				default: data_o <= `ZeroWord;
 			endcase

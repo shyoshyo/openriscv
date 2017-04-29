@@ -29,29 +29,35 @@ export	CROSS_COMPILE
 all: inst_rom.om inst_rom.bin inst_rom.asm inst_rom.data ../modelsim/inst_rom.data
 
 %.o: %.s
-	@$(CC) $< -o $@
-inst_rom.om: ram.ld $(OBJECTS)
-	@$(LD) -T ram.ld $(OBJECTS) -o $@
-inst_rom.bin: inst_rom.om
-	@$(OBJCOPY) -O binary $<  $@
-inst_rom.asm: inst_rom.om
-	@$(OBJDUMP) -D $< > $@
-inst_rom.data: inst_rom.bin Bin2Mem
-	@./Bin2Mem -f $< -o $@
+	$(CC) $< -o $@
+%.om: ram.ld $(OBJECTS)
+	$(LD) -T ram.ld $(OBJECTS) -o $@
+%.bin: %.om
+	$(OBJCOPY) -O binary $<  $@
+%.asm: %.om
+	$(OBJDUMP) -D $< > $@
+%.data: %.bin Bin2Mem
+	./Bin2Mem -f $< -o $@
 Bin2Mem: Bin2Mem.c
-	@gcc $< -o $@
+	gcc $< -o $@
 ../modelsim/inst_rom.data: inst_rom.data
-	@cp $< $@
+	cp $< $@
 
 spike_prog.om: spike.ld $(OBJECTS)
-	@$(LD) -T spike.ld $(OBJECTS) -o $@
+	$(LD) -T spike.ld $(OBJECTS) -o $@
 	
 debug: spike_prog.om
-	@spike $(SPIKE_FLAGS) --gdb-port=12345 -H $< &
-	@sleep 2
-	@$(GDB) -x gdbinit
-	@sleep 2
-	@killall spike
+	spike $(SPIKE_FLAGS) --gdb-port=12345 -H $< &
+	sleep 2
+	$(GDB) -x gdbinit
+	sleep 2
+	killall spike
+
+bbl.om: bbl
+	cp $< $@
+
+testbbl: bbl.data bbl.bin bbl.asm
+	cp bbl.data ../modelsim/inst_rom.data
 
 clean:
-	@rm -f *.o *.om *.bin *.data *.mif *.asm Bin2Mem
+	rm -f *.o *.om *.bin *.data *.mif *.asm Bin2Mem

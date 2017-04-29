@@ -633,6 +633,8 @@ module id(
 
 						wreg_o <= `WriteEnable;
 
+						reg1_read_o <= `ReadEnable;
+
 						if(step_i == 1'b0)
 						begin
 							branch_target_address_o <= reg1_o + imm_i_type;

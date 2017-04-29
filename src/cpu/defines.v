@@ -413,7 +413,7 @@ stvec
 `define CAUSE_MCHECK 5'd24
 
 //`define StartInstAddr    32'hbfc0_0000
-`define StartInstAddr    32'h0000_0000 // TODO: fix me
+`define StartInstAddr    32'h8000_0000 // TODO: fix me
 
 //wishbone FSM
 `define WB_IDLE 2'b00
