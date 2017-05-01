@@ -127,7 +127,8 @@ module id(
 	// ²Ù×÷´a
 	wire [6:0] opcode = inst_i[6:0];
 	wire [2:0] funct3 = inst_i[14:12];
-	wire [4:0] AMO_func5 = inst_i[31:27];
+	wire [4:0] AMO_func5     = inst_i[31:27];
+	wire [4:0] SYSTEM_func12 = inst_i[31:20];
 
 	// Ô´¼Ä´æÆ÷
 	assign reg1_addr_o = inst_i[19:15];
@@ -184,9 +185,12 @@ module id(
 
 	assign pre_inst_is_load = 
 		(
-			(ex_aluop_i == `EXE_LB_OP) || (ex_aluop_i == `EXE_LBU_OP) || (ex_aluop_i == `EXE_LH_OP) ||
-	  		(ex_aluop_i == `EXE_LHU_OP) || (ex_aluop_i == `EXE_LW_OP) || (ex_aluop_i == `EXE_LWR_OP)||
-	  		(ex_aluop_i == `EXE_LWL_OP) || (ex_aluop_i == `EXE_LR_OP) || (ex_aluop_i == `EXE_SC_OP)
+			(ex_aluop_i == `EXE_LB_OP)        || (ex_aluop_i == `EXE_LBU_OP)       || (ex_aluop_i == `EXE_LH_OP)        ||
+	  		(ex_aluop_i == `EXE_LHU_OP)       || (ex_aluop_i == `EXE_LW_OP)        || (ex_aluop_i == `EXE_LR_OP)        ||
+	  		(ex_aluop_i == `EXE_SC_OP)        || (ex_aluop_i == `EXE_AMOSWAP_W_OP) || (ex_aluop_i == `EXE_AMOADD_W_OP)  ||
+			(ex_aluop_i == `EXE_AMOXOR_W_OP)  || (ex_aluop_i == `EXE_AMOAND_W_OP)  || (ex_aluop_i == `EXE_AMOOR_W_OP)   ||
+	  		(ex_aluop_i == `EXE_AMOMIN_W_OP)  || (ex_aluop_i == `EXE_AMOMAX_W_OP)  || (ex_aluop_i == `EXE_AMOMINU_W_OP) ||
+	  		(ex_aluop_i == `EXE_AMOMAXU_W_OP)
   		) ? 1'b1 : 1'b0;
 
 	assign inst_o = inst_i;
@@ -963,13 +967,13 @@ module id(
 				`EXE_MISC_MEM:
 					case(funct3)
 						`EXE_FENCE:
-							if(reg1_addr_o == 5'b0 && wd_o == 5'b0 && inst_i[31:28] == 4'b0)
+							if(reg1_addr_o == `ZeroRegAddr && wd_o == `ZeroRegAddr && inst_i[31:28] == 4'b0)
 							begin
 								instvalid <= `InstValid;
 							end
 
 						`EXE_FENCE_I:
-							if(reg1_addr_o == 5'b0 && wd_o == 5'b0 && imm_i_type == 4'b0)
+							if(reg1_addr_o == `ZeroRegAddr && wd_o == `ZeroRegAddr && imm_i_type == 32'b0)
 							begin
 								instvalid <= `InstValid;
 
@@ -983,6 +987,35 @@ module id(
 
 				`EXE_SYSTEM:
 					case(funct3)
+						`EXE_ECALL_EBREAK_URET_SRET_HRET_MRET:
+							if(reg1_addr_o == `ZeroRegAddr && wd_o == `ZeroRegAddr)
+								case(SYSTEM_func12)
+									`EXE_ECALL:
+									begin
+										aluop_o <= `EXE_NOP_OP;
+										alusel_o <= `EXE_RES_NOP;
+										instvalid <= `InstValid;
+										
+										excepttype_is_syscall <= `True_v;
+									end
+
+									`EXE_EBREAK:
+									begin
+										aluop_o <= `EXE_NOP_OP;
+										alusel_o <= `EXE_RES_NOP;
+										instvalid <= `InstValid;
+									end
+
+									`EXE_URET, `EXE_SRET, `EXE_HRET, `EXE_MRET:
+									begin
+										aluop_o <= `EXE_NOP_OP;
+										alusel_o <= `EXE_RES_NOP;
+										instvalid <= `InstValid;
+										
+										excepttype_is_eret <= `True_v;
+									end
+								endcase
+
 						`EXE_CSRRW:
 						begin
 							aluop_o <= `EXE_CSRRW_OP;
@@ -1108,6 +1141,132 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 
+								imm <= reg1_o;
+							end
+
+							`EXE_AMOSWAP:
+							begin
+								aluop_o <= `EXE_AMOSWAP_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+
+							`EXE_AMOADD:
+							begin
+								aluop_o <= `EXE_AMOADD_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+							
+							`EXE_AMOXOR:
+							begin
+								aluop_o <= `EXE_AMOXOR_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+							
+							`EXE_AMOAND:
+							begin
+								aluop_o <= `EXE_AMOAND_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+							
+							`EXE_AMOOR:
+							begin
+								aluop_o <= `EXE_AMOOR_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+							
+							`EXE_AMOMIN:
+							begin
+								aluop_o <= `EXE_AMOMIN_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+
+							`EXE_AMOMAX:
+							begin
+								aluop_o <= `EXE_AMOMAX_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+
+							`EXE_AMOMINU:
+							begin
+								aluop_o <= `EXE_AMOMINU_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
+								imm <= reg1_o;
+							end
+							
+							`EXE_AMOMAXU:
+							begin
+								aluop_o <= `EXE_AMOMAXU_W_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+								
 								imm <= reg1_o;
 							end
 							

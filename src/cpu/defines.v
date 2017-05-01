@@ -100,7 +100,14 @@
 `define EXE_FENCE_I      3'b001
 
 `define EXE_SYSTEM       7'b1110011
-`define EXE_ECALL_EBREAK 3'b000
+`define EXE_ECALL_EBREAK_URET_SRET_HRET_MRET \
+                         3'b000
+    `define EXE_ECALL    12'b000000000000
+    `define EXE_EBREAK   12'b000000000001
+    `define EXE_URET     12'b000000000010
+    `define EXE_SRET     12'b000100000010
+    `define EXE_HRET     12'b001000000010
+    `define EXE_MRET     12'b001100000010
 `define EXE_CSRRW        3'b001
 `define EXE_CSRRS        3'b010
 `define EXE_CSRRC        3'b011
@@ -134,8 +141,6 @@
 `define EXE_RES_NOP 3'b000
 
 //AluOp
-/* EXE_RES_NOP */
-
 /* EXE_RES_LOGIC */
 `define EXE_OR_OP    8'b00100101
 `define EXE_AND_OP   8'b00100100
@@ -149,13 +154,7 @@
 /* EXE_RES_MOVE */
 `define EXE_MOVZ_OP  8'b00001010
 `define EXE_MOVN_OP  8'b00001011
-`define EXE_MFHI_OP  8'b00010000
-`define EXE_MTHI_OP  8'b00010001
-`define EXE_MFLO_OP  8'b00010010
-`define EXE_MTLO_OP  8'b00010011
 
-`define EXE_MFC0_OP  8'b01011101
-`define EXE_MTC0_OP  8'b01100000
 `define EXE_TLBWI_OP 8'b01100001
 `define EXE_TLBWR_OP 8'b01100010
 
@@ -188,32 +187,23 @@
 `define EXE_LBU_OP  8'b11100100
 `define EXE_LH_OP  8'b11100001
 `define EXE_LHU_OP  8'b11100101
-`define EXE_LR_OP  8'b11110000
 `define EXE_LW_OP  8'b11100011
-`define EXE_LWL_OP  8'b11100010
-`define EXE_LWR_OP  8'b11100110
-`define EXE_PREF_OP  8'b11110011
+`define EXE_LR_OP  8'b11110000
 `define EXE_SB_OP  8'b11101000
-`define EXE_SC_OP  8'b11111000
 `define EXE_SH_OP  8'b11101001
 `define EXE_SW_OP  8'b11101011
-`define EXE_SWL_OP  8'b11101010
-`define EXE_SWR_OP  8'b11101110
-`define EXE_SYNC_OP  8'b00001111
+`define EXE_SC_OP  8'b11111000
+`define EXE_AMOSWAP_W_OP      8'b01000001
+`define EXE_AMOADD_W_OP       8'b01000000
+`define EXE_AMOXOR_W_OP       8'b01000100
+`define EXE_AMOAND_W_OP       8'b01001100
+`define EXE_AMOOR_W_OP        8'b01001000
+`define EXE_AMOMIN_W_OP       8'b01110000
+`define EXE_AMOMAX_W_OP       8'b01010100
+`define EXE_AMOMINU_W_OP      8'b01111001
+`define EXE_AMOMAXU_W_OP      8'b01011100
 
-
-
-`define EXE_SYSCALL_OP 8'b00001100
-
-`define EXE_TEQ_OP 8'b00110100
-`define EXE_TGE_OP 8'b00110000
-`define EXE_TGEU_OP 8'b00110001
-`define EXE_TLT_OP 8'b00110010
-`define EXE_TLTU_OP 8'b00110011
-`define EXE_TNE_OP 8'b00110110
-   
-`define EXE_ERET_OP 8'b01101011
-
+/* EXE_RES_NOP */
 `define EXE_NOP_OP 8'b00000000
 
 

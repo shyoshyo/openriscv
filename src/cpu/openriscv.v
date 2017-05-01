@@ -162,6 +162,9 @@ module openriscv(
 	wire[`RegBus] mem_mem_addr_i;
 	wire[`RegBus] mem_reg1_i;
 	wire[`RegBus] mem_reg2_i;
+	wire stallreq_from_dwishbone;
+	wire [1:0] mem_cnt_i;
+	wire [`RegBus] mem_original_data_i;
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_i;
 	wire[`CSRAddrBus] mem_csr_reg_write_addr_i;
 	wire[`RegBus] mem_csr_reg_data_i;
@@ -184,6 +187,8 @@ module openriscv(
 	wire mem_LLbit_value_o;
 	wire [`PhyAddrBus]mem_LLbit_addr_o;
 	wire mem_LLbit_we_o;
+	wire [1:0] mem_cnt_o;
+	wire [`RegBus] mem_original_data_o;
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_o;
 	wire[`CSRAddrBus] mem_csr_reg_write_addr_o;
 	wire[`RegBus] mem_csr_reg_data_o;
@@ -669,6 +674,10 @@ module openriscv(
 		.LLbit_i(LLbit_o),
 		.LLbit_addr_i(LLbit_addr_o),
 
+		.stallreq_from_mem_i(stallreq_from_dwishbone),
+		.cnt_i(mem_cnt_i),
+		.original_data_i(mem_original_data_i),
+
 		//送到MEM/WB模块的信息
 		.wd_o(mem_wd_o),
 		.wreg_o(mem_wreg_o),
@@ -677,6 +686,10 @@ module openriscv(
 		.LLbit_we_o(mem_LLbit_we_o),
 		.LLbit_value_o(mem_LLbit_value_o),
 		.LLbit_addr_o(mem_LLbit_addr_o),
+
+		.stallreq(stallreq_from_mem),
+		.cnt_o(mem_cnt_o),
+		.original_data_o(mem_original_data_o),
 
 		.csr_reg_we_o(mem_csr_reg_we_o),
 		.csr_reg_write_addr_o(mem_csr_reg_write_addr_o),
@@ -724,6 +737,9 @@ module openriscv(
 		.mem_csr_reg_data(mem_csr_reg_data_o),
 		.mem_csr_write_tlb_index(mem_csr_write_tlb_index_o),
 		.mem_csr_write_tlb_random(mem_csr_write_tlb_random_o),
+
+		.mem_cnt_i(mem_cnt_o),
+		.mem_original_data_i(mem_original_data_o),
 	
 		//送到回写阶段的信息
 		.wb_wd(wb_wd_i),
@@ -736,7 +752,11 @@ module openriscv(
 		.wb_csr_reg_write_addr(wb_csr_reg_write_addr_i),
 		.wb_csr_reg_data(wb_csr_reg_data_i),
 		.wb_csr_write_tlb_index(wb_csr_write_tlb_index_i),
-		.wb_csr_write_tlb_random(wb_csr_write_tlb_random_i)
+		.wb_csr_write_tlb_random(wb_csr_write_tlb_random_i),
+
+		// send back to mem
+		.mem_cnt_o(mem_cnt_i),
+		.mem_original_data_o(mem_original_data_i)
 	);
 
 	ctrl ctrl0(
@@ -879,7 +899,7 @@ module openriscv(
 		.wishbone_stb_o(dwishbone_stb_o),
 		.wishbone_cyc_o(dwishbone_cyc_o),
 
-		.stallreq(stallreq_from_mem)	       
+		.stallreq(stallreq_from_dwishbone)
 	
 	);
 	

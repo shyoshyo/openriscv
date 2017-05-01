@@ -58,6 +58,10 @@ module mem(
 	input wire LLbit_i,
 	input wire [`PhyAddrBus]LLbit_addr_i,
 
+	input wire stallreq_from_mem_i,
+	input wire [1:0] cnt_i,
+	input wire [`RegBus] original_data_i,
+
 	//协处理器csr的写信号
 	input wire[`CSRWriteTypeBus] csr_reg_we_i,
 	input wire[`CSRAddrBus] csr_reg_write_addr_i,
@@ -94,6 +98,10 @@ module mem(
 	output reg LLbit_we_o,
 	output reg LLbit_value_o,
 	output reg [`PhyAddrBus]LLbit_addr_o,
+
+	output wire stallreq,
+	output reg [1:0] cnt_o,
+	output reg [`RegBus] original_data_o,
 
 	//协处理器csr的写信号
 	output reg[`CSRWriteTypeBus] csr_reg_we_o,
@@ -145,6 +153,10 @@ module mem(
 	reg load_alignment_error;
 	reg store_alignment_error;
 
+	reg stallreq_from_amo;
+
+	assign stallreq = (stallreq_from_mem_i | stallreq_from_amo);
+
 	always @ (*)
 		if(rst_n == `RstEnable)
 		begin
@@ -169,8 +181,13 @@ module mem(
 			LLbit_addr_o <= `ZeroWord;
 			LLbit_value_o <= 1'b0;
 
+			cnt_o <= 2'b0;
+			original_data_o <= `ZeroWord;
+
 			load_alignment_error <= `False_v;
 			store_alignment_error <= `False_v;
+
+			stallreq_from_amo <= `False_v;
 		end
 		else
 		begin
@@ -195,8 +212,13 @@ module mem(
 			LLbit_addr_o <= `ZeroWord;
 			LLbit_value_o <= 1'b0;
 
+			cnt_o <= 2'b0;
+			original_data_o <= `ZeroWord;
+
 			load_alignment_error <= `False_v;
 			store_alignment_error <= `False_v;
+
+			stallreq_from_amo <= `False_v;
 
 			case(aluop_i)
 				`EXE_LB_OP:
@@ -529,6 +551,91 @@ module mem(
 						LLbit_value_o <= 1'b0;
 
 						wdata_o <= `SCFail;
+					end
+				end
+
+				`EXE_AMOSWAP_W_OP, `EXE_AMOADD_W_OP, `EXE_AMOXOR_W_OP,
+				`EXE_AMOAND_W_OP, `EXE_AMOOR_W_OP, `EXE_AMOMIN_W_OP,
+				`EXE_AMOMAX_W_OP, `EXE_AMOMINU_W_OP, `EXE_AMOMAXU_W_OP:
+				begin
+					if(cnt_i == 2'h0)
+					begin
+						mem_ce <= `ChipEnable;
+						
+						mem_addr_o <= mem_addr_i;
+						mem_phy_addr_o <= mem_phy_addr_i;
+						mem_we <= `WriteDisable;
+
+						LLbit_we_o <= `WriteEnable;
+						LLbit_value_o <= 1'b0;
+						
+						case(mem_addr_i[1:0])
+							2'b00:
+							begin
+								mem_sel_o <= 4'b1111;
+								stallreq_from_amo <= `True_v;
+							end
+
+							default:
+							begin
+								mem_sel_o <= 4'b0000;
+
+								mem_ce <= `ChipDisable;
+								load_alignment_error <= `True_v;
+							end
+						endcase
+
+						cnt_o <= ((stallreq_from_mem_i == `True_v) ? 2'h0 : 2'h1);
+						original_data_o <= mem_data_i;
+					end
+					else if(cnt_i == 2'h1)
+					begin
+						mem_ce <= `ChipEnable;
+						
+						mem_addr_o <= mem_addr_i;
+						mem_phy_addr_o <= mem_phy_addr_i;
+						mem_we <= `WriteEnable;
+
+						LLbit_we_o <= `WriteEnable;
+						LLbit_value_o <= 1'b0;
+
+						case(aluop_i)
+							`EXE_AMOSWAP_W_OP:
+								mem_data_o <= reg2_i;
+
+							`EXE_AMOADD_W_OP:
+								mem_data_o <= (original_data_i + reg2_i);
+
+							`EXE_AMOXOR_W_OP:
+								mem_data_o <= (original_data_i ^ reg2_i);
+
+							`EXE_AMOAND_W_OP:
+								mem_data_o <= (original_data_i & reg2_i);
+
+							`EXE_AMOOR_W_OP:
+								mem_data_o <= (original_data_i | reg2_i);
+
+							`EXE_AMOMIN_W_OP:
+								mem_data_o <= (($signed(original_data_i) < $signed(reg2_i)) ? original_data_i : reg2_i);
+
+							`EXE_AMOMAX_W_OP:
+								mem_data_o <= (($signed(original_data_i) > $signed(reg2_i)) ? original_data_i : reg2_i);
+
+							`EXE_AMOMINU_W_OP:
+								mem_data_o <= ((original_data_i < reg2_i) ? mem_data_i : reg2_i);
+
+							`EXE_AMOMAXU_W_OP:
+								mem_data_o <= ((original_data_i > reg2_i) ? mem_data_i : reg2_i);
+
+							default: mem_data_o <= `ZeroWord;
+						endcase
+
+						mem_sel_o <= 4'b1111;
+
+						wdata_o <= original_data_i;
+
+						cnt_o <= 2'h1;
+						original_data_o <= original_data_i;
 					end
 				end
 

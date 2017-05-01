@@ -199,33 +199,30 @@ module ex(
 	/***********************************************************/
 
 	// arithmetic op
+	/*
 	wire reg1_lt_reg2;
 	wire [`RegBus] reg2_i_mux;
 	wire [`RegBus] result_sum;
 
-	assign reg2_i_mux = 
-			(
-				aluop_i == `EXE_SUB_OP || aluop_i == `EXE_TLT_OP || aluop_i == `EXE_TGE_OP 
-			) ? ((~reg2_i) + 1'b1) : reg2_i;
+	assign reg2_i_mux = (aluop_i == `EXE_SUB_OP) ? ((~reg2_i) + 1'b1) : reg2_i;
 
 	assign result_sum = reg1_i + reg2_i_mux;
 
 	assign reg1_lt_reg2 =
-			(aluop_i == `EXE_SLT_OP || aluop_i == `EXE_TLT_OP || aluop_i == `EXE_TGE_OP) ? 
-				($signed(reg1_i) < $signed(reg2_i)) : (reg1_i < reg2_i);
+			(aluop_i == `EXE_SLT_OP) ? ($signed(reg1_i) < $signed(reg2_i)) : (reg1_i < reg2_i);
+	*/
 
 	always @ (*)
 		if(rst_n == `RstEnable)
 			arithout <= `ZeroWord;
 		else
 			case (aluop_i)
-				`EXE_SLT_OP, `EXE_SLTU_OP:
-					arithout <= reg1_lt_reg2;
+				`EXE_SLT_OP:  arithout <= ($signed(reg1_i) < $signed(reg2_i));
+				`EXE_SLTU_OP: arithout <= (reg1_i < reg2_i);
+				`EXE_ADD_OP:  arithout <= reg1_i + reg2_i;
+				`EXE_SUB_OP:  arithout <= reg1_i - reg2_i;
 
-				`EXE_ADD_OP, `EXE_SUB_OP:
-					arithout <= result_sum;
-
-				default: arithout <= `ZeroWord;
+				default:      arithout <= `ZeroWord;
 			endcase
 	
 	/***********************************************************/
@@ -238,18 +235,7 @@ module ex(
 		begin
 			trapassert <= `TrapNotAssert;
 			case (aluop_i)
-				`EXE_TEQ_OP:
-					if(reg1_i == reg2_i) trapassert <= `TrapAssert;
-					
-				`EXE_TGE_OP, `EXE_TGEU_OP:
-					if(~reg1_lt_reg2) trapassert <= `TrapAssert;
-					
-				`EXE_TLT_OP, `EXE_TLTU_OP:
-					if(reg1_lt_reg2) trapassert <= `TrapAssert;
-					
-				`EXE_TNE_OP:
-					if(reg1_i != reg2_i) trapassert <= `TrapAssert;
-					
+
 				default:
 					trapassert <= `TrapNotAssert;
 			endcase
@@ -458,15 +444,18 @@ module ex(
 	assign data_tlb_w_miss_exception_o = data_tlb_w_miss_exception_i;
 	assign data_tlb_mod_exception_o = data_tlb_mod_exception_i;
 
+	// for mmu to check whether writable
 	always @(*)
 		if(rst_n == `RstEnable)
 			{mem_we_o, mem_ce_o} <= {`WriteDisable, `ChipDisable};
 		else
 			case(aluop_i)
-				`EXE_LB_OP, `EXE_LBU_OP, `EXE_LH_OP, `EXE_LHU_OP, `EXE_LW_OP, `EXE_LWL_OP, `EXE_LWR_OP, `EXE_LR_OP:
+				`EXE_LB_OP, `EXE_LBU_OP, `EXE_LH_OP, `EXE_LHU_OP, `EXE_LW_OP, `EXE_LR_OP:
 					{mem_we_o, mem_ce_o} <= {`WriteDisable, `ChipEnable};
 
-				`EXE_SB_OP, `EXE_SH_OP, `EXE_SW_OP, `EXE_SWL_OP, `EXE_SWR_OP, `EXE_SC_OP:
+				`EXE_SB_OP, `EXE_SH_OP, `EXE_SW_OP, `EXE_SC_OP, `EXE_AMOSWAP_W_OP, `EXE_AMOADD_W_OP,
+				`EXE_AMOXOR_W_OP, `EXE_AMOAND_W_OP, `EXE_AMOOR_W_OP, `EXE_AMOMIN_W_OP, `EXE_AMOMAX_W_OP,
+				`EXE_AMOMINU_W_OP, `EXE_AMOMAXU_W_OP:
 					{mem_we_o, mem_ce_o} <= {`WriteEnable, `ChipEnable};
 					
 				default:

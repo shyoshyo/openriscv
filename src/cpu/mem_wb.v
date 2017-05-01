@@ -52,6 +52,10 @@ module mem_wb(
 	input wire mem_csr_write_tlb_index,
 	input wire mem_csr_write_tlb_random,
 
+
+	input wire [1:0] mem_cnt_i,
+	input wire[`RegBus] mem_original_data_i,
+
 	//送到回写阶段的信息
 	output reg[`RegAddrBus] wb_wd,
 	output reg wb_wreg,
@@ -65,7 +69,11 @@ module mem_wb(
 	output reg[`CSRAddrBus] wb_csr_reg_write_addr,
 	output reg[`RegBus] wb_csr_reg_data,
 	output reg wb_csr_write_tlb_index,
-	output reg wb_csr_write_tlb_random
+	output reg wb_csr_write_tlb_random,
+
+	// send back to mem
+	output reg [1:0] mem_cnt_o,
+	output reg [`RegBus] mem_original_data_o
 );
 
 
@@ -86,6 +94,9 @@ module mem_wb(
 			wb_csr_reg_data <= `ZeroWord;
 			wb_csr_write_tlb_index <= `False_v;
 			wb_csr_write_tlb_random <= `False_v;
+
+			mem_cnt_o <= 2'h0;
+			mem_original_data_o <= `ZeroWord;
 		end
 		else if(flush == `Flush)
 		begin
@@ -102,6 +113,9 @@ module mem_wb(
 			wb_csr_reg_data <= `ZeroWord;
 			wb_csr_write_tlb_index <= `False_v;
 			wb_csr_write_tlb_random <= `False_v;
+
+			mem_cnt_o <= 2'h0;
+			mem_original_data_o <= `ZeroWord;
 		end
 		else if(stall[4] == `Stop && stall[5] == `NoStop)
 		begin
@@ -118,6 +132,9 @@ module mem_wb(
 			wb_csr_reg_data <= `ZeroWord;
 			wb_csr_write_tlb_index <= `False_v;
 			wb_csr_write_tlb_random <= `False_v;
+
+			mem_cnt_o <= mem_cnt_i;
+			mem_original_data_o <= mem_original_data_i;
 		end
 		else if(stall[4] == `NoStop)
 		begin
@@ -134,6 +151,14 @@ module mem_wb(
 			wb_csr_reg_data <= mem_csr_reg_data;
 			wb_csr_write_tlb_index <= mem_csr_write_tlb_index;
 			wb_csr_write_tlb_random <= mem_csr_write_tlb_random;
+
+			mem_cnt_o <= 2'h0;
+			mem_original_data_o <= `ZeroWord;
+		end
+		else // stall[4] 停，stall[5] 也停，wb_* 保持不变
+		begin
+			mem_cnt_o <= mem_cnt_i;
+			mem_original_data_o <= mem_original_data_i;
 		end
 	end
 endmodule

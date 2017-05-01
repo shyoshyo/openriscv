@@ -177,7 +177,7 @@ module id_ex(
 			ex_csr_reg_data <= id_csr_reg_data;
 
 			is_in_delayslot_o <= next_inst_in_delayslot_i;
-			step_o <= step_i;
+			step_o <= 1'b0;
 		end
 		else // stall[2] 停，stall[3] 也停，exe_* 保持不变
 		begin
