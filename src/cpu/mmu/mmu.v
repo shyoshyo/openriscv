@@ -39,13 +39,13 @@ module mmu
 
 	input wire inst_ce_i,
 	input wire [`RegBus] inst_vir_addr_i,
-	output wire [`RegBus] inst_phy_addr_o,
+	output wire [`PhyAddrBus] inst_phy_addr_o,
 	output wire inst_tlb_r_miss_exception_o,
 
 	input wire data_ce_i,
 	input wire data_we_i,
 	input wire [`RegBus] data_vir_addr_i,
-	output wire [`RegBus] data_phy_addr_o,
+	output wire [`PhyAddrBus] data_phy_addr_o,
 	output wire data_tlb_r_miss_exception_o,
 	output wire data_tlb_w_miss_exception_o,
 	output wire data_tlb_mod_exception_o,

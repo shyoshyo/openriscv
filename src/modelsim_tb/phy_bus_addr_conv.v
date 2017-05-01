@@ -31,21 +31,21 @@
 //////////////////////////////////////////////////////////////////////
 `include "defines.v"
 
-`define UART_PHYSICAL_ADDR_BEGIN 32'hbfd003f8
-`define UART_PHYSICAL_ADDR_LEN 32'h20
+`define UART_PHYSICAL_ADDR_BEGIN 34'h0bfd003f8
+`define UART_PHYSICAL_ADDR_LEN   34'h20
 
-`define RAM_PHYSICAL_ADDR_BEGIN 32'h8000_0000
-`define RAM_PHYSICAL_ADDR_LEN   32'h0800_0000
+`define RAM_PHYSICAL_ADDR_BEGIN  34'h08000_0000
+`define RAM_PHYSICAL_ADDR_LEN    34'h00800_0000
 
 
 module phy_bus_addr_conv(
 	input wire rst_n,
 
-	input wire[`RegBus] phy_addr_i,
+	input wire[`PhyAddrBus] phy_addr_i,
 	output reg[`WishboneAddrBus] bus_addr_o
 );
-	wire [`RegBus] uart_index = ((phy_addr_i - `UART_PHYSICAL_ADDR_BEGIN));
-	wire [`RegBus] ram_index = ((phy_addr_i - `RAM_PHYSICAL_ADDR_BEGIN));
+	wire [`PhyAddrBus] uart_index = ((phy_addr_i - `UART_PHYSICAL_ADDR_BEGIN));
+	wire [`PhyAddrBus] ram_index = ((phy_addr_i - `RAM_PHYSICAL_ADDR_BEGIN));
 	always @(*)
 		if (rst_n == `RstEnable)
 			bus_addr_o <= `ZeroWord;

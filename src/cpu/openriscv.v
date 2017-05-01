@@ -43,7 +43,7 @@ module openriscv(
 	// inst wishbone
 	input wire[`WishboneDataBus]   iwishbone_data_i,
 	input wire                     iwishbone_ack_i,
-	output wire[`RegBus]           iwishbone_addr_o,
+	output wire[`PhyAddrBus]       iwishbone_addr_o,
 	output wire[`WishboneDataBus]  iwishbone_data_o,
 	output wire                    iwishbone_we_o,
 	output wire[`WishboneSelBus]   iwishbone_sel_o,
@@ -53,7 +53,7 @@ module openriscv(
 	// data wishbone
 	input wire[`WishboneDataBus]   dwishbone_data_i,
 	input wire                     dwishbone_ack_i,
-	output wire[`RegBus]           dwishbone_addr_o,
+	output wire[`PhyAddrBus]       dwishbone_addr_o,
 	output wire[`WishboneDataBus]  dwishbone_data_o,
 	output wire                    dwishbone_we_o,
 	output wire[`WishboneSelBus]   dwishbone_sel_o,
@@ -65,7 +65,7 @@ module openriscv(
 	output wire timer_int_o
 );
 	// 下一条需要访问 inst 存储器的地址
-	wire [`RegBus]pc_next_inst_phy_addr;
+	wire [`PhyAddrBus]pc_next_inst_phy_addr;
 	wire [`RegBus]pc_next_inst_vir_addr;
 	wire pc_next_inst_tlb_r_miss_exception;
 	wire pc_ce_o;
@@ -75,7 +75,7 @@ module openriscv(
 	// inst 存储器 使能
 	wire[`RegBus] pc;
 	wire if_inst_ce_i;
-	wire [`RegBus]if_inst_phy_addr_i;
+	wire [`PhyAddrBus]if_inst_phy_addr_i;
 	wire [`ExceptionTypeBus]if_excepttype_i;
 
 	//连接译码阶段 IF 模块的输出与 IF/ID 模块的输入
@@ -124,7 +124,7 @@ module openriscv(
 	wire[`CSRWriteTypeBus] ex_csr_reg_we_i;
 	wire[`RegBus] ex_csr_reg_data_i;
 
-	wire [`RegBus]ex_mem_phy_addr_i;
+	wire [`PhyAddrBus]ex_mem_phy_addr_i;
 	wire ex_data_tlb_r_miss_exception_i;
 	wire ex_data_tlb_w_miss_exception_i;
 	wire ex_data_tlb_mod_exception_i;
@@ -149,7 +149,7 @@ module openriscv(
 	wire ex_not_stall_o;
 	wire ex_is_in_delayslot_o;
 
-	wire[`RegBus] ex_mem_phy_addr_o;
+	wire[`PhyAddrBus] ex_mem_phy_addr_o;
 	wire ex_data_tlb_r_miss_exception_o;
 	wire ex_data_tlb_w_miss_exception_o;
 	wire ex_data_tlb_mod_exception_o;
@@ -171,7 +171,7 @@ module openriscv(
 	wire mem_is_in_delayslot_i;
 	wire[`RegBus] mem_current_inst_address_i;
 	wire mem_not_stall_i;
-	wire [`RegBus]mem_mem_phy_addr_i;
+	wire [`PhyAddrBus]mem_mem_phy_addr_i;
 	wire mem_data_tlb_r_miss_exception_i;
 	wire mem_data_tlb_w_miss_exception_i;
 	wire mem_data_tlb_mod_exception_i;
@@ -182,6 +182,7 @@ module openriscv(
 	wire[`RegAddrBus] mem_wd_o;
 	wire[`RegBus] mem_wdata_o;
 	wire mem_LLbit_value_o;
+	wire [`PhyAddrBus]mem_LLbit_addr_o;
 	wire mem_LLbit_we_o;
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_o;
 	wire[`CSRAddrBus] mem_csr_reg_write_addr_o;
@@ -198,6 +199,7 @@ module openriscv(
 	wire[`RegAddrBus] wb_wd_i;
 	wire[`RegBus] wb_wdata_i;
 	wire wb_LLbit_value_i;
+	wire [`PhyAddrBus] wb_LLbit_addr_i;
 	wire wb_LLbit_we_i;
 	wire[`CSRWriteTypeBus] wb_csr_reg_we_i;
 	wire[`CSRAddrBus] wb_csr_reg_write_addr_i;
@@ -250,6 +252,7 @@ module openriscv(
 	wire stallreq_from_mem;
 
 	wire LLbit_o;
+	wire [`PhyAddrBus]LLbit_addr_o;
 
 	wire[`RegBus] csr_data_o;
  	wire[`CSRAddrBus] csr_raddr_i;
@@ -605,7 +608,7 @@ module openriscv(
 	);
 
 	// RAM 物理地址
-	wire[`RegBus] ram_phy_addr_o;
+	wire[`PhyAddrBus] ram_phy_addr_o;
 
 	//连接数据存储器 data_ram 虛擬地址
 	wire[`RegBus] ram_data_i;
@@ -664,6 +667,7 @@ module openriscv(
 		//但不一定是最新值，回写阶段可能要写LLbit，所以还要进一步判断
 		// 回写阶段如果要写llbit, 则 llbit_o 会马上变化，提前一周期传过去，起到了类似于数据旁路的作用
 		.LLbit_i(LLbit_o),
+		.LLbit_addr_i(LLbit_addr_o),
 
 		//送到MEM/WB模块的信息
 		.wd_o(mem_wd_o),
@@ -672,6 +676,7 @@ module openriscv(
 		// LLbit 的输出
 		.LLbit_we_o(mem_LLbit_we_o),
 		.LLbit_value_o(mem_LLbit_value_o),
+		.LLbit_addr_o(mem_LLbit_addr_o),
 
 		.csr_reg_we_o(mem_csr_reg_we_o),
 		.csr_reg_write_addr_o(mem_csr_reg_write_addr_o),
@@ -712,6 +717,7 @@ module openriscv(
 		.mem_wreg(mem_wreg_o),
 		.mem_wdata(mem_wdata_o),
 		.mem_LLbit_we(mem_LLbit_we_o),
+		.mem_LLbit_addr(mem_LLbit_addr_o),
 		.mem_LLbit_value(mem_LLbit_value_o),
 		.mem_csr_reg_we(mem_csr_reg_we_o),
 		.mem_csr_reg_write_addr(mem_csr_reg_write_addr_o),
@@ -724,6 +730,7 @@ module openriscv(
 		.wb_wreg(wb_wreg_i),
 		.wb_wdata(wb_wdata_i),
 		.wb_LLbit_we(wb_LLbit_we_i),
+		.wb_LLbit_addr(wb_LLbit_addr_i),
 		.wb_LLbit_value(wb_LLbit_value_i),
 		.wb_csr_reg_we(wb_csr_reg_we_i),
 		.wb_csr_reg_write_addr(wb_csr_reg_write_addr_i),
@@ -778,11 +785,13 @@ module openriscv(
 		.flush(flush),
 		
 		//写端口
+		.we_i(wb_LLbit_we_i),
 		.LLbit_i(wb_LLbit_value_i),
-		.we(wb_LLbit_we_i),
+		.LLbit_addr_i(wb_LLbit_addr_i),
 		
 		//读端口1
-		.LLbit_o(LLbit_o)
+		.LLbit_o(LLbit_o),
+		.LLbit_addr_o(LLbit_addr_o)
 	);
 	
 	csr csr0(

@@ -62,7 +62,7 @@ module ex_mem(
 	input wire ex_csr_write_tlb_random,
 
 	// 要写入的物理地址
-	input wire [`RegBus]ex_mem_phy_addr,
+	input wire [`PhyAddrBus]ex_mem_phy_addr,
 	input wire ex_data_tlb_r_miss_exception,
 	input wire ex_data_tlb_w_miss_exception,
 	input wire ex_data_tlb_mod_exception,
@@ -98,7 +98,7 @@ module ex_mem(
 
 
 	// 送到下一阶段的物理地址
-	output reg [`RegBus]mem_mem_phy_addr,
+	output reg [`PhyAddrBus]mem_mem_phy_addr,
 	output reg mem_data_tlb_r_miss_exception,
 	output reg mem_data_tlb_w_miss_exception,
 	output reg mem_data_tlb_mod_exception,

@@ -37,7 +37,7 @@ module mem(
 	input wire rst_n,
 
 	// 执行阶段送来的物理地址
-	input wire[`RegBus] mem_phy_addr_i,
+	input wire[`PhyAddrBus] mem_phy_addr_i,
 	input wire data_tlb_r_miss_exception_i,
 	input wire data_tlb_w_miss_exception_i,
 	input wire data_tlb_mod_exception_i,
@@ -56,6 +56,7 @@ module mem(
 	
 	//LLbit_i是LLbit寄存器的值
 	input wire LLbit_i,
+	input wire [`PhyAddrBus]LLbit_addr_i,
 
 	//协处理器csr的写信号
 	input wire[`CSRWriteTypeBus] csr_reg_we_i,
@@ -92,6 +93,7 @@ module mem(
 	// LLbit 的输出
 	output reg LLbit_we_o,
 	output reg LLbit_value_o,
+	output reg [`PhyAddrBus]LLbit_addr_o,
 
 	//协处理器csr的写信号
 	output reg[`CSRWriteTypeBus] csr_reg_we_o,
@@ -114,7 +116,7 @@ module mem(
 
 	//送到memory的信息
 	output reg[`RegBus] mem_addr_o,
-	output reg[`RegBus] mem_phy_addr_o,
+	output reg[`PhyAddrBus] mem_phy_addr_o,
 	output wire mem_we_o,
 	output reg[`RegSel] mem_sel_o,
 	output reg[`RegBus] mem_data_o,
@@ -163,7 +165,8 @@ module mem(
 			mem_data_o <= `ZeroWord;
 			mem_ce <= `ChipDisable;
 
-			LLbit_we_o <= 1'b0;
+			LLbit_we_o <= `WriteDisable;
+			LLbit_addr_o <= `ZeroWord;
 			LLbit_value_o <= 1'b0;
 
 			load_alignment_error <= `False_v;
@@ -188,7 +191,8 @@ module mem(
 			mem_data_o <= `ZeroWord;
 			mem_ce <= `ChipDisable;
 
-			LLbit_we_o <= 1'b0;
+			LLbit_we_o <= `WriteDisable;
+			LLbit_addr_o <= `ZeroWord;
 			LLbit_value_o <= 1'b0;
 
 			load_alignment_error <= `False_v;
@@ -202,6 +206,9 @@ module mem(
 					mem_addr_o <= mem_addr_i;
 					mem_phy_addr_o <= mem_phy_addr_i;
 					mem_we <= `WriteDisable;
+
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
 					
 					case(mem_addr_i[1:0])
 						2'b00:
@@ -242,6 +249,9 @@ module mem(
 					mem_addr_o <= mem_addr_i;
 					mem_phy_addr_o <= mem_phy_addr_i;
 					mem_we <= `WriteDisable;
+
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
 					
 					case(mem_addr_i[1:0])
 						2'b00:
@@ -282,6 +292,9 @@ module mem(
 					mem_addr_o <= mem_addr_i;
 					mem_phy_addr_o <= mem_phy_addr_i;
 					mem_we <= `WriteDisable;
+
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
 					
 					case(mem_addr_i[1:0])
 						2'b00:
@@ -312,6 +325,9 @@ module mem(
 					mem_addr_o <= mem_addr_i;
 					mem_phy_addr_o <= mem_phy_addr_i;
 					mem_we <= `WriteDisable;
+
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
 					
 					case(mem_addr_i[1:0])
 						2'b00:
@@ -342,6 +358,9 @@ module mem(
 					mem_addr_o <= mem_addr_i;
 					mem_phy_addr_o <= mem_phy_addr_i;
 					mem_we <= `WriteDisable;
+
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
 					
 					case(mem_addr_i[1:0])
 						2'b00:
@@ -360,7 +379,7 @@ module mem(
 					endcase
 				end
 
-				`EXE_LL_OP:
+				`EXE_LR_OP:
 				begin
 					mem_ce <= `ChipEnable;
 					
@@ -385,7 +404,8 @@ module mem(
 						end
 					endcase
 
-					LLbit_we_o <= 1'b1;
+					LLbit_we_o <= `WriteEnable;
+					LLbit_addr_o <= mem_phy_addr_i;
 					LLbit_value_o <= 1'b1;
 				end
 				
@@ -398,6 +418,9 @@ module mem(
 					mem_we <= `WriteEnable;
 					mem_data_o <= {4{reg2_i[7:0]}};
 					
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
+
 					case(mem_addr_i[1:0])
 						2'b00: mem_sel_o <= 4'b0001;
 						2'b01: mem_sel_o <= 4'b0010;
@@ -422,7 +445,10 @@ module mem(
 					mem_phy_addr_o <= mem_phy_addr_i;
 					mem_we <= `WriteEnable;
 					mem_data_o <= {2{reg2_i[15:0]}};
-					
+
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
+
 					case(mem_addr_i[1:0])
 						2'b00: mem_sel_o <= 4'b0011;
 						2'b10: mem_sel_o <= 4'b1100;
@@ -445,6 +471,9 @@ module mem(
 					mem_phy_addr_o <= mem_phy_addr_i;
 					mem_we <= `WriteEnable;
 					mem_data_o <= reg2_i;
+
+					LLbit_we_o <= `WriteEnable;
+					LLbit_value_o <= 1'b0;
 					
 					case(mem_addr_i[1:0])
 						2'b00: mem_sel_o <= 4'b1111;
@@ -461,7 +490,7 @@ module mem(
 
 				`EXE_SC_OP:
 				begin
-					if(LLbit_i == 1'b1)
+					if(LLbit_i == 1'b1 && LLbit_addr_i == mem_phy_addr_i)
 					begin
 						mem_ce <= `ChipEnable;
 					
@@ -482,9 +511,10 @@ module mem(
 							end
 						endcase
 
-						wdata_o <= 32'b1;
-						LLbit_we_o <= 1'b1;
+						LLbit_we_o <= `WriteEnable;
 						LLbit_value_o <= 1'b0;
+						
+						wdata_o <= `SCSucceed;
 					end
 					else
 					begin
@@ -495,7 +525,10 @@ module mem(
 						mem_we <= `WriteEnable;
 						mem_data_o <= `ZeroWord;
 
-						wdata_o <= 32'b0;
+						LLbit_we_o <= `WriteEnable;
+						LLbit_value_o <= 1'b0;
+
+						wdata_o <= `SCFail;
 					end
 				end
 

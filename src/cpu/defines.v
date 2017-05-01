@@ -107,6 +107,20 @@
 `define EXE_CSRRWI       3'b101
 `define EXE_CSRRSI       3'b110
 `define EXE_CSRRCI       3'b111
+
+`define EXE_AMO          7'b0101111
+`define EXE_AMO_W        3'b010
+`define EXE_LR           5'b00010
+`define EXE_SC           5'b00011
+`define EXE_AMOSWAP      5'b00001
+`define EXE_AMOADD       5'b00000
+`define EXE_AMOXOR       5'b00100
+`define EXE_AMOAND       5'b01100
+`define EXE_AMOOR        5'b01000
+`define EXE_AMOMIN       5'b10000
+`define EXE_AMOMAX       5'b10100
+`define EXE_AMOMINU      5'b11000
+`define EXE_AMOMAXU      5'b11100
  
 //AluSel
 `define EXE_RES_LOGIC 3'b001
@@ -174,7 +188,7 @@
 `define EXE_LBU_OP  8'b11100100
 `define EXE_LH_OP  8'b11100001
 `define EXE_LHU_OP  8'b11100101
-`define EXE_LL_OP  8'b11110000
+`define EXE_LR_OP  8'b11110000
 `define EXE_LW_OP  8'b11100011
 `define EXE_LWL_OP  8'b11100010
 `define EXE_LWR_OP  8'b11100110
@@ -211,7 +225,11 @@
 	`define DoubleRegBus 63:0
 	`define DoubleRegWidth 64
 	`define HighRegBus 63:32
+	`define PhyAddrBus 33:0
+
 	`define MinusOne 32'hffff_ffff
+	`define SCSucceed 32'h0
+	`define SCFail 32'h1
 `else
 	`define RegBus 63:0
 	`define RegWidth 64
@@ -219,7 +237,11 @@
 	`define DoubleRegBus 127:0
 	`define DoubleRegWidth 128
 	`define HighRegBus 127:64
+	`define PhyAddrBus 49:0
+
 	`define MinusOne 64'hffff_ffff_ffff_ffff
+	`define SCSucceed 64'h0
+	`define SCFail 64'h1
 `endif
 
 `define InstBus 31:0

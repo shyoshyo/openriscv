@@ -44,6 +44,7 @@ module mem_wb(
 	input wire[`RegBus] mem_wdata,
 	input wire mem_LLbit_we,
 	input wire mem_LLbit_value,
+	input wire [`PhyAddrBus]mem_LLbit_addr,
 	
 	input wire[`CSRWriteTypeBus] mem_csr_reg_we,
 	input wire[`CSRAddrBus] mem_csr_reg_write_addr,
@@ -55,8 +56,10 @@ module mem_wb(
 	output reg[`RegAddrBus] wb_wd,
 	output reg wb_wreg,
 	output reg[`RegBus] wb_wdata,
+	
 	output reg wb_LLbit_we,
 	output reg wb_LLbit_value,
+	output reg [`PhyAddrBus]wb_LLbit_addr,
 
 	output reg[`CSRWriteTypeBus] wb_csr_reg_we,
 	output reg[`CSRAddrBus] wb_csr_reg_write_addr,
@@ -76,6 +79,7 @@ module mem_wb(
 			
 			wb_LLbit_we <= 1'b0;
 			wb_LLbit_value <= 1'b0;
+			wb_LLbit_addr <= `ZeroWord;
 			
 			wb_csr_reg_we <= `CSRWriteDisable;
 			wb_csr_reg_write_addr <= `NOPRegAddr;
@@ -91,6 +95,7 @@ module mem_wb(
 			
 			wb_LLbit_we <= 1'b0;
 			wb_LLbit_value <= 1'b0;
+			wb_LLbit_addr <= `ZeroWord;
 
 			wb_csr_reg_we <= `CSRWriteDisable;
 			wb_csr_reg_write_addr <= `NOPRegAddr;
@@ -106,6 +111,7 @@ module mem_wb(
 
 			wb_LLbit_we <= 1'b0;
 			wb_LLbit_value <= 1'b0;
+			wb_LLbit_addr <= `ZeroWord;
 
 			wb_csr_reg_we <= `CSRWriteDisable;
 			wb_csr_reg_write_addr <= `NOPRegAddr;
@@ -121,6 +127,7 @@ module mem_wb(
 
 			wb_LLbit_we <= mem_LLbit_we;
 			wb_LLbit_value <= mem_LLbit_value;
+			wb_LLbit_addr <= mem_LLbit_addr;
 
 			wb_csr_reg_we <= mem_csr_reg_we;
 			wb_csr_reg_write_addr <= mem_csr_reg_write_addr;

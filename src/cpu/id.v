@@ -127,6 +127,7 @@ module id(
 	// ²Ù×÷´a
 	wire [6:0] opcode = inst_i[6:0];
 	wire [2:0] funct3 = inst_i[14:12];
+	wire [4:0] AMO_func5 = inst_i[31:27];
 
 	// Ô´¼Ä´æÆ÷
 	assign reg1_addr_o = inst_i[19:15];
@@ -160,7 +161,8 @@ module id(
 `endif
 
 	assign csr_reg_data_o = csr_reg_data_i;
-	
+
+
 	reg instvalid;
 
 	reg stallreq_for_reg1_loadrelate;
@@ -184,7 +186,7 @@ module id(
 		(
 			(ex_aluop_i == `EXE_LB_OP) || (ex_aluop_i == `EXE_LBU_OP) || (ex_aluop_i == `EXE_LH_OP) ||
 	  		(ex_aluop_i == `EXE_LHU_OP) || (ex_aluop_i == `EXE_LW_OP) || (ex_aluop_i == `EXE_LWR_OP)||
-	  		(ex_aluop_i == `EXE_LWL_OP) || (ex_aluop_i == `EXE_LL_OP) || (ex_aluop_i == `EXE_SC_OP)
+	  		(ex_aluop_i == `EXE_LWL_OP) || (ex_aluop_i == `EXE_LR_OP) || (ex_aluop_i == `EXE_SC_OP)
   		) ? 1'b1 : 1'b0;
 
 	assign inst_o = inst_i;
@@ -1070,11 +1072,51 @@ module id(
 							if(wd_o != `ZeroRegAddr)
 								csr_reg_we_o <= `CSRClear;
 						end
+
 						default:
 						begin
 
 						end
 					endcase
+
+				`EXE_AMO:
+					if(funct3 == `EXE_AMO_W)
+					begin
+						case(AMO_func5)
+							`EXE_LR:
+								if(reg2_addr_o == `ZeroRegAddr)
+								begin
+									aluop_o <= `EXE_LR_OP;
+									alusel_o <= `EXE_RES_LOAD_STORE;
+									instvalid <= `InstValid;
+									
+									wreg_o <= `WriteEnable;
+									
+									reg1_read_o <= `ReadEnable;
+
+									imm <= reg1_o;
+								end
+
+							`EXE_SC:
+							begin
+								aluop_o <= `EXE_SC_OP;
+								alusel_o <= `EXE_RES_LOAD_STORE;
+								instvalid <= `InstValid;
+								
+								wreg_o <= `WriteEnable;
+								
+								reg1_read_o <= `ReadEnable;
+								reg2_read_o <= `ReadEnable;
+
+								imm <= reg1_o;
+							end
+							
+							default:
+							begin
+
+							end
+						endcase
+					end
 
 				default:
 				begin

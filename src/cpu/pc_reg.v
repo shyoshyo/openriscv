@@ -51,12 +51,12 @@ module pc_reg(
 	input wire[`RegBus] branch_target_address_i,
 
 	// TLB 提供的物理地址
-	input wire[`RegBus] next_inst_phy_addr_i,
+	input wire[`PhyAddrBus] next_inst_phy_addr_i,
 	input wire next_inst_tlb_r_miss_exception_i,
 
 	// pc 寄存器，及其物理地址
 	output reg[`RegBus] pc,
-	output reg[`RegBus] inst_phy_addr_o,
+	output reg[`PhyAddrBus] inst_phy_addr_o,
 	
 	// 指令存储器是否使能
 	output reg ce,

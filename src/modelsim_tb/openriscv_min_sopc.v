@@ -59,7 +59,7 @@ module openriscv_min_sopc(
 	wire[`WishboneDataBus] m0_data_i;
 	wire[`WishboneDataBus] m0_data_o;
 	wire[`WishboneAddrBus] m0_addr_i;
-	wire[`RegBus] m0_addr_phy_i;
+	wire[`PhyAddrBus] m0_addr_phy_i;
 	wire[`WishboneSelBus]  m0_sel_i;
 	wire       m0_we_i;
 	wire       m0_cyc_i;
@@ -70,7 +70,7 @@ module openriscv_min_sopc(
 	wire[`WishboneDataBus] m1_data_i;
 	wire[`WishboneDataBus] m1_data_o;
 	wire[`WishboneAddrBus] m1_addr_i;
-	wire[`RegBus] m1_addr_phy_i;
+	wire[`PhyAddrBus] m1_addr_phy_i;
 	wire[`WishboneSelBus]  m1_sel_i;
 	wire       m1_we_i;
 	wire       m1_cyc_i;

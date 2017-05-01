@@ -43,7 +43,7 @@ module mmu_conv
 	input wire ce_i,
 	input wire we_i,
 	input wire [`RegBus] vir_addr_i,
-	output reg [`RegBus] phy_addr_o,
+	output reg [`PhyAddrBus] phy_addr_o,
 
 	// TLB 缺失
 	output reg tlb_r_miss_exception_o,
@@ -191,7 +191,7 @@ module mmu_conv
 		end
 		else
 		begin
-			phy_addr_o <= vir_addr_i;
+			phy_addr_o <= {2'b0, vir_addr_i};
 			
 			tlb_r_miss_exception_o <= `False_v;
 			tlb_w_miss_exception_o <= `False_v;

@@ -81,7 +81,7 @@ module ex(
 	input wire[`RegBus] csr_reg_data_i,
 
 	// TLB 提供的物理地址
-	input wire[`RegBus] mem_phy_addr_i,
+	input wire[`PhyAddrBus] mem_phy_addr_i,
 	input wire data_tlb_r_miss_exception_i,
 	input wire data_tlb_w_miss_exception_i,
 	input wire data_tlb_mod_exception_i, 
@@ -127,7 +127,7 @@ module ex(
 
 
 	// 告诉 MEM 阶段的物理地址
-	output wire[`RegBus] mem_phy_addr_o,
+	output wire[`PhyAddrBus] mem_phy_addr_o,
 	output wire data_tlb_r_miss_exception_o,
 	output wire data_tlb_w_miss_exception_o,
 	output wire data_tlb_mod_exception_o, 
@@ -463,7 +463,7 @@ module ex(
 			{mem_we_o, mem_ce_o} <= {`WriteDisable, `ChipDisable};
 		else
 			case(aluop_i)
-				`EXE_LB_OP, `EXE_LBU_OP, `EXE_LH_OP, `EXE_LHU_OP, `EXE_LW_OP, `EXE_LWL_OP, `EXE_LWR_OP, `EXE_LL_OP:
+				`EXE_LB_OP, `EXE_LBU_OP, `EXE_LH_OP, `EXE_LHU_OP, `EXE_LW_OP, `EXE_LWL_OP, `EXE_LWR_OP, `EXE_LR_OP:
 					{mem_we_o, mem_ce_o} <= {`WriteDisable, `ChipEnable};
 
 				`EXE_SB_OP, `EXE_SH_OP, `EXE_SW_OP, `EXE_SWL_OP, `EXE_SWR_OP, `EXE_SC_OP:

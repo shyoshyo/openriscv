@@ -40,32 +40,56 @@ module LLbit_reg(
 	input wire flush,
 
 	//写端口
+	input wire we_i,
 	input wire LLbit_i,
-	input wire we,
+	input wire [`PhyAddrBus]LLbit_addr_i,
 	
 	//读端口1
-	output reg LLbit_o
+	output reg LLbit_o,
+	output reg [`PhyAddrBus]LLbit_addr_o
 );
 
 	// LL bit 寄存器的值
 	reg LLbit;
+	reg [`PhyAddrBus]LLbit_addr;
+	
 	always @ (posedge clk or negedge rst_n)
 		if (rst_n == `RstEnable)
+		begin
 			LLbit <= 1'b0;
-		else if((flush == 1'b1))
+			LLbit_addr <= `ZeroWord;
+		end
+		else if((flush == `Flush))
+		begin
 			LLbit <= 1'b0;
-		else if((we == `WriteEnable))
+			LLbit_addr <= `ZeroWord;
+		end
+		else if((we_i == `WriteEnable))
+		begin
 			LLbit <= LLbit_i;
+			LLbit_addr <= LLbit_addr_i;
+		end
 			
 	always @ (*)
 		if (rst_n == `RstEnable)
+		begin
 			LLbit_o <= 1'b0;
-		// else if(flush == 1'b1)
-		// 	LLbit_o <= 1'b0;
-		else if(we == `WriteEnable)
+			LLbit_addr_o <= `ZeroWord;
+		end
+		else if(flush == `Flush)
+		begin
+		 	LLbit_o <= 1'b0;
+			LLbit_addr_o <= `ZeroWord;
+		end
+		else if(we_i == `WriteEnable)
+		begin
 			LLbit_o <= LLbit_i;
+			LLbit_addr_o <= LLbit_addr_i;
+		end
 		else
+		begin
 			LLbit_o <= LLbit;
-
-
+			LLbit_addr_o <= LLbit_addr;
+		end
+	
 endmodule
