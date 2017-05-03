@@ -64,39 +64,78 @@ module csr(
 	output reg[`RegBus] data_o,
 
 	// next pc for excpetion
-	output reg[`RegBus] exception_new_pc_o,
-
-	// timer interrupt output
-	output reg timer_int_o
+	output reg[`RegBus] exception_new_pc_o
 );
+`ifdef RV32
+	wire[`RegBus] misa = {2'b01, 4'b0, 26'h0141101};
+`else
+	wire[`RegBus] misa = {2'b10, 4'b0, 32'b0, 26'h0141101};
+`endif
+
+	wire[`RegBus] mvendorid = `ZeroWord;
+	wire[`RegBus] marchid = `ZeroWord;
+	wire[`RegBus] mimpid = `ZeroWord;
+	wire[`RegBus] mhartid = `ZeroWord;
+
 	reg[`RegBus] mscratch;
-	reg[`RegBus] mtvec;
+
+	reg[`CSR_mtvec_addr_bus] mtvec_addr;
+	reg[`CSR_medeleg_bus] medeleg;
+	reg[`CSR_mideleg_bus] mideleg;
+
+	reg[`CSR_mstatus_vm_bus] mstatus_vm;
+	reg[`CSR_mstatus_fs_bus] mstatus_fs;
+	wire[`CSR_mstatus_sd_bus] mstatus_sd = (mstatus_fs == `CSR_mstatus_fs_Dirty);
+
+	wire[`CSR_mip_MTIP_bus] mip_mtip = int_i[0];
+
+
 
 	// write & modify CSR
 	always @ (posedge clk or negedge rst_n)
 		if (rst_n == `RstEnable)
 		begin
-			timer_int_o <= `InterruptNotAssert;
-
 			mscratch <= `ZeroWord;
-			mtvec <= `ZeroWord;
+			mtvec_addr <= `ZeroWord;
+			medeleg <= `ZeroWord;
+			mideleg <= `ZeroWord;
+			mstatus_vm <= `ZeroWord;
+
 		end
 		else
 		begin
-			// TODO: fixme
-			if(`False_v)
-			begin
-				timer_int_o <= `InterruptAssert;
-				timer_int_o <= `InterruptNotAssert;
-			end
-			
 			case(we_i)
 				`CSRWrite:
 					case (waddr_i)
 						`CSR_mscratch:
 							mscratch <= data_i;
 						`CSR_mtvec:
-							mtvec <= data_i;
+							mtvec_addr <= data_i[`CSR_mtvec_addr_bus];
+						`CSR_medeleg:
+							medeleg <= data_i[`CSR_medeleg_bus];
+						`CSR_mideleg:
+							mideleg <= data_i[`CSR_mideleg_bus];
+						
+						`CSR_mstatus:
+						begin
+							case(data_i[`CSR_mstatus_vm_bus])
+`ifdef RV32
+								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
+`else
+								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
+								`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
+`endif
+									mstatus_vm <= data_i[`CSR_mstatus_vm_bus];
+
+							default: begin end
+							endcase
+
+							mstatus_fs <= data_i[`CSR_mstatus_fs_bus];
+						end
+
+						`CSR_misa:
+						begin
+						end
 
 						default:
 						begin
@@ -108,8 +147,34 @@ module csr(
 						`CSR_mscratch:
 							mscratch <= mscratch | data_i;
 						`CSR_mtvec:
-							mtvec <= mtvec | data_i;
+							mtvec_addr <= mtvec_addr | data_i[`CSR_mtvec_addr_bus];
+						`CSR_medeleg:
+							medeleg <= medeleg | data_i[`CSR_medeleg_bus];
+						`CSR_mideleg:
+							mideleg <= mideleg | data_i[`CSR_mideleg_bus];
+						
+						`CSR_mstatus:
+						begin
+							case(mstatus_vm | data_i[`CSR_mstatus_vm_bus])
+`ifdef RV32
+								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
+`else
+								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
+								`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
+`endif
+									mstatus_vm <= mstatus_vm | data_i[`CSR_mstatus_vm_bus];
 
+								default: begin end
+							endcase
+
+							mstatus_fs <= mstatus_fs | data_i[`CSR_mstatus_fs_bus];
+						end
+
+
+						`CSR_misa:
+						begin
+						end
+						
 						default:
 						begin
 						end
@@ -120,7 +185,33 @@ module csr(
 						`CSR_mscratch:
 							mscratch <= mscratch & ~data_i;
 						`CSR_mtvec:
-							mtvec <= mtvec & ~data_i;
+							mtvec_addr <= mtvec_addr & ~data_i[`CSR_mtvec_addr_bus];
+						`CSR_medeleg:
+							medeleg <= medeleg & ~data_i[`CSR_medeleg_bus];
+						`CSR_mideleg:
+							mideleg <= mideleg & ~data_i[`CSR_mideleg_bus];
+						
+						`CSR_mstatus:
+						begin
+							case(mstatus_vm & ~data_i[`CSR_mstatus_vm_bus])
+`ifdef RV32
+								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
+`else
+								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
+								`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
+`endif
+									mstatus_vm <= mstatus_vm & ~data_i[`CSR_mstatus_vm_bus];
+
+								default: begin end
+							endcase
+
+							mstatus_fs <= mstatus_fs & ~data_i[`CSR_mstatus_fs_bus];
+						end
+
+						`CSR_misa:
+						begin
+						end
+						
 						default:
 						begin
 						end
@@ -161,7 +252,7 @@ module csr(
 		else
 		begin
 			// TODO: fix me
-			exception_new_pc_o <= 32'h0x00000001;
+			exception_new_pc_o <= 32'h00000001;
 		end
 	end
 
@@ -173,11 +264,34 @@ module csr(
 			data_o <= `ZeroWord;
 		else
 		begin
-			case (raddr_i)
-				`CSR_mscratch: data_o <= mscratch;
-				`CSR_mtvec: data_o <= mtvec;
+			data_o <= `ZeroWord;
 
-				default: data_o <= `ZeroWord;
+			case (raddr_i)
+				`CSR_misa:      data_o <= misa;
+
+				`CSR_mvendorid: data_o <= mvendorid;
+				`CSR_mimpid:    data_o <= mimpid;
+				`CSR_marchid:   data_o <= marchid;
+				`CSR_mhartid:   data_o <= mhartid;
+
+				`CSR_mscratch:  data_o <= mscratch;
+				`CSR_mtvec:     data_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
+				`CSR_medeleg:   data_o[`CSR_medeleg_bus] <= medeleg;
+				`CSR_mideleg:   data_o[`CSR_mideleg_bus] <= mideleg;
+
+				`CSR_mstatus:
+				begin
+					data_o[`CSR_mstatus_vm_bus] <= mstatus_vm;
+					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;
+					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
+				end
+
+				`CSR_mip:
+					data_o[`CSR_mip_MTIP_bus] <= mip_mtip;
+
+				default:
+				begin
+				end
 			endcase
 		end
 

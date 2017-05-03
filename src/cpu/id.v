@@ -60,6 +60,8 @@ module id(
 	input wire[`CSRWriteTypeBus] ex_csr_reg_we_i,
 	input wire[`CSRWriteTypeBus] mem_csr_reg_we_i,
 	input wire[`CSRWriteTypeBus] wb_csr_reg_we_i,
+	input wire ex_not_stall_i,
+	input wire mem_not_stall_i,
 
 	input wire[`RegBus] reg1_data_i,
 	input wire[`RegBus] reg2_data_i,
@@ -169,7 +171,8 @@ module id(
 	reg stallreq_for_reg1_loadrelate;
 	reg stallreq_for_reg2_loadrelate;
 
-	wire stallreq_for_csr_relate;
+	wire stallreq_for_csr_write_relate;
+	wire stallreq_for_csr_read_relate;
 	wire pre_inst_is_load;
 	reg excepttype_is_syscall;
 	reg excepttype_is_eret;
@@ -177,11 +180,15 @@ module id(
 
 	assign link_addr_o = pc_i + 4'd4;
 
-	assign stallreq_for_csr_relate =
+	assign stallreq_for_csr_write_relate =
 		({ex_csr_reg_we_i, mem_csr_reg_we_i, wb_csr_reg_we_i} == {`CSRWriteDisable, `CSRWriteDisable, `CSRWriteDisable}) ? 1'b0 : 1'b1;
+	
+	assign stallreq_for_csr_read_relate =
+		((csr_reg_read_o == `ReadEnable) && (ex_not_stall_i || mem_not_stall_i));
 
 	assign stallreq = 
-		stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate | stallreq_for_csr_relate;
+		stallreq_for_reg1_loadrelate  | stallreq_for_reg2_loadrelate |
+		stallreq_for_csr_write_relate | stallreq_for_csr_read_relate;
 
 	assign pre_inst_is_load = 
 		(

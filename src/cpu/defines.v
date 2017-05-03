@@ -382,6 +382,45 @@
 `define CSR_dpc 12'h7B1
 `define CSR_dscratch 12'h7B2
 
+
+`define CSR_mtvec_addr_bus 31:2
+
+`define CSR_medeleg_bus 11:0
+`define CSR_mideleg_bus 11:0
+
+`define CSR_mstatus_vm_bus 28:24
+`define CSR_mstatus_vm_Mbare 5'h0
+`define CSR_mstatus_vm_Sv32 5'h8
+`define CSR_mstatus_vm_Sv39 5'h9
+`define CSR_mstatus_vm_Sv48 5'h10
+
+`define CSR_mstatus_fs_bus 14:13
+`define CSR_mstatus_fs_Off 2'h0
+`define CSR_mstatus_fs_Initial 2'h1
+`define CSR_mstatus_fs_Clean 2'h2
+`define CSR_mstatus_fs_Dirty 2'h3
+`ifdef RV32
+	`define CSR_mstatus_sd_bus 31:31
+`else
+	`define CSR_mstatus_sd_bus 63:63
+`endif
+
+`define CSR_mip_USIP_bus 0:0
+`define CSR_mip_SSIP_bus 1:1
+`define CSR_mip_HSIP_bus 2:2
+`define CSR_mip_MSIP_bus 3:3
+
+`define CSR_mip_UTIP_bus 4:4
+`define CSR_mip_STIP_bus 5:5
+`define CSR_mip_HTIP_bus 6:6
+`define CSR_mip_MTIP_bus 7:7
+
+`define CSR_mip_UEIP_bus 8:8
+`define CSR_mip_SEIP_bus 9:9
+`define CSR_mip_HEIP_bus 10:10
+`define CSR_mip_MEIP_bus 11:11
+
+
 /*
 fcsr
 fflags

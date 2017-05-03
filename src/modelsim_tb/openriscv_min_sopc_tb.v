@@ -264,7 +264,7 @@ module openriscv_min_sopc_tb();
 
 
 	openriscv_min_sopc openriscv_min_sopc0(
-		.clk(CLOCK_50),
+		.clk(CLOCK_1),
 		.wishbone_clk(CLOCK_100),
 		.rst_n(rst_n),
 

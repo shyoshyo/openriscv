@@ -53,11 +53,5 @@ debug: spike_prog.om
 	sleep 2
 	killall spike
 
-bbl.om: bbl
-	cp $< $@
-
-testbbl: bbl.data bbl.bin bbl.asm
-	cp bbl.data ../modelsim/inst_rom.data
-
 clean:
-	rm -f *.o *.om *.bin *.data *.mif *.asm Bin2Mem
+	rm -f *.o *.om *.bin *.data *.mif *.asm Bin2Mem ../modelsim/inst_rom.data

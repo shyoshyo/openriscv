@@ -53,7 +53,8 @@ module openriscv_min_sopc(
 	wire timer_int;
 	wire uart_int;
 
-	assign int = {timer_int, 2'b0, uart_int, 2'b0};
+	// TODO: fix int vector
+	assign int = {/*timer_int, 2'b0, uart_int, 2'b0*/ 5'h0, timer_int};
 
 	// dwishbone
 	wire[`WishboneDataBus] m0_data_i;
@@ -117,9 +118,7 @@ module openriscv_min_sopc(
 		.dwishbone_sel_o(m0_sel_i),
 		.dwishbone_stb_o(m0_stb_i),
 		.dwishbone_cyc_o(m0_cyc_i),
-
-		.timer_int_o(timer_int),
-
+		
 		.pc_o()
 	);
 
@@ -207,6 +206,33 @@ module openriscv_min_sopc(
 		.wishbone_ack_o(s3_ack_i)
 	);
 	*/
+
+	//Á¬½Ó config_string, timer
+	wire[31:0] s3_data_i;
+	wire[31:0] s3_data_o;
+	wire[31:0] s3_addr_o;
+	wire[3:0]  s3_sel_o;
+	wire       s3_we_o; 
+	wire       s3_cyc_o; 
+	wire       s3_stb_o;
+	wire       s3_ack_i;
+
+	config_string_and_timer config_string_and_timer0(
+		.clk(wishbone_clk),
+		.rst_n(rst_n),
+
+		.wishbone_addr_i(s3_addr_o),
+		.wishbone_data_i(s3_data_o),
+		.wishbone_we_i(s3_we_o),
+		.wishbone_sel_i(s3_sel_o),
+		.wishbone_stb_i(s3_stb_o),
+		.wishbone_cyc_i(s3_cyc_o),
+
+		.wishbone_data_o(s3_data_i),
+		.wishbone_ack_o(s3_ack_i),
+
+		.timer_int_o(timer_int)
+	);
 
 	// bus arbiter
 	wb_conmax_top wb_conmax_top0(
@@ -346,14 +372,14 @@ module openriscv_min_sopc(
 		.s2_rty_i(1'b0),
 
 		// Slave 3 Interface
-		.s3_data_i(),
-		.s3_data_o(),
-		.s3_addr_o(),
-		.s3_sel_o(),
-		.s3_we_o(), 
-		.s3_cyc_o(), 
-		.s3_stb_o(),
-		.s3_ack_i(1'b0), 
+		.s3_data_i(s3_data_i),
+		.s3_data_o(s3_data_o),
+		.s3_addr_o(s3_addr_o),
+		.s3_sel_o(s3_sel_o),
+		.s3_we_o(s3_we_o),
+		.s3_cyc_o(s3_cyc_o),
+		.s3_stb_o(s3_stb_o),
+		.s3_ack_i(s3_ack_i),
 		.s3_err_i(1'b0), 
 		.s3_rty_i(1'b0),
 

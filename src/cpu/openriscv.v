@@ -60,9 +60,7 @@ module openriscv(
 	output wire                    dwishbone_stb_o,
 	output wire                    dwishbone_cyc_o,
 	
-	output wire[`RegBus] pc_o,
-	
-	output wire timer_int_o
+	output wire[`RegBus] pc_o
 );
 	// 下一条需要访问 inst 存储器的地址
 	wire [`PhyAddrBus]pc_next_inst_phy_addr;
@@ -343,6 +341,9 @@ module openriscv(
 		.ex_csr_reg_we_i(ex_csr_reg_we_o),
 		.mem_csr_reg_we_i(mem_csr_reg_we_o),
 		.wb_csr_reg_we_i(wb_csr_reg_we_i),
+
+		.ex_not_stall_i(ex_not_stall_i),
+		.mem_not_stall_i(mem_not_stall_i),
 
 		// 如果上一条指令是转移指令，那么下一条指令在译码的时候 is_in_delayslot 为 true
 		.is_in_delayslot_i(is_in_delayslot_i),
@@ -833,9 +834,7 @@ module openriscv(
 		
 		.data_o(csr_data_o),
 		
-		.exception_new_pc_o(exception_new_pc),
-
-		.timer_int_o(timer_int_o)
+		.exception_new_pc_o(exception_new_pc)
 	);
 
 	mmu mmu0(
