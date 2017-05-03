@@ -8,55 +8,6 @@
 # //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
 # //
 # Loading project riscv
-# Compile of ctrl.v was successful.
-# Compile of defines.v was successful.
-# Compile of div.v was successful.
-# Compile of ex.v was successful.
-# Compile of ex_mem.v was successful.
-# Compile of id.v was successful.
-# Compile of id_ex.v was successful.
-# Compile of if_id.v was successful.
-# Compile of llbit_reg.v was successful.
-# Compile of mem.v was successful.
-# Compile of mem_wb.v was successful.
-# Compile of openriscv.v was successful.
-# Compile of pc_reg.v was successful.
-# Compile of regfile.v was successful.
-# Compile of wishbone_bus_if.v was successful.
-# Compile of mmu.v was successful.
-# Compile of mmu_conv.v was successful.
-# Compile of tlb.v was successful.
-# Compile of bootloader_rom.v was successful.
-# Compile of data_ram.v was successful.
-# Compile of flash_rom.v was successful.
-# Compile of openriscv_min_sopc.v was successful.
-# Compile of openriscv_min_sopc_tb.v was successful.
-# Compile of phy_bus_addr_conv.v was successful.
-# Compile of async.v was successful.
-# Compile of raminfr.v was successful.
-# Compile of timescale.v was successful.
-# Compile of uart_debug_if.v was successful.
-# Compile of uart_defines.v was successful.
-# Compile of uart_receiver.v was successful.
-# Compile of uart_regs.v was successful.
-# Compile of uart_rfifo.v was successful.
-# Compile of uart_sync_flops.v was successful.
-# Compile of uart_tfifo.v was successful.
-# Compile of uart_top.v was successful.
-# Compile of uart_transmitter.v was successful.
-# Compile of uart_wb.v was successful.
-# Compile of wb_conmax_arb.v was successful.
-# Compile of wb_conmax_defines.v was successful.
-# Compile of wb_conmax_master_if.v was successful.
-# Compile of wb_conmax_msel.v was successful.
-# Compile of wb_conmax_pri_dec.v was successful.
-# Compile of wb_conmax_pri_enc.v was successful.
-# Compile of wb_conmax_rf.v was successful.
-# Compile of wb_conmax_slave_if.v was successful.
-# Compile of wb_conmax_top.v was successful.
-# Compile of csr.v was successful.
-# Compile of config_string_and_timer.v was successful.
-# 48 compiles, 0 failed with no errors. 
 vsim -voptargs=+acc work.openriscv_min_sopc_tb
 # vsim -voptargs=+acc work.openriscv_min_sopc_tb 
 # ** Note: (vsim-3812) Design is being optimized...
@@ -108,6 +59,9 @@ vsim -voptargs=+acc work.openriscv_min_sopc_tb
 # Loading work.wb_conmax_pri_enc(fast)
 # Loading work.wb_conmax_pri_dec(fast)
 # Loading work.wb_conmax_rf(fast)
+do /home/shyo/openriscv/modelsim/wave.do
+add wave -position end  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/wishbone_data_i
+add wave -position end  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/wishbone_addr_i
 run -a
 # (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
 # 
@@ -116,34 +70,57 @@ run -a
 # reiko
 # plic_ndevs = 0
 # mem_size = f0000000
-# boot_loader    reiko >w<
-# 1
+# 0
 # ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
 # 
 # ====  end: memcpy ====
 # ==== begin: memset ====
 # 
 # ====  end: memset ====
 # ==== begin: memset ====
-# memset 804a8000 / 804bb0a8
-# memset 804a9000 / 804bb0a8
-# memset 804aa000 / 804bb0a8
-# memset 804ab000 / 804bb0a8
-# memset 804ac000 / 804bb0a8
-# memset 804ad000 / 804bb0a8
-# memset 804ae000 / 804bb0a8
-# memset 804af000 / 804bb0a8
-# memset 804b0000 / 804bb0a8
-# memset 804b1000 / 804bb0a8
-# memset 804b2000 / 804bb0a8
-# memset 804b3000 / 804bb0a8
-# memset 804b4000 / 804bb0a8
-# memset 804b5000 / 804bb0a8
-# memset 804b6000 / 804bb0a8
-# memset 804b7000 / 804bb0a8
-# memset 804b8000 / 804bb0a8
-# memset 804b9000 / 804bb0a8
-# memset 804ba000 / 804bb0a8
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# s + 1 = 0x80010f29
+# ~~~ misaligned_load_trap()
+# *(int *)(s+1) = 9a785634
+# fn = 00000000
+add wave -position end  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/wishbone_we_i
+noforce sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/wishbone_addr_i
+noforce sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/wishbone_we_i
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf /home/shyo/openriscv/modelsim/wave.do
 restart
 # Loading work.openriscv_min_sopc_tb(fast)
 # Loading work.openriscv_min_sopc(fast)
@@ -195,53 +172,1230 @@ run -a
 # reiko
 # plic_ndevs = 0
 # mem_size = f0000000
-# 1
+# 0
 # ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
 # 
 # ====  end: memcpy ====
 # ==== begin: memset ====
 # 
 # ====  end: memset ====
 # ==== begin: memset ====
-# memset 804a8000 / 804bb0a8
-# memset 804a9000 / 804bb0a8
-# memset 804aa000 / 804bb0a8
-# memset 804ab000 / 804bb0a8
-# memset 804ac000 / 804bb0a8
-# memset 804ad000 / 804bb0a8
-# memset 804ae000 / 804bb0a8
-# memset 804af000 / 804bb0a8
-# memset 804b0000 / 804bb0a8
-# memset 804b1000 / 804bb0a8
-# memset 804b2000 / 804bb0a8
-# memset 804b3000 / 804bb0a8
-# memset 804b4000 / 804bb0a8
-# memset 804b5000 / 804bb0a8
-# memset 804b6000 / 804bb0a8
-# memset 804b7000 / 804bb0a8
-# memset 804b8000 / 804bb0a8
-# memset 804b9000 / 804bb0a8
-# memset 804ba000 / 804bb0a8
-# memset 804bb000 / 804bb0a8
 # 
 # ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# s + 1 = 0x80010f29
+# ~~~ misaligned_load_trap()
+# *(int *)(s+1) = 9a785634
+# fn = 00000000
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v failed with 1 errors.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v failed with 1 errors.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# Compile of csr.v failed with 1 errors.
+# Compile of config_string_and_timer.v was successful.
+# 48 compiles, 3 failed with 3 errors. 
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v failed with 1 errors.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# Compile of csr.v was successful.
+# Compile of config_string_and_timer.v was successful.
+# 48 compiles, 1 failed with 1 error. 
+# Load canceled
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# Compile of csr.v was successful.
+# Compile of config_string_and_timer.v was successful.
+# 48 compiles, 0 failed with no errors. 
+restart
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# Warning in wave window restart: (vish-4014) No objects found matching '/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/int_i'. 
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# should not arrive here!
+# Break in Module phy_bus_addr_conv at /home/shyo/openriscv/src/modelsim_tb/phy_bus_addr_conv.v line 84
+run -a
+# should not arrive here!
+# Break in Module phy_bus_addr_conv at /home/shyo/openriscv/src/modelsim_tb/phy_bus_addr_conv.v line 84
+
+run -a
+# should not arrive here!
+# Break in Module phy_bus_addr_conv at /home/shyo/openriscv/src/modelsim_tb/phy_bus_addr_conv.v line 84
+run -a
+# should not arrive here!
+# Break in Module phy_bus_addr_conv at /home/shyo/openriscv/src/modelsim_tb/phy_bus_addr_conv.v line 84
+run -a
+# should not arrive here!
+# Break in Module phy_bus_addr_conv at /home/shyo/openriscv/src/modelsim_tb/phy_bus_addr_conv.v line 84
+run -a
+# should not arrive here!
+# Break in Module phy_bus_addr_conv at /home/shyo/openriscv/src/modelsim_tb/phy_bus_addr_conv.v line 84
+run -a
+# should not arrive here!
+# Break in Module phy_bus_addr_conv at /home/shyo/openriscv/src/modelsim_tb/phy_bus_addr_conv.v line 84
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# Compile of csr.v was successful.
+# Compile of config_string_and_timer.v was successful.
+# 48 compiles, 0 failed with no errors. 
+restart
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# mem_size = f0000000
 # 0
 # ==== begin: memcpy ====
-# memcpy 80400000 / 804a56c5
-# memcpy 80401000 / 804a56c5
-# memcpy 80402000 / 804a56c5
-# memcpy 80403000 / 804a56c5
-# memcpy 80404000 / 804a56c5
-# memcpy 80405000 / 804a56c5
-# memcpy 80406000 / 804a56c5
-# memcpy 80407000 / 804a56c5
-# memcpy 80408000 / 804a56c5
-# memcpy 80409000 / 804a56c5
-# memcpy 8040a000 / 804a56c5
-# memcpy 8040b000 / 804a56c5
-# memcpy 8040c000 / 804a56c5
-# memcpy 8040d000 / 804a56c5
-# memcpy 8040e000 / 804a56c5
-# memcpy 8040f000 / 804a56c5
-# memcpy 80410000 / 804a56c5
-# memcpy 80411000 / 804a56c5
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# s + 1 = 0x80010f29
+# ~~~ misaligned_load_trap()
+# *(int *)(s+1) = 9a785634
+# fn = 1a80006f
+# reiko
+# plic_ndevs = 0
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+                  vvvvvvvvvvvvwrite format wave -window .main_pane.wave.interior.cs.body.pw.wf /home/shyo/openriscv/modelsim/wave.do
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# *(uint32_t *)(s+1) = f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = 21345678
+# s[1] = 9a876543
+# fn = 1a80006f
+# reiko
+# plic_ndevs = 0
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+         restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# *(uint32_t *)(s+1) = f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = 21345678
+# s[1] = 9a876543
+# reiko
+# plic_ndevs = 0
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# *(uint32_t *)(s+1) = f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = 21345678
+# s[1] = 9a876543
+run -a
+# reiko
+# plic_ndevs = 0
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# *(uint32_t *)(s+1) = f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = 21345678
+# s[1] = 9a876543
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# reiko
+# plic_ndevs = 0
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# *(uint32_t *)(s+1) = f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = 21345678
+# s[1] = 9a876543
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# reiko
+# plic_ndevs = 0
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# *(uint32_t *)(s+1) = f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = 21345678
+# s[1] = 9a876543
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# reiko
+# plic_ndevs = 0
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# *(uint32_t *)(s+1) = f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = 21345678
+# s[1] = 9a876543
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+====  end: mrestart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# reiko
+# plic_ndevs = 0
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+              vvvvvvvvvvvvvvvvCompile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of mmu.v was successful.
+# Compile of mmu_conv.v was successful.
+# Compile of tlb.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# Compile of csr.v was successful.
+# Compile of config_string_and_timer.v was successful.
+# 48 compiles, 0 failed with no errors. 
+run -a
+# vvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+rrrrrrrrrrrrrrrrrrrestart
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.tlb(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# s = 0x80011f28
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# mem_size = f0000000
+# 0
+# ==== begin: memcpy ====
+# memcpy 80400000 / 804010c9
+# memcpy 80401000 / 804010c9
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80402000 / 80403000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80403000 / 80404000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE

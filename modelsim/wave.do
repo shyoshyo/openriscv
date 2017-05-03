@@ -1,4 +1,5 @@
 onerror {resume}
+quietly virtual signal -install /openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0 { (context /openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0 )&{wishbone_we_i ,wishbone_addr_i }} ram_we_addr_i
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/clk
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/wishbone_clk
@@ -117,10 +118,10 @@ add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_timer0/mtimecmp
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_timer0/timer_int_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mip_mtip
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/int_i
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/ram_we_addr_i
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {first {640487 ps} 1} {output {6689872 ps} 1} {{Cursor 6} {4077208849 ps} 1} {{Cursor 7} {246770018089 ps} 0}
-quietly wave cursor active 4
+WaveRestoreCursors {first {640487 ps} 1} {output {6689872 ps} 1} {{Cursor 7} {208522000000 ps} 1} {{Cursor 5} {34711041000 ps} 1} {{Cursor 6} {34711498106 ps} 0}
+quietly wave cursor active 5
 configure wave -namecolwidth 185
 configure wave -valuecolwidth 175
 configure wave -justifyvalue left
@@ -135,4 +136,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {445131080456 ps} {650148659976 ps}
+WaveRestoreZoom {340004112384 ps} {340016625664 ps}

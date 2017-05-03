@@ -51,7 +51,8 @@ module csr(
 	input wire[`ExceptionTypeBus] excepttype_i,
 	
 	// Interrupt source
-	input wire[`IntSourceBus] int_i,
+	input wire timer_int_i,
+	input wire software_int_i,
 
 	// inst vaddr & data vaddr
 	input wire[`RegBus] current_inst_addr_i,
@@ -64,8 +65,11 @@ module csr(
 	output reg[`RegBus] data_o,
 
 	// next pc for excpetion
-	output reg[`RegBus] exception_new_pc_o
+	output reg[`RegBus] exception_new_pc_o,
+
+	output reg [1:0] prv_o 
 );
+
 `ifdef RV32
 	wire[`RegBus] misa = {2'b01, 4'b0, 26'h0141101};
 `else
@@ -78,18 +82,75 @@ module csr(
 	wire[`RegBus] mhartid = `ZeroWord;
 
 	reg[`RegBus] mscratch;
-
 	reg[`CSR_mtvec_addr_bus] mtvec_addr;
+	reg[`CSR_mepc_addr_bus] mepc_addr;
 	reg[`CSR_medeleg_bus] medeleg;
 	reg[`CSR_mideleg_bus] mideleg;
+	reg[`RegBus] mcause;
+	reg[`RegBus] mbadaddr;
 
 	reg[`CSR_mstatus_vm_bus] mstatus_vm;
 	reg[`CSR_mstatus_fs_bus] mstatus_fs;
 	wire[`CSR_mstatus_sd_bus] mstatus_sd = (mstatus_fs == `CSR_mstatus_fs_Dirty);
+	reg[`CSR_mstatus_mpp_bus] mstatus_mpp;
+	reg[`CSR_mstatus_spp_bus] mstatus_spp;
+	reg[`CSR_mstatus_mpie_bus] mstatus_mpie;
+	reg[`CSR_mstatus_spie_bus] mstatus_spie;
+	reg[`CSR_mstatus_upie_bus] mstatus_upie;
+	reg[`CSR_mstatus_mie_bus] mstatus_mie;
+	reg[`CSR_mstatus_sie_bus] mstatus_sie;
+	reg[`CSR_mstatus_uie_bus] mstatus_uie;
 
-	wire[`CSR_mip_MTIP_bus] mip_mtip = int_i[0];
+
+	wire[`CSR_mip_mtip_bus] mip_mtip = timer_int_i;
 
 
+	wire has_cause = 
+		excepttype_i[`Exception_INST_MISALIGNED] ? 1'b1 :
+		excepttype_i[`Exception_INST_ACCESS_FAULT] ? 1'b1 : 
+		excepttype_i[`Exception_INST_ILLEGAL] ? 1'b1 : 
+		excepttype_i[`Exception_BREAK] ? 1'b1 : 
+		excepttype_i[`Exception_LOAD_MISALIGNED] ? 1'b1 : 
+		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? 1'b1 : 
+		excepttype_i[`Exception_STORE_MISALIGNED] ? 1'b1 : 
+		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? 1'b1 : 
+		excepttype_i[`Exception_ECALL_FROM_U] ? 1'b1 : 
+		excepttype_i[`Exception_ECALL_FROM_S] ? 1'b1 : 
+		excepttype_i[`Exception_ECALL_FROM_M] ? 1'b1 : 
+		1'b0;
+
+	wire [`RegBus] cause = 
+		excepttype_i[`Exception_INST_MISALIGNED] ? `CSR_mcause_INST_MISALIGNED :
+		excepttype_i[`Exception_INST_ACCESS_FAULT] ? `CSR_mcause_INST_ACCESS_FAULT : 
+		excepttype_i[`Exception_INST_ILLEGAL] ? `CSR_mcause_INST_ILLEGAL : 
+		excepttype_i[`Exception_BREAK] ? `CSR_mcause_BREAK : 
+		excepttype_i[`Exception_LOAD_MISALIGNED] ? `CSR_mcause_LOAD_MISALIGNED : 
+		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? `CSR_mcause_LOAD_ACCESS_FAULT : 
+		excepttype_i[`Exception_STORE_MISALIGNED] ? `CSR_mcause_STORE_MISALIGNED : 
+		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? `CSR_mcause_STORE_ACCESS_FAULT : 
+		excepttype_i[`Exception_ECALL_FROM_U] ? `CSR_mcause_ECALL_FROM_U : 
+		excepttype_i[`Exception_ECALL_FROM_S] ? `CSR_mcause_ECALL_FROM_S : 
+		excepttype_i[`Exception_ECALL_FROM_M] ? `CSR_mcause_ECALL_FROM_M : 
+		`ZeroWord;
+
+	wire has_badaddr = 
+		excepttype_i[`Exception_INST_MISALIGNED] ? 1'b1 :
+		excepttype_i[`Exception_INST_ACCESS_FAULT] ? 1'b1 :
+		excepttype_i[`Exception_LOAD_MISALIGNED] ? 1'b1 : 
+		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? 1'b1 : 
+		excepttype_i[`Exception_STORE_MISALIGNED] ? 1'b1 : 
+		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? 1'b1 : 
+		1'b0;
+	
+	wire [`RegBus]badaddr = 
+		excepttype_i[`Exception_INST_MISALIGNED] ? current_inst_addr_i :
+		excepttype_i[`Exception_INST_ACCESS_FAULT] ? current_inst_addr_i :
+		excepttype_i[`Exception_LOAD_MISALIGNED] ? current_data_addr_i : 
+		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? current_data_addr_i : 
+		excepttype_i[`Exception_STORE_MISALIGNED] ? current_data_addr_i : 
+		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? current_data_addr_i : 
+		1'b0;
+	
 
 	// write & modify CSR
 	always @ (posedge clk or negedge rst_n)
@@ -97,141 +158,186 @@ module csr(
 		begin
 			mscratch <= `ZeroWord;
 			mtvec_addr <= `ZeroWord;
+			mepc_addr <= `ZeroWord;
 			medeleg <= `ZeroWord;
 			mideleg <= `ZeroWord;
-			mstatus_vm <= `ZeroWord;
 
+			mstatus_vm <= `CSR_mstatus_vm_Mbare;
+			mstatus_fs <= `CSR_mstatus_fs_Off;
+			mstatus_mpp <= `PRV_U;
+			mstatus_spp <= `PRV_U;
+			mstatus_mpie <= 1'b0;
+			mstatus_spie <= 1'b0;
+			mstatus_upie <= 1'b0;
+			mstatus_mie <= 1'b0;
+			mstatus_sie <= 1'b0;
+			mstatus_uie <= 1'b0;
+
+			prv_o <= `PRV_M;
 		end
 		else
 		begin
-			case(we_i)
-				`CSRWrite:
-					case (waddr_i)
-						`CSR_mscratch:
-							mscratch <= data_i;
-						`CSR_mtvec:
-							mtvec_addr <= data_i[`CSR_mtvec_addr_bus];
-						`CSR_medeleg:
-							medeleg <= data_i[`CSR_medeleg_bus];
-						`CSR_mideleg:
-							mideleg <= data_i[`CSR_mideleg_bus];
-						
-						`CSR_mstatus:
-						begin
-							case(data_i[`CSR_mstatus_vm_bus])
+			if(we_i == `CSRWrite)
+				case (waddr_i)
+					`CSR_mscratch:
+						mscratch <= data_i;
+					`CSR_mtvec:
+						mtvec_addr <= data_i[`CSR_mtvec_addr_bus];
+					`CSR_mepc:
+						mepc_addr <= data_i[`CSR_mepc_addr_bus];
+					`CSR_medeleg:
+						medeleg <= data_i[`CSR_medeleg_bus];
+					`CSR_mideleg:
+						mideleg <= data_i[`CSR_mideleg_bus];
+					`CSR_mcause:
+						mcause <= data_i;
+					`CSR_mbadaddr:
+						mbadaddr <= data_i;
+					
+					`CSR_mstatus:
+					begin
+						case(data_i[`CSR_mstatus_vm_bus])
 `ifdef RV32
-								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
+							`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
 `else
-								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
-								`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
+							`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
+							`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
 `endif
-									mstatus_vm <= data_i[`CSR_mstatus_vm_bus];
+								mstatus_vm <= data_i[`CSR_mstatus_vm_bus];
 
 							default: begin end
-							endcase
+						endcase
 
-							mstatus_fs <= data_i[`CSR_mstatus_fs_bus];
-						end
+						mstatus_fs <= data_i[`CSR_mstatus_fs_bus];
 
-						`CSR_misa:
-						begin
-						end
+						case(data_i[`CSR_mstatus_mpp_bus])
+							`PRV_M, `PRV_S, `PRV_U:
+								mstatus_mpp <= data_i[`CSR_mstatus_mpp_bus];
+							default: begin end
+						endcase
 
-						default:
-						begin
-						end
-					endcase
+						case({1'b0, data_i[`CSR_mstatus_spp_bus]})
+							`PRV_S, `PRV_U:
+								mstatus_spp <= data_i[`CSR_mstatus_spp_bus];
+							default: begin end
+						endcase
 
-				`CSRSet:
-					case (waddr_i)
-						`CSR_mscratch:
-							mscratch <= mscratch | data_i;
-						`CSR_mtvec:
-							mtvec_addr <= mtvec_addr | data_i[`CSR_mtvec_addr_bus];
-						`CSR_medeleg:
-							medeleg <= medeleg | data_i[`CSR_medeleg_bus];
-						`CSR_mideleg:
-							mideleg <= mideleg | data_i[`CSR_mideleg_bus];
-						
-						`CSR_mstatus:
-						begin
-							case(mstatus_vm | data_i[`CSR_mstatus_vm_bus])
-`ifdef RV32
-								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
-`else
-								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
-								`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
-`endif
-									mstatus_vm <= mstatus_vm | data_i[`CSR_mstatus_vm_bus];
-
-								default: begin end
-							endcase
-
-							mstatus_fs <= mstatus_fs | data_i[`CSR_mstatus_fs_bus];
-						end
+						mstatus_mpie <= data_i[`CSR_mstatus_mpie_bus];
+						mstatus_spie <= data_i[`CSR_mstatus_spie_bus];
+						mstatus_upie <= data_i[`CSR_mstatus_upie_bus];
+						mstatus_mie <= data_i[`CSR_mstatus_mie_bus];
+						mstatus_sie <= data_i[`CSR_mstatus_sie_bus];
+						mstatus_uie <= data_i[`CSR_mstatus_uie_bus];
+					end
 
 
-						`CSR_misa:
-						begin
-						end
-						
-						default:
-						begin
-						end
-					endcase
-
-				`CSRClear:
-					case (waddr_i)
-						`CSR_mscratch:
-							mscratch <= mscratch & ~data_i;
-						`CSR_mtvec:
-							mtvec_addr <= mtvec_addr & ~data_i[`CSR_mtvec_addr_bus];
-						`CSR_medeleg:
-							medeleg <= medeleg & ~data_i[`CSR_medeleg_bus];
-						`CSR_mideleg:
-							mideleg <= mideleg & ~data_i[`CSR_mideleg_bus];
-						
-						`CSR_mstatus:
-						begin
-							case(mstatus_vm & ~data_i[`CSR_mstatus_vm_bus])
-`ifdef RV32
-								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
-`else
-								`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
-								`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
-`endif
-									mstatus_vm <= mstatus_vm & ~data_i[`CSR_mstatus_vm_bus];
-
-								default: begin end
-							endcase
-
-							mstatus_fs <= mstatus_fs & ~data_i[`CSR_mstatus_fs_bus];
-						end
-
-						`CSR_misa:
-						begin
-						end
-						
-						default:
-						begin
-						end
-					endcase
-
-				default:
-				begin
-				end
-			endcase
-
-			/*
-			if(excepttype_i[20] == 1'b1 && excepttype_i[19:0] == 20'h0)
+					default:
+					begin
+					end
+				endcase
+			
+			if(has_cause)
 			begin
+				mepc_addr <= current_inst_addr_i[`CSR_mepc_addr_bus];
+				mcause <= cause;
+				if(has_badaddr) mbadaddr <= badaddr;
 
+				case(prv_o)
+					`PRV_U: mstatus_mpie <= mstatus_uie;
+					`PRV_S: mstatus_mpie <= mstatus_sie;
+					`PRV_M: mstatus_mpie <= mstatus_mie;
+					default: begin end
+				endcase
+				case(prv_o)
+					`PRV_U: mstatus_mpp <= `PRV_U;
+					`PRV_S: mstatus_mpp <= `PRV_S;
+					`PRV_M: mstatus_mpp <= `PRV_M;
+					default: begin end
+				endcase
+				mstatus_mie <= 1'b0;
+				prv_o <= `PRV_M;
 			end
-			else if(excepttype_i != 32'h0)
+			else if(excepttype_i[`Exception_ERET_FROM_U])
+			begin
+				/*
+				require_privilege(PRV_U); => trap_illegal_instruction
+				*/
+				
+				// x = u -> y = u
+				mstatus_uie <= mstatus_upie;
+				mstatus_upie <= 1'b1;
+				prv_o <= `PRV_U;
+			end
+			else if(excepttype_i[`Exception_ERET_FROM_S])
+			begin
+				/*
+				require_privilege(PRV_S); => trap_illegal_instruction
+				 */
+				
+				case(mstatus_spp)
+					`PRV_U:
+					begin
+						// x = s -> y = u
+						mstatus_uie <= mstatus_spie;
+						mstatus_spie <= 1'b1;
+						mstatus_spp <= `PRV_U_1;
+						prv_o <= `PRV_U;
+					end
+					`PRV_S:
+					begin
+						// x = s -> y = s
+						mstatus_sie <= mstatus_spie;
+						mstatus_spie <= 1'b1;
+						mstatus_spp <= `PRV_U_1;
+						prv_o <= `PRV_S;
+					end
+
+					default:
+					begin
+					end
+				endcase
+			end
+			else if(excepttype_i[`Exception_ERET_FROM_M])
+			begin
+				/*
+				require_privilege(PRV_M); => trap_illegal_instruction
+				 */
+				
+				case(mstatus_mpp)
+					`PRV_U:
+					begin
+						// x = m -> y = u
+						mstatus_uie <= mstatus_mpie;
+						mstatus_mpie <= 1'b1;
+						mstatus_mpp <= `PRV_U;
+						prv_o <= `PRV_U;
+					end
+					`PRV_S:
+					begin
+						// x = m -> y = s
+						mstatus_sie <= mstatus_mpie;
+						mstatus_mpie <= 1'b1;
+						mstatus_mpp <= `PRV_U;
+						prv_o <= `PRV_S;
+					end
+					`PRV_M:
+					begin
+						// x = m -> y = m
+						mstatus_mie <= mstatus_mpie;
+						mstatus_mpie <= 1'b1;
+						mstatus_mpp <= `PRV_U;
+						prv_o <= `PRV_M;
+					end
+
+					default:
+					begin
+					end
+				endcase
+			end
+			else if(excepttype_i[`Exception_FENCEI])
 			begin
 				
 			end
-			*/
 		end
 
 
@@ -245,14 +351,34 @@ module csr(
 	begin
 		exception_new_pc_o <= `ZeroWord;
 
-		if(excepttype_i[`Exception_FENCEI] == 1'b1)
+		if(has_cause)
+		begin
+			// TODO:
+			exception_new_pc_o <= `ZeroWord;
+			exception_new_pc_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
+		end
+		else if(excepttype_i[`Exception_ERET_FROM_U])
+		begin
+			// TODO: 
+			// exception_new_pc_o <= 
+			$display("TODO: should not arrive here");
+			$stop;
+		end
+		else if(excepttype_i[`Exception_ERET_FROM_S])
+		begin
+			// TODO:
+			// exception_new_pc_o <= 
+			$display("TODO: should not arrive here");
+			$stop;
+		end
+		else if(excepttype_i[`Exception_ERET_FROM_M])
+		begin
+			exception_new_pc_o <= `ZeroWord;
+			exception_new_pc_o[`CSR_mepc_addr_bus] <= mepc_addr;
+		end
+		else if(excepttype_i[`Exception_FENCEI] == 1'b1)
 		begin
 			exception_new_pc_o <= current_inst_addr_i + 4'd4;
-		end
-		else
-		begin
-			// TODO: fix me
-			exception_new_pc_o <= 32'h00000001;
 		end
 	end
 
@@ -276,18 +402,30 @@ module csr(
 
 				`CSR_mscratch:  data_o <= mscratch;
 				`CSR_mtvec:     data_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
+				`CSR_mepc:      data_o[`CSR_mepc_addr_bus] <= mepc_addr;
 				`CSR_medeleg:   data_o[`CSR_medeleg_bus] <= medeleg;
 				`CSR_mideleg:   data_o[`CSR_mideleg_bus] <= mideleg;
+
+				`CSR_mcause:    data_o <= mcause;
+				`CSR_mbadaddr:  data_o <= mbadaddr;
 
 				`CSR_mstatus:
 				begin
 					data_o[`CSR_mstatus_vm_bus] <= mstatus_vm;
 					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;
 					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
+					data_o[`CSR_mstatus_mpp_bus] <= mstatus_mpp;
+					data_o[`CSR_mstatus_spp_bus] <= mstatus_spp;
+					data_o[`CSR_mstatus_mpie_bus] <= mstatus_mpie;
+					data_o[`CSR_mstatus_spie_bus] <= mstatus_spie;
+					data_o[`CSR_mstatus_upie_bus] <= mstatus_upie;
+					data_o[`CSR_mstatus_mie_bus] <= mstatus_mie;
+					data_o[`CSR_mstatus_sie_bus] <= mstatus_sie;
+					data_o[`CSR_mstatus_uie_bus] <= mstatus_uie;
 				end
 
 				`CSR_mip:
-					data_o[`CSR_mip_MTIP_bus] <= mip_mtip;
+					data_o[`CSR_mip_mtip_bus] <= mip_mtip;
 
 				default:
 				begin

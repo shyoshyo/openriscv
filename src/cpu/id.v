@@ -73,6 +73,7 @@ module id(
 	input wire step_i,
 
 	//与csr相连，读取其中csr寄存器的值
+	input wire [1:0]prv_i,
 	input wire[`RegBus] csr_reg_data_i,
 	output wire[`RegBus] csr_reg_data_o,
 	output reg csr_reg_read_o,
@@ -130,7 +131,7 @@ module id(
 	wire [6:0] opcode = inst_i[6:0];
 	wire [2:0] funct3 = inst_i[14:12];
 	wire [4:0] AMO_func5     = inst_i[31:27];
-	wire [4:0] SYSTEM_func12 = inst_i[31:20];
+	wire [11:0] SYSTEM_func12 = inst_i[31:20];
 
 	// 源寄存器
 	assign reg1_addr_o = inst_i[19:15];
@@ -175,7 +176,10 @@ module id(
 	wire stallreq_for_csr_read_relate;
 	wire pre_inst_is_load;
 	reg excepttype_is_syscall;
-	reg excepttype_is_eret;
+	reg excepttype_is_break;
+	reg excepttype_is_uret;
+	reg excepttype_is_sret;
+	reg excepttype_is_mret;
 	reg excepttype_is_fence_i;
 
 	assign link_addr_o = pc_i + 4'd4;
@@ -210,14 +214,21 @@ module id(
 		else
 		begin
 			excepttype_o <= excepttype_i;
+			excepttype_o[`Exception_INST_ILLEGAL] <= instvalid;
+			excepttype_o[`Exception_BREAK] <= excepttype_is_break;
+
+			excepttype_o[`Exception_ERET_FROM_U] <= excepttype_is_uret;
+			excepttype_o[`Exception_ERET_FROM_S] <= excepttype_is_sret;
+			excepttype_o[`Exception_ERET_FROM_M] <= excepttype_is_mret;
 
 			excepttype_o[`Exception_FENCEI] <= excepttype_is_fence_i;
 
-			/*
-			excepttype_o[0] <= excepttype_is_eret;
-			excepttype_o[0] <= instvalid;
-			excepttype_o[0] <= excepttype_is_syscall;
-			*/
+			case(prv_i)
+				`PRV_U: excepttype_o[`Exception_ECALL_FROM_U] <= excepttype_is_syscall;
+				`PRV_S: excepttype_o[`Exception_ECALL_FROM_S] <= excepttype_is_syscall;
+				`PRV_M: excepttype_o[`Exception_ECALL_FROM_M] <= excepttype_is_syscall;
+				default: begin end
+			endcase
 		end
 
 	assign current_inst_address_o = pc_i;
@@ -245,7 +256,10 @@ module id(
 			step_o <= 1'b0;
 
 			excepttype_is_syscall <= `False_v;
-			excepttype_is_eret <= `False_v;
+			excepttype_is_break <= `False_v;
+			excepttype_is_uret <= `False_v;
+			excepttype_is_sret <= `False_v;
+			excepttype_is_mret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
 
 			csr_reg_read_o <= `ReadDisable;
@@ -270,7 +284,10 @@ module id(
 			step_o <= 1'b0;
 
 			excepttype_is_syscall <= `False_v;
-			excepttype_is_eret <= `False_v;
+			excepttype_is_break <= `False_v;
+			excepttype_is_uret <= `False_v;
+			excepttype_is_sret <= `False_v;
+			excepttype_is_mret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
 
 			csr_reg_read_o <= `ReadDisable;
@@ -298,9 +315,12 @@ module id(
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
 			step_o <= 1'b0;
 
-			// 是否触发 syscall, eret 异常
+			// 是否触发 syscall, break, eret 异常
 			excepttype_is_syscall <= `False_v;
-			excepttype_is_eret <= `False_v;
+			excepttype_is_break <= `False_v;
+			excepttype_is_uret <= `False_v;
+			excepttype_is_sret <= `False_v;
+			excepttype_is_mret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
 
 			csr_reg_read_o <= `ReadDisable;
@@ -999,27 +1019,37 @@ module id(
 								case(SYSTEM_func12)
 									`EXE_ECALL:
 									begin
-										aluop_o <= `EXE_NOP_OP;
-										alusel_o <= `EXE_RES_NOP;
 										instvalid <= `InstValid;
-										
 										excepttype_is_syscall <= `True_v;
 									end
 
 									`EXE_EBREAK:
 									begin
-										aluop_o <= `EXE_NOP_OP;
-										alusel_o <= `EXE_RES_NOP;
 										instvalid <= `InstValid;
+										excepttype_is_break <= `True_v;
 									end
 
-									`EXE_URET, `EXE_SRET, `EXE_HRET, `EXE_MRET:
+									`EXE_URET:
 									begin
-										aluop_o <= `EXE_NOP_OP;
-										alusel_o <= `EXE_RES_NOP;
 										instvalid <= `InstValid;
+										excepttype_is_uret <= `True_v;
+									end
+
+									`EXE_SRET:
+									begin
+										instvalid <= `InstValid;
+										excepttype_is_sret <= `True_v;
+									end
+
+									`EXE_MRET:
+									begin
+										instvalid <= `InstValid;
+										excepttype_is_mret <= `True_v;
+									end
+
+									default:
+									begin
 										
-										excepttype_is_eret <= `True_v;
 									end
 								endcase
 
@@ -1032,6 +1062,7 @@ module id(
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
+							imm <= reg1_o;
 
 							if(wd_o != `ZeroRegAddr)
 								csr_reg_read_o <= `ReadEnable;
@@ -1047,10 +1078,11 @@ module id(
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
+							imm <= reg1_o | csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(wd_o != `ZeroRegAddr)
-								csr_reg_we_o <= `CSRSet;
+								csr_reg_we_o <= `CSRWrite;
 						end
 						
 						`EXE_CSRRC:
@@ -1062,10 +1094,11 @@ module id(
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
+							imm <= reg1_o & ~csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(wd_o != `ZeroRegAddr)
-								csr_reg_we_o <= `CSRClear;
+								csr_reg_we_o <= `CSRWrite;
 						end
 						
 						`EXE_CSRRWI:
@@ -1091,11 +1124,11 @@ module id(
 							
 							wreg_o <= `WriteEnable;
 
-							imm <= zimm;
+							imm <= zimm | csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(wd_o != `ZeroRegAddr)
-								csr_reg_we_o <= `CSRSet;
+								csr_reg_we_o <= `CSRWrite;
 						end
 
 						`EXE_CSRRCI:
@@ -1106,11 +1139,11 @@ module id(
 							
 							wreg_o <= `WriteEnable;
 
-							imm <= zimm;
+							imm <= zimm & ~csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(wd_o != `ZeroRegAddr)
-								csr_reg_we_o <= `CSRClear;
+								csr_reg_we_o <= `CSRWrite;
 						end
 
 						default:

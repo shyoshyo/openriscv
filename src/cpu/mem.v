@@ -74,20 +74,6 @@ module mem(
 	input wire is_in_delayslot_i,
 	input wire[`RegBus] current_inst_address_i,
 	input wire not_stall_i,
-	
-	//csr的各个寄存器的值，但不一定是最新的值，要防止回写阶段指令写csr
-	input wire[`RegBus] csr_status_i,
-	input wire[`RegBus] csr_cause_i,
-	/*
-	input wire[`RegBus] csr_epc_i,
-	*/
-
-	/*
-	//回写阶段的指令是否要写csr，用来检测数据相关
-	input wire wb_csr_reg_we,
-	input wire[`CSRAddrBus] wb_csr_reg_write_addr,
-	input wire[`RegBus] wb_csr_reg_data,
-	*/
 
 	//送到回写阶段的信息
 	output reg[`RegAddrBus] wd_o,
@@ -133,13 +119,6 @@ module mem(
 );
 	reg mem_we;
 	reg mem_ce;
-
-	// csr 中相关信号的最新值
-	reg[`RegBus] csr_status;
-	reg[`RegBus] csr_cause;
-	/*
-	reg[`RegBus] csr_epc;
-	*/
 
 	assign mem_we_o = mem_we;
 	assign mem_ce_o = mem_ce;
@@ -581,7 +560,7 @@ module mem(
 								mem_sel_o <= 4'b0000;
 
 								mem_ce <= `ChipDisable;
-								load_alignment_error <= `True_v;
+								store_alignment_error <= `True_v;
 							end
 						endcase
 
@@ -645,65 +624,6 @@ module mem(
 			endcase
 		end
 
-
-	always @ (*)
-		if(rst_n == `RstEnable)
-			csr_status <= `ZeroWord;
-		else
-			csr_status <= csr_status_i;
-
-	always @ (*)
-		if(rst_n == `RstEnable)
-			csr_cause <= `ZeroWord;
-		else
-			csr_cause <= csr_cause_i;
-	/*
-	// 通过数据旁路求得最新的 csr 相关寄存器的值
-	always @ (*)
-		if(rst_n == `RstEnable)
-			csr_status <= `ZeroWord;
-		else if((wb_csr_reg_we == `WriteEnable) && (wb_csr_reg_write_addr == `csr_REG_STATUS))
-			csr_status <= wb_csr_reg_data;
-		else
-			csr_status <= csr_status_i;
-
-	always @ (*)
-		if(rst_n == `RstEnable)
-			csr_epc <= `ZeroWord;
-		else if((wb_csr_reg_we == `WriteEnable) && (wb_csr_reg_write_addr == `csr_REG_EPC))
-			csr_epc <= wb_csr_reg_data;
-		else
-			csr_epc <= csr_epc_i;
-
-	always @ (*)
-		if(rst_n == `RstEnable)
-			csr_cause <= `ZeroWord;
-		else if((wb_csr_reg_we == `WriteEnable) && (wb_csr_reg_write_addr == `csr_REG_CAUSE))
-		begin
-			csr_cause <= csr_cause_i;
-			{csr_cause[23], csr_cause[22], csr_cause[9:8]} <= {wb_csr_reg_data[23], wb_csr_reg_data[22], wb_csr_reg_data[9:8]};
-		end
-		else
-			csr_cause <= csr_cause_i;
-	*/
-	
-	// exceptiontype
-	// * 0   machine check   TLB write that conflicts with an existing entry
-	// * 1-8 外部中斷         Assertion of unmasked HW or SW interrupt signal.
-	// . 9   adEl            Fetch address alignment error.
-	// . 10  TLBL            Fetch TLB miss, Fetch TLB hit to page with V=0 (inst)
-	// . 11  syscall
-	// . 12  RI              無效指令 Reserved Instruction
-	// . 13  ov              溢出
-	// . 14  trap
-	// * 15  AdEL            Load address alignment error,  
-	// * 16  adES            Store address alignment error.
-	//                       User mode store to kernel address.
-	// * 17  TLBL            Load TLB miss,  (4Kc core). (data)
-	// * 18  TLBS            Store TLB miss
-	// * 19  TLB Mod         Store to TLB page with D=0
-	// . 20  ERET
-	// . 21  FENCE.I
 	always @(*)
 		if (rst_n == `RstEnable)
 		begin
@@ -717,17 +637,13 @@ module mem(
 		begin
 			excepttype_o <= excepttype_i;
 
-			/*
+			excepttype_o[`Exception_LOAD_MISALIGNED] <= load_alignment_error;
+			excepttype_o[`Exception_LOAD_ACCESS_FAULT] <= data_tlb_r_miss_exception_i & mem_ce;
+			excepttype_o[`Exception_STORE_MISALIGNED] <= store_alignment_error;
+			excepttype_o[`Exception_STORE_ACCESS_FAULT] <= (data_tlb_w_miss_exception_i | data_tlb_mod_exception_i) & mem_ce;
+			// excepttype_o[] <= tlb_machine_check_exception_i;
 			
-			TODO: FIXME
-
-			excepttype_o[0] <= data_tlb_mod_exception_i & mem_ce;
-			excepttype_o[0] <= data_tlb_r_miss_exception_i & mem_ce;
-			excepttype_o[0] <= data_tlb_w_miss_exception_i & mem_ce;
-			excepttype_o[0] <= store_alignment_error;
-			excepttype_o[0] <= load_alignment_error;
-			excepttype_o[0] <= (csr_cause[15:8] & csr_status[15:8]) & ({8{~csr_status[1]}}) & ({8{csr_status[0]}});
-			excepttype_o[0] <= tlb_machine_check_exception_i;
-			*/
+			// TODO: interrupt
+			// excepttype_o[0] <= (csr_cause[15:8] & csr_status[15:8]) & ({8{~csr_status[1]}}) & ({8{csr_status[0]}});
 		end
 endmodule

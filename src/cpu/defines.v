@@ -262,18 +262,67 @@
 
 // Æê≥£Óê–Õ
 `define ExceptionTypeBus 31:0
-`define Exception_FENCEI 21
+/*
+`define Exception_IRQ_S_SOFT    1
+`define Exception_IRQ_H_SOFT    2
+`define Exception_IRQ_M_SOFT    3
+`define Exception_IRQ_S_TIMER   5
+`define Exception_IRQ_H_TIMER   6
+`define Exception_IRQ_M_TIMER   7
+`define Exception_IRQ_S_EXT     9
+`define Exception_IRQ_H_EXT     10
+`define Exception_IRQ_M_EXT     11
+*/
+`define Exception_INST_MISALIGNED      0
+`define Exception_INST_ACCESS_FAULT    1
+`define Exception_INST_ILLEGAL         2
+`define Exception_BREAK                3
+`define Exception_LOAD_MISALIGNED      4
+`define Exception_LOAD_ACCESS_FAULT    5
+`define Exception_STORE_MISALIGNED     6
+`define Exception_STORE_ACCESS_FAULT   7
+`define Exception_ECALL_FROM_U         8
+`define Exception_ECALL_FROM_S         9
+`define Exception_ECALL_FROM_H         10
+`define Exception_ECALL_FROM_M         11
+`define Exception_ERET_FROM_U          12
+`define Exception_ERET_FROM_S          13
+`define Exception_ERET_FROM_H          14
+`define Exception_ERET_FROM_M          15
+`define Exception_FENCEI               21
+
+`define CSR_mcause_INST_MISALIGNED      {1'b0, 31'd0}
+`define CSR_mcause_INST_ACCESS_FAULT    {1'b0, 31'd1}
+`define CSR_mcause_INST_ILLEGAL         {1'b0, 31'd2}
+`define CSR_mcause_BREAK                {1'b0, 31'd3}
+`define CSR_mcause_LOAD_MISALIGNED      {1'b0, 31'd4}
+`define CSR_mcause_LOAD_ACCESS_FAULT    {1'b0, 31'd5}
+`define CSR_mcause_STORE_MISALIGNED     {1'b0, 31'd6}
+`define CSR_mcause_STORE_ACCESS_FAULT   {1'b0, 31'd7}
+`define CSR_mcause_ECALL_FROM_U         {1'b0, 31'd8}
+`define CSR_mcause_ECALL_FROM_S         {1'b0, 31'd9}
+`define CSR_mcause_ECALL_FROM_H         {1'b0, 31'd10}
+`define CSR_mcause_ECALL_FROM_M         {1'b0, 31'd11}
+
+
+
+// Privilege
+`define PRV_M   2'h3
+`define PRV_H   2'h2
+`define PRV_S   2'h1
+`define PRV_S_1 1'h1
+`define PRV_U   2'h0
+`define PRV_U_1 1'h0
 
 // CSR Wirte
 `define CSRWriteTypeBus  1:0
 `define CSRWriteDisable  2'h0
 `define CSRWrite         2'h1
-`define CSRSet           2'h2
-`define CSRClear         2'h3
+// `define CSRSet           2'h2
+// `define CSRClear         2'h3
 
 //CSR ºƒ¥Ê∆˜µÿ÷∑
 `define CSRAddrBus 11:0
-
 /* User Trap Setup */
 `define CSR_ustatus 12'h000
 `define CSR_uie 12'h004
@@ -384,10 +433,12 @@
 
 
 `define CSR_mtvec_addr_bus 31:2
+`define CSR_mepc_addr_bus 31:2
 
 `define CSR_medeleg_bus 11:0
 `define CSR_mideleg_bus 11:0
 
+/* mstatus */
 `define CSR_mstatus_vm_bus 28:24
 `define CSR_mstatus_vm_Mbare 5'h0
 `define CSR_mstatus_vm_Sv32 5'h8
@@ -404,21 +455,35 @@
 `else
 	`define CSR_mstatus_sd_bus 63:63
 `endif
+`define CSR_mstatus_mpp_bus 12:11
+`define CSR_mstatus_hpp_bus 10:9
+`define CSR_mstatus_spp_bus 8:8
 
-`define CSR_mip_USIP_bus 0:0
-`define CSR_mip_SSIP_bus 1:1
-`define CSR_mip_HSIP_bus 2:2
-`define CSR_mip_MSIP_bus 3:3
+`define CSR_mstatus_mpie_bus 7:7
+`define CSR_mstatus_hpie_bus 6:6
+`define CSR_mstatus_spie_bus 5:5
+`define CSR_mstatus_upie_bus 4:4
 
-`define CSR_mip_UTIP_bus 4:4
-`define CSR_mip_STIP_bus 5:5
-`define CSR_mip_HTIP_bus 6:6
-`define CSR_mip_MTIP_bus 7:7
+`define CSR_mstatus_mie_bus 3:3
+`define CSR_mstatus_hie_bus 2:2
+`define CSR_mstatus_sie_bus 1:1
+`define CSR_mstatus_uie_bus 0:0
 
-`define CSR_mip_UEIP_bus 8:8
-`define CSR_mip_SEIP_bus 9:9
-`define CSR_mip_HEIP_bus 10:10
-`define CSR_mip_MEIP_bus 11:11
+/* mip */
+`define CSR_mip_usip_bus 0:0
+`define CSR_mip_ssip_bus 1:1
+`define CSR_mip_hsip_bus 2:2
+`define CSR_mip_msip_bus 3:3
+
+`define CSR_mip_utip_bus 4:4
+`define CSR_mip_stip_bus 5:5
+`define CSR_mip_htip_bus 6:6
+`define CSR_mip_mtip_bus 7:7
+
+`define CSR_mip_ueip_bus 8:8
+`define CSR_mip_seip_bus 9:9
+`define CSR_mip_heip_bus 10:10
+`define CSR_mip_meip_bus 11:11
 
 
 /*
@@ -456,17 +521,7 @@ stvec
 */
 
 
-`define CAUSE_INT  5'd0
-`define CAUSE_MOD  5'd1
-`define CAUSE_TLBL 5'd2
-`define CAUSE_TLBS 5'd3
-`define CAUSE_ADEL 5'd4
-`define CAUSE_ADES 5'd5
-`define CAUSE_SYS  5'd8
-`define CAUSE_RI   5'd10
-`define CAUSE_OV   5'd12
-`define CAUSE_TR   5'd13
-`define CAUSE_MCHECK 5'd24
+
 
 //`define StartInstAddr    32'hbfc0_0000
 `define StartInstAddr    32'h8000_0000 // TODO: fix me

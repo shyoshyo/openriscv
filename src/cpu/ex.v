@@ -141,11 +141,6 @@ module ex(
 	reg[`RegBus] arithout;
 	reg[`RegBus] multiout;
 
-	// 自陷异常
-	reg trapassert;
-	// 溢出异常
-	reg ovassert;
-
 	always @(*)
 		if (rst_n == `RstEnable)
 		begin
@@ -154,14 +149,6 @@ module ex(
 		else
 		begin
 			excepttype_o <= excepttype_i;
-
-			/*
-			
-			TODO: FIXME
-
-			excepttype_o[0] <= trapassert;
-			excepttype_o[0] <= ovassert;
-			*/
 		end
 	
 	assign is_in_delayslot_o = is_in_delayslot_i;
@@ -226,23 +213,7 @@ module ex(
 			endcase
 	
 	/***********************************************************/
-
-	// trap op
-	always @ (*)
-		if(rst_n == `RstEnable)
-			trapassert <= `TrapNotAssert;
-		else
-		begin
-			trapassert <= `TrapNotAssert;
-			case (aluop_i)
-
-				default:
-					trapassert <= `TrapNotAssert;
-			endcase
-		end
 	
-	
-
 	// move op
 	always @ (*)
 		if(rst_n == `RstEnable)
@@ -477,13 +448,11 @@ module ex(
 			wreg_o <= `WriteDisable;
 			wd_o <= `NOPRegAddr;
 			wdata_o <= `ZeroWord;
-			ovassert <= `OverflowNotAssert;
 		end
 		else
 		begin
 			wd_o <= wd_i;
 			wreg_o <= wreg_i;
-			ovassert <= `OverflowNotAssert;
 
 			case ( alusel_i ) 
 				`EXE_RES_LOGIC:
@@ -511,7 +480,7 @@ module ex(
 
 	/******************* 这条指令要写到 csr 的内容 **********************/
 	assign csr_reg_write_addr_o = inst_i[31:20];
-	assign csr_reg_data_o = reg1_i;
+	assign csr_reg_data_o = imm_i;
 	assign csr_reg_we_o = csr_reg_we_i;
 
 	always @ (*)

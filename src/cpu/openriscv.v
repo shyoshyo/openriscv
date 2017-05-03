@@ -38,7 +38,8 @@ module openriscv(
 	input wire wishbone_clk,
 	input wire rst_n,
 	
-	input wire[`IntSourceBus] int_i,
+	input wire timer_int_i,
+	input wire software_int_i,
 	
 	// inst wishbone
 	input wire[`WishboneDataBus]   iwishbone_data_i,
@@ -264,6 +265,7 @@ module openriscv(
 	wire flush;
 	wire[`RegBus] exception_new_pc;
 
+	wire[1:0] prv;
 
 
 	//pc_reg例化
@@ -349,6 +351,7 @@ module openriscv(
 		.is_in_delayslot_i(is_in_delayslot_i),
 		.step_i(step_i),
 		
+		.prv_i(prv),
 		.csr_reg_data_i(csr_data_o),
 		.csr_reg_read_o(csr_re_i),
 		.csr_reg_read_addr_o(csr_raddr_i),
@@ -651,21 +654,6 @@ module openriscv(
 		.current_inst_address_i(mem_current_inst_address_i),
 		.not_stall_i(mem_not_stall_i),
 		
-		// csr 相关寄存器,
-		// TODO: fixme
-		.csr_status_i(`ZeroWord),
-		.csr_cause_i(`ZeroWord),
-		/*
-		.csr_epc_i(`ZeroWord),
-		*/
-		
-		/*
-		//回写阶段的指令是否要写csr，用来检测数据相关
-		.wb_csr_reg_we(wb_csr_reg_we_i),
-		.wb_csr_reg_write_addr(wb_csr_reg_write_addr_i),
-		.wb_csr_reg_data(wb_csr_reg_data_i),
-		*/
-		
 		//来自memory的信息
 		.mem_data_i(ram_data_i),
 
@@ -819,22 +807,25 @@ module openriscv(
 		.clk(clk),
 		.rst_n(rst_n),
 		
-		.we_i(wb_csr_reg_we_i),
-		.waddr_i(wb_csr_reg_write_addr_i),
-		.data_i(wb_csr_reg_data_i),
+		.we_i(mem_csr_reg_we_i),
+		.waddr_i(mem_csr_reg_write_addr_i),
+		.data_i(mem_csr_reg_data_i),
 
 		.re_i(csr_re_i),
 		.raddr_i(csr_raddr_i),
 		
 		.excepttype_i(mem_excepttype_o),
-		.int_i(int_i),
+		.timer_int_i(timer_int_i),
+		.software_int_i(software_int_i),
 		.current_inst_addr_i(mem_current_inst_address_o),
 		.current_data_addr_i(mem_current_data_address_o),
 		.is_in_delayslot_i(mem_is_in_delayslot_o),
 		
 		.data_o(csr_data_o),
 		
-		.exception_new_pc_o(exception_new_pc)
+		.exception_new_pc_o(exception_new_pc),
+
+		.prv_o(prv)
 	);
 
 	mmu mmu0(
@@ -854,8 +845,8 @@ module openriscv(
 		.data_tlb_w_miss_exception_o(ex_data_tlb_w_miss_exception_i),
 		.data_tlb_mod_exception_o(ex_data_tlb_mod_exception_i),
 
-		.csr_write_tlb_index_i(wb_csr_write_tlb_index_i),
-		.csr_write_tlb_random_i(wb_csr_write_tlb_random_i),
+		.csr_write_tlb_index_i(mem_csr_write_tlb_index_i),
+		.csr_write_tlb_random_i(mem_csr_write_tlb_random_i),
 
 		.csr_index_i(`ZeroWord),
 		.csr_random_i(`ZeroWord),

@@ -95,10 +95,8 @@ module pc_reg(
 		begin
 			excepttype_o <= `ZeroWord;
 
-			/*
-			excepttype_o[0] <= next_inst_tlb_r_miss_exception_i;
-			excepttype_o[0] <=  next_inst_vir_addr_o[1:0] != 2'b00;
-			*/
+			excepttype_o[`Exception_INST_MISALIGNED] <= (next_inst_vir_addr_o[1:0] != 2'b00);
+			excepttype_o[`Exception_INST_ACCESS_FAULT] <= next_inst_tlb_r_miss_exception_i;
 		end
 
 	always @ (posedge clk or negedge rst_n)

@@ -54,7 +54,8 @@ module config_string_and_timer(
 	
 	output reg[`WishboneDataBus]           wishbone_data_o,
 	output wire                            wishbone_ack_o,
-	output wire                            timer_int_o
+	output wire                            timer_int_o,
+	output reg                             software_int_o
 );
 	// request signal
 	wire request;
@@ -81,6 +82,7 @@ module config_string_and_timer(
 
 	wire[`WishboneDataBus]  mem[0:`DataMemNum-1];
 	`include"config_string_rom/config_string_rom.v"
+	assign mem[251] = {31'h0, software_int_o};
 	assign mem[252] = mtime[31:0];
 	assign mem[253] = mtime[63:32];
 	assign mem[254] = mtimecmp[31:0];
@@ -107,6 +109,7 @@ module config_string_and_timer(
 
 			mtime <= 64'h0;
 			mtimecmp <= 64'hffff_ffff_ffff_ffff;
+			software_int_o <= 1'b0;
 		end
 		else if(request == 1'b0)
 		begin
@@ -121,6 +124,12 @@ module config_string_and_timer(
 			if(is_write)
 			begin
 				case(wishbone_addr_i[`DataMemNumLog2+1:2])
+					10'd251:
+					begin
+						if (wishbone_sel_i[0] == 1'b1)
+							software_int_o <= wishbone_data_i[0];
+					end
+
 					10'd252:
 					begin
 						if (wishbone_sel_i[3] == 1'b1)

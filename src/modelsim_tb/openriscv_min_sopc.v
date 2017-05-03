@@ -49,12 +49,13 @@ module openriscv_min_sopc(
 	output wire uart_txd_o,
 	output wire uart_rts_o
 );
-	wire[`IntSourceBus] int;
+	//wire[`IntSourceBus] int;
 	wire timer_int;
+	wire software_int;
 	wire uart_int;
 
 	// TODO: fix int vector
-	assign int = {/*timer_int, 2'b0, uart_int, 2'b0*/ 5'h0, timer_int};
+	//assign int = {/*timer_int, 2'b0, uart_int, 2'b0*/ 5'h0, timer_int};
 
 	// dwishbone
 	wire[`WishboneDataBus] m0_data_i;
@@ -108,7 +109,8 @@ module openriscv_min_sopc(
 		.iwishbone_stb_o(m1_stb_i),
 		.iwishbone_cyc_o(m1_cyc_i), 
 
-		.int_i(int),
+		.timer_int_i(time_int),
+		.software_int_i(software_int),
 
 		.dwishbone_data_i(m0_data_o),
 		.dwishbone_ack_i(m0_ack_o),
@@ -231,7 +233,8 @@ module openriscv_min_sopc(
 		.wishbone_data_o(s3_data_i),
 		.wishbone_ack_o(s3_ack_i),
 
-		.timer_int_o(timer_int)
+		.timer_int_o(timer_int),
+		.software_int_o(software_int)
 	);
 
 	// bus arbiter

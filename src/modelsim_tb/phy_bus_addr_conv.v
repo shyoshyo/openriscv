@@ -46,6 +46,9 @@
 `define MTIMECMP_PHYSICAL_ADDR_BEGIN       34'h04000_0008
 `define MTIMECMP_PHYSICAL_ADDR_LEN         34'h00000_0008
 
+`define IPI_PHYSICAL_ADDR_BEGIN            34'h04000_1000
+`define IPI_PHYSICAL_ADDR_LEN              34'h00000_0004
+
 module phy_bus_addr_conv(
 	input wire rst_n,
 
@@ -58,6 +61,7 @@ module phy_bus_addr_conv(
 	
 	wire [`PhyAddrBus] mtime_index = ((phy_addr_i - `MTIME_PHYSICAL_ADDR_BEGIN));
 	wire [`PhyAddrBus] mtimecmp_index = ((phy_addr_i - `MTIMECMP_PHYSICAL_ADDR_BEGIN));
+	wire [`PhyAddrBus] ipi_index = ((phy_addr_i - `IPI_PHYSICAL_ADDR_BEGIN));
 
 	always @(*)
 		if (rst_n == `RstEnable)
@@ -72,6 +76,8 @@ module phy_bus_addr_conv(
 			bus_addr_o <= {4'h3, mtime_index[27:0] + 12'h3f0};
 		else if (`MTIMECMP_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `MTIMECMP_PHYSICAL_ADDR_BEGIN + `MTIMECMP_PHYSICAL_ADDR_LEN)
 			bus_addr_o <= {4'h3, mtimecmp_index[27:0] + 12'h3f8};
+		else if (`IPI_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `IPI_PHYSICAL_ADDR_BEGIN + `IPI_PHYSICAL_ADDR_LEN)
+			bus_addr_o <= {4'h3, ipi_index[27:0] + 12'h3ec};
 		else
-			bus_addr_o <= `ZeroWord;
+			bus_addr_o <= ~`ZeroWord;
 endmodule
