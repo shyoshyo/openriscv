@@ -64,34 +64,18 @@ module ex(
 	input wire[`RegBus] link_address_i,
 	input wire is_in_delayslot_i,
 
-	/*
-	//访存阶段的指令是否要写csr，用来检测数据相关
-	input wire mem_csr_reg_we,
-	input wire[`CSRAddrBus] mem_csr_reg_write_addr,
-	input wire[`RegBus] mem_csr_reg_data,
-	
-	//回写阶段的指令是否要写csr，用来检测数据相关
-	input wire wb_csr_reg_we,
-	input wire[`CSRAddrBus] wb_csr_reg_write_addr,
-	input wire[`RegBus] wb_csr_reg_data,
-	*/
-
 	//csr
 	input wire[`CSRWriteTypeBus] csr_reg_we_i,
 	input wire[`RegBus] csr_reg_data_i,
 
 	// TLB 提供的物理地址
 	input wire[`PhyAddrBus] mem_phy_addr_i,
-	input wire data_tlb_r_miss_exception_i,
-	input wire data_tlb_w_miss_exception_i,
-	input wire data_tlb_mod_exception_i, 
+	input wire data_tlb_exception_i,
 
 	//向下一流水级传递，用于写csr中的寄存器
 	output wire[`CSRWriteTypeBus] csr_reg_we_o,
 	output wire[`CSRAddrBus] csr_reg_write_addr_o,
 	output wire[`RegBus] csr_reg_data_o,
-	output reg csr_write_tlb_index_o,
-	output reg csr_write_tlb_random_o,
 
 	// 是否写寄存器，以及寄存器的地址和要写的值
 	output reg[`RegAddrBus] wd_o,
@@ -128,10 +112,8 @@ module ex(
 
 	// 告诉 MEM 阶段的物理地址
 	output wire[`PhyAddrBus] mem_phy_addr_o,
-	output wire data_tlb_r_miss_exception_o,
-	output wire data_tlb_w_miss_exception_o,
-	output wire data_tlb_mod_exception_o, 
-
+	output wire data_tlb_r_exception_o,
+	output wire data_tlb_w_exception_o,
 	output reg stallreq
 );
 	reg[`RegBus] logicout;
@@ -411,9 +393,8 @@ module ex(
 	assign reg2_o = reg2_i;
 
 	assign mem_phy_addr_o = mem_phy_addr_i;
-	assign data_tlb_r_miss_exception_o = data_tlb_r_miss_exception_i;
-	assign data_tlb_w_miss_exception_o = data_tlb_w_miss_exception_i;
-	assign data_tlb_mod_exception_o = data_tlb_mod_exception_i;
+	assign data_tlb_r_exception_o = (mem_we_o == `WriteDisable) ? data_tlb_exception_i : 1'b0;
+	assign data_tlb_w_exception_o = (mem_we_o == `WriteEnable) ? data_tlb_exception_i : 1'b0;
 
 	// for mmu to check whether writable
 	always @(*)
@@ -482,26 +463,4 @@ module ex(
 	assign csr_reg_write_addr_o = inst_i[31:20];
 	assign csr_reg_data_o = imm_i;
 	assign csr_reg_we_o = csr_reg_we_i;
-
-	always @ (*)
-		if(rst_n == `RstEnable)
-		begin
-			csr_write_tlb_index_o <= `False_v;
-			csr_write_tlb_random_o <= `False_v;
-		end
-		else
-		begin
-			csr_write_tlb_index_o <= `False_v;
-			csr_write_tlb_random_o <= `False_v;
-
-			case(aluop_i)
-				`EXE_CSRRW_OP:
-				begin
-				end
-
-				default:
-				begin
-				end
-			endcase
-		end
 endmodule

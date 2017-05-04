@@ -66,7 +66,7 @@ module openriscv(
 	// 下一条需要访问 inst 存储器的地址
 	wire [`PhyAddrBus]pc_next_inst_phy_addr;
 	wire [`RegBus]pc_next_inst_vir_addr;
-	wire pc_next_inst_tlb_r_miss_exception;
+	wire pc_next_inst_tlb_exception;
 	wire pc_ce_o;
 
 
@@ -124,9 +124,7 @@ module openriscv(
 	wire[`RegBus] ex_csr_reg_data_i;
 
 	wire [`PhyAddrBus]ex_mem_phy_addr_i;
-	wire ex_data_tlb_r_miss_exception_i;
-	wire ex_data_tlb_w_miss_exception_i;
-	wire ex_data_tlb_mod_exception_i;
+	wire ex_data_tlb_exception_i;
 
 	//连接执行阶段EX模块的输出与EX/MEM模块的输入
 	wire ex_wreg_o;
@@ -141,17 +139,14 @@ module openriscv(
 	wire[`CSRWriteTypeBus] ex_csr_reg_we_o;
 	wire[`CSRAddrBus] ex_csr_reg_write_addr_o;
 	wire[`RegBus] ex_csr_reg_data_o;
-	wire ex_csr_write_tlb_index_o;
-	wire ex_csr_write_tlb_random_o;
 	wire[`ExceptionTypeBus] ex_excepttype_o;
 	wire[`RegBus] ex_current_inst_address_o;
 	wire ex_not_stall_o;
 	wire ex_is_in_delayslot_o;
 
 	wire[`PhyAddrBus] ex_mem_phy_addr_o;
-	wire ex_data_tlb_r_miss_exception_o;
-	wire ex_data_tlb_w_miss_exception_o;
-	wire ex_data_tlb_mod_exception_o;
+	wire ex_data_tlb_r_exception_o;
+	wire ex_data_tlb_w_exception_o;
 
 	//连接EX/MEM模块的输出与访存阶段MEM模块的输入
 	wire mem_wreg_i;
@@ -167,17 +162,13 @@ module openriscv(
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_i;
 	wire[`CSRAddrBus] mem_csr_reg_write_addr_i;
 	wire[`RegBus] mem_csr_reg_data_i;
-	wire mem_csr_write_tlb_index_i;
-	wire mem_csr_write_tlb_random_i;
 	wire[`ExceptionTypeBus] mem_excepttype_i;
 	wire mem_is_in_delayslot_i;
 	wire[`RegBus] mem_current_inst_address_i;
 	wire mem_not_stall_i;
 	wire [`PhyAddrBus]mem_mem_phy_addr_i;
-	wire mem_data_tlb_r_miss_exception_i;
-	wire mem_data_tlb_w_miss_exception_i;
-	wire mem_data_tlb_mod_exception_i;
-	wire mem_tlb_machine_check_exception_i;
+	wire mem_data_tlb_r_exception_i;
+	wire mem_data_tlb_w_exception_i;
 
 	//连接访存阶段MEM模块的输出与MEM/WB模块的输入
 	wire mem_wreg_o;
@@ -191,8 +182,6 @@ module openriscv(
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_o;
 	wire[`CSRAddrBus] mem_csr_reg_write_addr_o;
 	wire[`RegBus] mem_csr_reg_data_o;
-	wire mem_csr_write_tlb_index_o;
-	wire mem_csr_write_tlb_random_o;
 	wire[`ExceptionTypeBus] mem_excepttype_o;
 	wire mem_is_in_delayslot_o;
 	wire[`RegBus] mem_current_inst_address_o;
@@ -208,8 +197,6 @@ module openriscv(
 	wire[`CSRWriteTypeBus] wb_csr_reg_we_i;
 	wire[`CSRAddrBus] wb_csr_reg_write_addr_i;
 	wire[`RegBus] wb_csr_reg_data_i;
-	wire wb_csr_write_tlb_index_i;
-	wire wb_csr_write_tlb_random_i;
 	wire wb_is_in_delayslot_i;
 	wire[`RegBus] wb_current_inst_address_i;
 	
@@ -281,7 +268,7 @@ module openriscv(
 		.branch_target_address_i(branch_target_address),
 
 		.next_inst_phy_addr_i(pc_next_inst_phy_addr),
-		.next_inst_tlb_r_miss_exception_i(pc_next_inst_tlb_r_miss_exception), 
+		.next_inst_tlb_exception_i(pc_next_inst_tlb_exception), 
 
 		.pc(pc),
 		.inst_phy_addr_o(if_inst_phy_addr_i),
@@ -494,30 +481,14 @@ module openriscv(
 		.not_stall_i(ex_not_stall_i),
 		.csr_reg_we_i(ex_csr_reg_we_i),
 		.csr_reg_data_i(ex_csr_reg_data_i),
-
-		/*
-		//访存阶段的指令是否要写csr，用来检测数据相关
-		.mem_csr_reg_we(mem_csr_reg_we_o),
-		.mem_csr_reg_write_addr(mem_csr_reg_write_addr_o),
-		.mem_csr_reg_data(mem_csr_reg_data_o),
-	
-		//回写阶段的指令是否要写csr，用来检测数据相关
-		.wb_csr_reg_we(wb_csr_reg_we_i),
-		.wb_csr_reg_write_addr(wb_csr_reg_write_addr_i),
-		.wb_csr_reg_data(wb_csr_reg_data_i),
-		*/
 		
 		.mem_phy_addr_i(ex_mem_phy_addr_i),
-		.data_tlb_r_miss_exception_i(ex_data_tlb_r_miss_exception_i),
-		.data_tlb_w_miss_exception_i(ex_data_tlb_w_miss_exception_i),
-		.data_tlb_mod_exception_i(ex_data_tlb_mod_exception_i),
+		.data_tlb_exception_i(ex_data_tlb_exception_i),
 		
 		//向下一流水级传递，用于写csr中的寄存器
 		.csr_reg_we_o(ex_csr_reg_we_o),
 		.csr_reg_write_addr_o(ex_csr_reg_write_addr_o),
 		.csr_reg_data_o(ex_csr_reg_data_o),
-		.csr_write_tlb_index_o(ex_csr_write_tlb_index_o),
-		.csr_write_tlb_random_o(ex_csr_write_tlb_random_o),
 
 		//EX模块的输出到EX/MEM模块信息
 		.wd_o(ex_wd_o),
@@ -547,9 +518,8 @@ module openriscv(
 		.not_stall_o(ex_not_stall_o),
 
 		.mem_phy_addr_o(ex_mem_phy_addr_o),
-		.data_tlb_r_miss_exception_o(ex_data_tlb_r_miss_exception_o),
-		.data_tlb_w_miss_exception_o(ex_data_tlb_w_miss_exception_o),
-		.data_tlb_mod_exception_o(ex_data_tlb_mod_exception_o),
+		.data_tlb_r_exception_o(ex_data_tlb_r_exception_o),
+		.data_tlb_w_exception_o(ex_data_tlb_w_exception_o),
 
 		.stallreq(stallreq_from_ex)
 	);
@@ -572,18 +542,13 @@ module openriscv(
 		.ex_csr_reg_we(ex_csr_reg_we_o),
 		.ex_csr_reg_write_addr(ex_csr_reg_write_addr_o),
 		.ex_csr_reg_data(ex_csr_reg_data_o),
-		.ex_csr_write_tlb_index(ex_csr_write_tlb_index_o),
-		.ex_csr_write_tlb_random(ex_csr_write_tlb_random_o),
 		.ex_excepttype(ex_excepttype_o),
 		.ex_is_in_delayslot(ex_is_in_delayslot_o),
 		.ex_current_inst_address(ex_current_inst_address_o),
 		.ex_not_stall(ex_not_stall_o),
 		.ex_mem_phy_addr(ex_mem_phy_addr_o),
-		.ex_data_tlb_r_miss_exception(ex_data_tlb_r_miss_exception_o),
-		.ex_data_tlb_w_miss_exception(ex_data_tlb_w_miss_exception_o),
-		.ex_data_tlb_mod_exception(ex_data_tlb_mod_exception_o),
-
-
+		.ex_data_tlb_r_exception(ex_data_tlb_r_exception_o),
+		.ex_data_tlb_w_exception(ex_data_tlb_w_exception_o),
 
 		.cnt_i(cnt_o),
 		.div_started_i(div_started_o),
@@ -599,8 +564,6 @@ module openriscv(
 		.mem_csr_reg_we(mem_csr_reg_we_i),
 		.mem_csr_reg_write_addr(mem_csr_reg_write_addr_i),
 		.mem_csr_reg_data(mem_csr_reg_data_i),
-		.mem_csr_write_tlb_index(mem_csr_write_tlb_index_i),
-		.mem_csr_write_tlb_random(mem_csr_write_tlb_random_i),
 
 		.mem_excepttype(mem_excepttype_i),
 		.mem_is_in_delayslot(mem_is_in_delayslot_i),
@@ -608,9 +571,8 @@ module openriscv(
 		.mem_not_stall(mem_not_stall_i),
 
 		.mem_mem_phy_addr(mem_mem_phy_addr_i),
-		.mem_data_tlb_r_miss_exception(mem_data_tlb_r_miss_exception_i),
-		.mem_data_tlb_w_miss_exception(mem_data_tlb_w_miss_exception_i),
-		.mem_data_tlb_mod_exception(mem_data_tlb_mod_exception_i),
+		.mem_data_tlb_r_exception(mem_data_tlb_r_exception_i),
+		.mem_data_tlb_w_exception(mem_data_tlb_w_exception_i),
 
 		.cnt_o(cnt_i),
 		.div_started_o(div_started_i)
@@ -632,10 +594,8 @@ module openriscv(
 		.rst_n(rst_n),
 
 		.mem_phy_addr_i(mem_mem_phy_addr_i),
-		.data_tlb_r_miss_exception_i(mem_data_tlb_r_miss_exception_i),
-		.data_tlb_w_miss_exception_i(mem_data_tlb_w_miss_exception_i),
-		.data_tlb_mod_exception_i(mem_data_tlb_mod_exception_i),
-		.tlb_machine_check_exception_i(mem_tlb_machine_check_exception_i),
+		.data_tlb_r_exception_i(mem_data_tlb_r_exception_i),
+		.data_tlb_w_exception_i(mem_data_tlb_w_exception_i),
 	
 		//来自EX/MEM模块的信息	
 		.wd_i(mem_wd_i),
@@ -647,8 +607,7 @@ module openriscv(
 		.csr_reg_we_i(mem_csr_reg_we_i),
 		.csr_reg_write_addr_i(mem_csr_reg_write_addr_i),
 		.csr_reg_data_i(mem_csr_reg_data_i),
-		.csr_write_tlb_index_i(mem_csr_write_tlb_index_i),
-		.csr_write_tlb_random_i(mem_csr_write_tlb_random_i),
+
 		.excepttype_i(mem_excepttype_i),
 		.is_in_delayslot_i(mem_is_in_delayslot_i),
 		.current_inst_address_i(mem_current_inst_address_i),
@@ -683,8 +642,6 @@ module openriscv(
 		.csr_reg_we_o(mem_csr_reg_we_o),
 		.csr_reg_write_addr_o(mem_csr_reg_write_addr_o),
 		.csr_reg_data_o(mem_csr_reg_data_o),
-		.csr_write_tlb_index_o(mem_csr_write_tlb_index_o),
-		.csr_write_tlb_random_o(mem_csr_write_tlb_random_o),
 		
 		// 最终确认的异常类型
 		.excepttype_o(mem_excepttype_o),
@@ -724,8 +681,6 @@ module openriscv(
 		.mem_csr_reg_we(mem_csr_reg_we_o),
 		.mem_csr_reg_write_addr(mem_csr_reg_write_addr_o),
 		.mem_csr_reg_data(mem_csr_reg_data_o),
-		.mem_csr_write_tlb_index(mem_csr_write_tlb_index_o),
-		.mem_csr_write_tlb_random(mem_csr_write_tlb_random_o),
 
 		.mem_cnt_i(mem_cnt_o),
 		.mem_original_data_i(mem_original_data_o),
@@ -740,8 +695,6 @@ module openriscv(
 		.wb_csr_reg_we(wb_csr_reg_we_i),
 		.wb_csr_reg_write_addr(wb_csr_reg_write_addr_i),
 		.wb_csr_reg_data(wb_csr_reg_data_i),
-		.wb_csr_write_tlb_index(wb_csr_write_tlb_index_i),
-		.wb_csr_write_tlb_random(wb_csr_write_tlb_random_i),
 
 		// send back to mem
 		.mem_cnt_o(mem_cnt_i),
@@ -825,39 +778,22 @@ module openriscv(
 		
 		.exception_new_pc_o(exception_new_pc),
 
-		.prv_o(prv)
-	);
+		.prv_o(prv),
 
-	mmu mmu0(
-		.clk(clk),
-		.rst_n(rst_n),
 
+		// MMU
 		.inst_ce_i(pc_ce_o),
 		.inst_vir_addr_i(pc_next_inst_vir_addr),
 		.inst_phy_addr_o(pc_next_inst_phy_addr),
-		.inst_tlb_r_miss_exception_o(pc_next_inst_tlb_r_miss_exception),
+		.inst_tlb_exception_o(pc_next_inst_tlb_exception),
+
 
 		.data_ce_i(ex_mem_ce_o),
 		.data_we_i(ex_mem_we_o),
 		.data_vir_addr_i(ex_mem_addr_o),
 		.data_phy_addr_o(ex_mem_phy_addr_i),
-		.data_tlb_r_miss_exception_o(ex_data_tlb_r_miss_exception_i),
-		.data_tlb_w_miss_exception_o(ex_data_tlb_w_miss_exception_i),
-		.data_tlb_mod_exception_o(ex_data_tlb_mod_exception_i),
-
-		.csr_write_tlb_index_i(mem_csr_write_tlb_index_i),
-		.csr_write_tlb_random_i(mem_csr_write_tlb_random_i),
-
-		.csr_index_i(`ZeroWord),
-		.csr_random_i(`ZeroWord),
-		.csr_entrylo0_i(`ZeroWord),
-		.csr_entrylo1_i(`ZeroWord),
-		.csr_entryhi_i(`ZeroWord),
-		.csr_pagemask_i(`ZeroWord),
-		
-		.tlb_machine_check_exception_o(mem_tlb_machine_check_exception_i)
+		.data_tlb_exception_o(ex_data_tlb_exception_i)
 	);
-
 
 	wishbone_bus_if #(.delay(1), .cyc_len_log_2(1)) dwishbone_bus_if(
 		.cpu_clk(clk),

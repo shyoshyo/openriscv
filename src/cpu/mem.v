@@ -38,10 +38,8 @@ module mem(
 
 	// 执行阶段送来的物理地址
 	input wire[`PhyAddrBus] mem_phy_addr_i,
-	input wire data_tlb_r_miss_exception_i,
-	input wire data_tlb_w_miss_exception_i,
-	input wire data_tlb_mod_exception_i,
-	input wire tlb_machine_check_exception_i,
+	input wire data_tlb_r_exception_i,
+	input wire data_tlb_w_exception_i,
 	
 	//来自执行阶段的信息	
 	input wire[`RegAddrBus] wd_i,
@@ -93,8 +91,6 @@ module mem(
 	output reg[`CSRWriteTypeBus] csr_reg_we_o,
 	output reg[`CSRAddrBus] csr_reg_write_addr_o,
 	output reg[`RegBus] csr_reg_data_o,
-	output reg csr_write_tlb_index_o,
-	output reg csr_write_tlb_random_o,
 
 	// 最终确认的异常类型
 	output reg[`ExceptionTypeBus] excepttype_o,
@@ -146,8 +142,6 @@ module mem(
 			csr_reg_we_o <= `CSRWriteDisable;
 			csr_reg_write_addr_o <= `NOPRegAddr;
 			csr_reg_data_o <= `ZeroWord;
-			csr_write_tlb_index_o <= `False_v;
-			csr_write_tlb_random_o <= `False_v;
 
 			mem_addr_o <= `ZeroWord;
 			mem_phy_addr_o <= `ZeroWord;
@@ -177,8 +171,6 @@ module mem(
 			csr_reg_we_o <= csr_reg_we_i;
 			csr_reg_write_addr_o <= csr_reg_write_addr_i;
 			csr_reg_data_o <= csr_reg_data_i;
-			csr_write_tlb_index_o <= csr_write_tlb_index_i;
-			csr_write_tlb_random_o <= csr_write_tlb_random_i;
 
 			mem_addr_o <= `ZeroWord;
 			mem_phy_addr_o <= `ZeroWord;
@@ -638,10 +630,9 @@ module mem(
 			excepttype_o <= excepttype_i;
 
 			excepttype_o[`Exception_LOAD_MISALIGNED] <= load_alignment_error;
-			excepttype_o[`Exception_LOAD_ACCESS_FAULT] <= data_tlb_r_miss_exception_i & mem_ce;
+			excepttype_o[`Exception_LOAD_ACCESS_FAULT] <= (data_tlb_r_exception_i & mem_ce);
 			excepttype_o[`Exception_STORE_MISALIGNED] <= store_alignment_error;
-			excepttype_o[`Exception_STORE_ACCESS_FAULT] <= (data_tlb_w_miss_exception_i | data_tlb_mod_exception_i) & mem_ce;
-			// excepttype_o[] <= tlb_machine_check_exception_i;
+			excepttype_o[`Exception_STORE_ACCESS_FAULT] <= (data_tlb_w_exception_i & mem_ce);
 			
 			// TODO: interrupt
 			// excepttype_o[0] <= (csr_cause[15:8] & csr_status[15:8]) & ({8{~csr_status[1]}}) & ({8{csr_status[0]}});

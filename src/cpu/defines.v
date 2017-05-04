@@ -211,11 +211,11 @@
 `ifdef RV32
 	`define RegBus 31:0
 	`define RegWidth 32
-	`define RegSel 3:0
 	`define DoubleRegBus 63:0
-	`define DoubleRegWidth 64
+	`define RegSel 3:0
 	`define HighRegBus 63:32
 	`define PhyAddrBus 33:0
+	`define PPNBus 33:12
 
 	`define MinusOne 32'hffff_ffff
 	`define SCSucceed 32'h0
@@ -223,11 +223,11 @@
 `else
 	`define RegBus 63:0
 	`define RegWidth 64
-	`define RegSel 7:0
 	`define DoubleRegBus 127:0
-	`define DoubleRegWidth 128
+	`define RegSel 7:0
 	`define HighRegBus 127:64
 	`define PhyAddrBus 49:0
+	`define PPNBus 49:12
 
 	`define MinusOne 64'hffff_ffff_ffff_ffff
 	`define SCSucceed 64'h0
@@ -442,8 +442,10 @@
 `define CSR_mstatus_vm_bus 28:24
 `define CSR_mstatus_vm_Mbare 5'h0
 `define CSR_mstatus_vm_Sv32 5'h8
-`define CSR_mstatus_vm_Sv39 5'h9
-`define CSR_mstatus_vm_Sv48 5'h10
+`ifndef RV32
+	`define CSR_mstatus_vm_Sv39 5'h9
+	`define CSR_mstatus_vm_Sv48 5'h10
+`endif
 
 `define CSR_mstatus_fs_bus 14:13
 `define CSR_mstatus_fs_Off 2'h0
@@ -484,6 +486,30 @@
 `define CSR_mip_seip_bus 9:9
 `define CSR_mip_heip_bus 10:10
 `define CSR_mip_meip_bus 11:11
+
+`ifdef RV32
+	`define CSR_sptbr_ppn_bus 21:0
+`else
+	`define CSR_sptbr_ppn_bus 37:0
+`endif
+
+`define CSR_mtlbindex      12'h7c0
+	`define CSR_mtlbindex_bus 3:0
+`define CSR_mtlbvpn        12'h7c1
+`define CSR_mtlbmask       12'h7c2
+`define CSR_mtlbpte        12'h7c3
+`define CSR_mtlbptevaddr   12'h7c4
+
+/* PTE */
+`define PTE_PG_OFF 11:0
+`define PTE_V 0:0
+`define PTE_R 1:1
+`define PTE_W 2:2
+`define PTE_X 3:3
+`define PTE_U 4:4
+`define PTE_G 5:5
+`define PTE_A 6:6
+`define PTE_D 7:7
 
 
 /*

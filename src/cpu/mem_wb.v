@@ -49,8 +49,6 @@ module mem_wb(
 	input wire[`CSRWriteTypeBus] mem_csr_reg_we,
 	input wire[`CSRAddrBus] mem_csr_reg_write_addr,
 	input wire[`RegBus] mem_csr_reg_data,
-	input wire mem_csr_write_tlb_index,
-	input wire mem_csr_write_tlb_random,
 
 
 	input wire [1:0] mem_cnt_i,
@@ -68,8 +66,6 @@ module mem_wb(
 	output reg[`CSRWriteTypeBus] wb_csr_reg_we,
 	output reg[`CSRAddrBus] wb_csr_reg_write_addr,
 	output reg[`RegBus] wb_csr_reg_data,
-	output reg wb_csr_write_tlb_index,
-	output reg wb_csr_write_tlb_random,
 
 	// send back to mem
 	output reg [1:0] mem_cnt_o,
@@ -92,8 +88,6 @@ module mem_wb(
 			wb_csr_reg_we <= `CSRWriteDisable;
 			wb_csr_reg_write_addr <= `NOPRegAddr;
 			wb_csr_reg_data <= `ZeroWord;
-			wb_csr_write_tlb_index <= `False_v;
-			wb_csr_write_tlb_random <= `False_v;
 
 			mem_cnt_o <= 2'h0;
 			mem_original_data_o <= `ZeroWord;
@@ -111,8 +105,6 @@ module mem_wb(
 			wb_csr_reg_we <= `CSRWriteDisable;
 			wb_csr_reg_write_addr <= `NOPRegAddr;
 			wb_csr_reg_data <= `ZeroWord;
-			wb_csr_write_tlb_index <= `False_v;
-			wb_csr_write_tlb_random <= `False_v;
 
 			mem_cnt_o <= 2'h0;
 			mem_original_data_o <= `ZeroWord;
@@ -130,8 +122,6 @@ module mem_wb(
 			wb_csr_reg_we <= `CSRWriteDisable;
 			wb_csr_reg_write_addr <= `NOPRegAddr;
 			wb_csr_reg_data <= `ZeroWord;
-			wb_csr_write_tlb_index <= `False_v;
-			wb_csr_write_tlb_random <= `False_v;
 
 			mem_cnt_o <= mem_cnt_i;
 			mem_original_data_o <= mem_original_data_i;
@@ -149,8 +139,6 @@ module mem_wb(
 			wb_csr_reg_we <= mem_csr_reg_we;
 			wb_csr_reg_write_addr <= mem_csr_reg_write_addr;
 			wb_csr_reg_data <= mem_csr_reg_data;
-			wb_csr_write_tlb_index <= mem_csr_write_tlb_index;
-			wb_csr_write_tlb_random <= mem_csr_write_tlb_random;
 
 			mem_cnt_o <= 2'h0;
 			mem_original_data_o <= `ZeroWord;

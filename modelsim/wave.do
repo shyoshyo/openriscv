@@ -3,11 +3,49 @@ quietly virtual signal -install /openriscv_min_sopc_tb/openriscv_min_sopc0/data_
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/clk
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/wishbone_clk
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/prv_o
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_ack_id
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_addr_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_ce_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_clk
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_data_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_data_o
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_req_id
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_sel_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_we_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cyc_len_log_2
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/delay
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/flush_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/not_use
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/process
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/req_cnt
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/request_bus
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/rst_n
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/stall_delay
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/stall_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/stall_this_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/stallreq
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_ack_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_ack_id
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_ack_valid
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_addr_o
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_clk
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_cyc_o
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_data_i
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_data_o
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_sel_o
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_stb_o
+add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/wishbone_we_o
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/pc_reg0/exception_new_pc
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/pc_reg0/next_inst_tlb_exception_i
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/pc_reg0/pc
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/pc_reg0/excepttype_o
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_inst
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_pc
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_excepttype
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_inst
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_pc
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_excepttype
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/is_in_delayslot_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/is_in_delayslot_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/branch_flag_o
@@ -16,6 +54,9 @@ add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/sta
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg1_o
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_current_inst_address
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex0/data_tlb_exception_i
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex0/data_tlb_r_exception_o
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex0/data_tlb_w_exception_o
 add wave -noupdate -label mem_pc -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_i
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/mem_addr_i
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/mem_addr_o
@@ -28,13 +69,13 @@ add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/wd
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/wreg_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/LLbit_addr_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/LLbit_i
-add wave -noupdate -expand -group llbit /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit
-add wave -noupdate -expand -group llbit /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr
-add wave -noupdate -expand -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/we_i
-add wave -noupdate -expand -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_i
-add wave -noupdate -expand -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr_i
-add wave -noupdate -expand -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_o
-add wave -noupdate -expand -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr_o
+add wave -noupdate -group llbit /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit
+add wave -noupdate -group llbit /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr
+add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/we_i
+add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_i
+add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr_i
+add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_o
+add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr_o
 add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_write_addr
 add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_we
 add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_data
@@ -98,31 +139,44 @@ add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/o
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/excepttype_i
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_o
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/stx_pad_o
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_ack_o
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_adr_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_adr_int
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_clk_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_cyc_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat32_o
-add wave -noupdate -expand -group uart -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat8_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat8_o
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat_o
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_rst_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_sel_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_stb_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_we_i
-add wave -noupdate -expand -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/we_o
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/stx_pad_o
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_ack_o
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_adr_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_adr_int
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_clk_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_cyc_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat32_o
+add wave -noupdate -group uart -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat8_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat8_o
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_dat_o
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_rst_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_sel_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_stb_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/wb_we_i
+add wave -noupdate -group uart /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/we_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_timer0/mtime
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_timer0/mtimecmp
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_timer0/timer_int_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mip_mtip
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/ram_we_addr_i
+add wave -noupdate -expand -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/hit
+add wave -noupdate -expand -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/protect_exception
+add wave -noupdate -expand -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/tlb_exception_o
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/hit
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/vir_addr_i
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/phy_addr_o
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/protect_exception
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb_exception_o
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_mask_i
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_pte_i
+add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_vpn_i
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_tlb_exception_o
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/inst_tlb_exception_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {first {640487 ps} 1} {output {6689872 ps} 1} {{Cursor 7} {208522000000 ps} 1} {{Cursor 5} {34711041000 ps} 1} {{Cursor 6} {34711498106 ps} 0}
-quietly wave cursor active 5
-configure wave -namecolwidth 185
+WaveRestoreCursors {first {640487 ps} 1} {{Cursor 7} {160444910029 ps} 1} {{Cursor 8} {160449552562 ps} 0}
+quietly wave cursor active 3
+configure wave -namecolwidth 211
 configure wave -valuecolwidth 175
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -136,4 +190,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {340004112384 ps} {340016625664 ps}
+WaveRestoreZoom {160432625161 ps} {160456373519 ps}

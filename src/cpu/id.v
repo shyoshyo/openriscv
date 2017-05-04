@@ -211,6 +211,10 @@ module id(
 		begin
 			excepttype_o <= `ZeroWord;
 		end
+		else if(is_in_delayslot_i == `InDelaySlot)
+		begin
+			excepttype_o <= `ZeroWord;
+		end
 		else
 		begin
 			excepttype_o <= excepttype_i;
@@ -266,6 +270,34 @@ module id(
 			csr_reg_we_o <= `CSRWriteDisable;
 		end
 		else if(is_in_delayslot_i == `InDelaySlot)
+		begin
+			aluop_o <= `EXE_NOP_OP;
+			alusel_o <= `EXE_RES_NOP;
+			instvalid <= `InstValid;
+			
+			wreg_o <= `WriteDisable;
+			
+			reg1_read_o <= `ReadDisable;
+			reg2_read_o <= `ReadDisable;
+			
+			imm <= `ZeroWord;
+
+			branch_target_address_o <= `ZeroWord;
+			branch_flag_o <= `NotBranch;
+			next_inst_in_delayslot_o <= `NotInDelaySlot;
+			step_o <= 1'b0;
+
+			excepttype_is_syscall <= `False_v;
+			excepttype_is_break <= `False_v;
+			excepttype_is_uret <= `False_v;
+			excepttype_is_sret <= `False_v;
+			excepttype_is_mret <= `False_v;
+			excepttype_is_fence_i <= `False_v;
+
+			csr_reg_read_o <= `ReadDisable;
+			csr_reg_we_o <= `CSRWriteDisable;
+		end
+		else if((|excepttype_i) == 1'b1)
 		begin
 			aluop_o <= `EXE_NOP_OP;
 			alusel_o <= `EXE_RES_NOP;

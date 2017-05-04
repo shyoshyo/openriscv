@@ -58,14 +58,11 @@ module ex_mem(
 	input wire[`CSRWriteTypeBus] ex_csr_reg_we,
 	input wire[`CSRAddrBus] ex_csr_reg_write_addr,
 	input wire[`RegBus] ex_csr_reg_data,
-	input wire ex_csr_write_tlb_index,
-	input wire ex_csr_write_tlb_random,
 
 	// 要写入的物理地址
 	input wire [`PhyAddrBus]ex_mem_phy_addr,
-	input wire ex_data_tlb_r_miss_exception,
-	input wire ex_data_tlb_w_miss_exception,
-	input wire ex_data_tlb_mod_exception,
+	input wire ex_data_tlb_r_exception,
+	input wire ex_data_tlb_w_exception,
 
 
 	// 收集到的异常的信息
@@ -87,8 +84,6 @@ module ex_mem(
 	output reg[`CSRWriteTypeBus] mem_csr_reg_we,
 	output reg[`CSRAddrBus] mem_csr_reg_write_addr,
 	output reg[`RegBus] mem_csr_reg_data,
-	output reg mem_csr_write_tlb_index,
-	output reg mem_csr_write_tlb_random,
 
 	// 送到下一阶段的异常的信息
 	output reg[`ExceptionTypeBus] mem_excepttype,
@@ -99,9 +94,8 @@ module ex_mem(
 
 	// 送到下一阶段的物理地址
 	output reg [`PhyAddrBus]mem_mem_phy_addr,
-	output reg mem_data_tlb_r_miss_exception,
-	output reg mem_data_tlb_w_miss_exception,
-	output reg mem_data_tlb_mod_exception,
+	output reg mem_data_tlb_r_exception,
+	output reg mem_data_tlb_w_exception,
 
 	// 即将暂停的 ex 下一阶段需要的信息
 	output reg[1:0] cnt_o,
@@ -124,8 +118,6 @@ module ex_mem(
 			mem_csr_reg_we <= `CSRWriteDisable;
 			mem_csr_reg_write_addr <= `NOPRegAddr;
 			mem_csr_reg_data <= `ZeroWord;
-			mem_csr_write_tlb_index <= `False_v;
-			mem_csr_write_tlb_random <= `False_v;
 
 			mem_excepttype <= `ZeroWord;
 			mem_is_in_delayslot <= `NotInDelaySlot;
@@ -133,9 +125,8 @@ module ex_mem(
 			mem_not_stall <= `False_v;
 
 			mem_mem_phy_addr <= `ZeroWord;
-			mem_data_tlb_r_miss_exception <= `False_v;
-			mem_data_tlb_w_miss_exception <= `False_v;
-			mem_data_tlb_mod_exception <= `False_v;
+			mem_data_tlb_r_exception <= `False_v;
+			mem_data_tlb_w_exception <= `False_v;
 
 			cnt_o <= 2'b00;
 			div_started_o <= 1'b0;
@@ -154,8 +145,6 @@ module ex_mem(
 			mem_csr_reg_we <= `CSRWriteDisable;
 			mem_csr_reg_write_addr <= `NOPRegAddr;
 			mem_csr_reg_data <= `ZeroWord;
-			mem_csr_write_tlb_index <= `False_v;
-			mem_csr_write_tlb_random <= `False_v;
 
 			mem_excepttype <= `ZeroWord;
 			mem_is_in_delayslot <= `NotInDelaySlot;
@@ -163,9 +152,8 @@ module ex_mem(
 			mem_not_stall <= `False_v;
 
 			mem_mem_phy_addr <= `ZeroWord;
-			mem_data_tlb_r_miss_exception <= `False_v;
-			mem_data_tlb_w_miss_exception <= `False_v;
-			mem_data_tlb_mod_exception <= `False_v;
+			mem_data_tlb_r_exception <= `False_v;
+			mem_data_tlb_w_exception <= `False_v;
 
 			cnt_o <= 2'b00;
 			div_started_o <= 1'b0;
@@ -183,8 +171,6 @@ module ex_mem(
 			mem_csr_reg_we <= `CSRWriteDisable;
 			mem_csr_reg_write_addr <= `NOPRegAddr;
 			mem_csr_reg_data <= `ZeroWord;
-			mem_csr_write_tlb_index <= `False_v;
-			mem_csr_write_tlb_random <= `False_v;
 
 			mem_excepttype <= `ZeroWord;
 			mem_is_in_delayslot <= `NotInDelaySlot;
@@ -192,9 +178,8 @@ module ex_mem(
 			mem_not_stall <= `False_v;
 
 			mem_mem_phy_addr <= `ZeroWord;
-			mem_data_tlb_r_miss_exception <= `False_v;
-			mem_data_tlb_w_miss_exception <= `False_v;
-			mem_data_tlb_mod_exception <= `False_v;
+			mem_data_tlb_r_exception <= `False_v;
+			mem_data_tlb_w_exception <= `False_v;
 
 			cnt_o <= cnt_i;
 			div_started_o <= div_started_i;
@@ -212,8 +197,6 @@ module ex_mem(
 			mem_csr_reg_we <= ex_csr_reg_we;
 			mem_csr_reg_write_addr <= ex_csr_reg_write_addr;
 			mem_csr_reg_data <= ex_csr_reg_data;
-			mem_csr_write_tlb_index <= ex_csr_write_tlb_index;
-			mem_csr_write_tlb_random <= ex_csr_write_tlb_random;
 
 			mem_excepttype <= ex_excepttype;
 			mem_is_in_delayslot <= ex_is_in_delayslot;
@@ -221,9 +204,8 @@ module ex_mem(
 			mem_not_stall <= ex_not_stall;
 
 			mem_mem_phy_addr <= ex_mem_phy_addr;
-			mem_data_tlb_r_miss_exception <= ex_data_tlb_r_miss_exception;
-			mem_data_tlb_w_miss_exception <= ex_data_tlb_w_miss_exception;
-			mem_data_tlb_mod_exception <= ex_data_tlb_mod_exception;
+			mem_data_tlb_r_exception <= ex_data_tlb_r_exception;
+			mem_data_tlb_w_exception <= ex_data_tlb_w_exception;
 
 			cnt_o <= 2'b00;
 			div_started_o <= 1'b0;

@@ -52,7 +52,7 @@ module pc_reg(
 
 	// TLB 提供的物理地址
 	input wire[`PhyAddrBus] next_inst_phy_addr_i,
-	input wire next_inst_tlb_r_miss_exception_i,
+	input wire next_inst_tlb_exception_i,
 
 	// pc 寄存器，及其物理地址
 	output reg[`RegBus] pc,
@@ -86,17 +86,18 @@ module pc_reg(
 	 			next_inst_vir_addr_o <= pc + 4'h4;
 	 	end
 
+	reg[`ExceptionTypeBus] excepttype;
 	always @(*)
 		if (rst_n == `RstEnable)
 		begin
-			excepttype_o <= `ZeroWord;
+			excepttype <= `ZeroWord;
 		end
 		else
 		begin
-			excepttype_o <= `ZeroWord;
+			excepttype <= `ZeroWord;
 
-			excepttype_o[`Exception_INST_MISALIGNED] <= (next_inst_vir_addr_o[1:0] != 2'b00);
-			excepttype_o[`Exception_INST_ACCESS_FAULT] <= next_inst_tlb_r_miss_exception_i;
+			excepttype[`Exception_INST_MISALIGNED] <= (next_inst_vir_addr_o[1:0] != 2'b00);
+			excepttype[`Exception_INST_ACCESS_FAULT] <= next_inst_tlb_exception_i;
 		end
 
 	always @ (posedge clk or negedge rst_n)
@@ -105,22 +106,25 @@ module pc_reg(
 		begin
 			pc <= `StartInstAddr;
 
-			inst_phy_addr_o <= `ZeroWord;
 			ce <= `ChipDisable;
+			inst_phy_addr_o <= `ZeroWord;
+			excepttype_o <= `ZeroWord;
 		end
 		else if(flush == `Flush)
 		begin
 			pc <= next_inst_vir_addr_o;
 
-			inst_phy_addr_o <= next_inst_phy_addr_i;
 			ce <= `ChipEnable;
+			inst_phy_addr_o <= next_inst_phy_addr_i;
+			excepttype_o <= excepttype;
 		end
 		else if(stall[0] == `NoStop)
 		begin
 			pc <= next_inst_vir_addr_o;
 
-			inst_phy_addr_o <= next_inst_phy_addr_i;
 			ce <= `ChipEnable;
+			inst_phy_addr_o <= next_inst_phy_addr_i;
+			excepttype_o <= excepttype;
 		end
 
 	end

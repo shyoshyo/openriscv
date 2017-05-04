@@ -1399,3 +1399,7 @@ run -a
 # rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
 # 
 #        INSTRUCTION SETS WANT TO BE FREE
+# Compile of defines.v was successful.
+# Compile of csr.v failed with 1 errors.
+# 2 compiles, 1 failed with 1 error. 
+# Compile of csr.v failed with 1 errors.
