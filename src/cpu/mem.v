@@ -96,6 +96,7 @@ module mem(
 	// 当前指令的地址 以及此指令要訪問的數據地址
 	output wire[`RegBus] current_inst_address_o,
 	output wire[`RegBus] current_data_address_o,
+	output wire not_stall_o,
 	
 	/*
 	// 最新的 EPC 值
@@ -635,4 +636,6 @@ module mem(
 			// TODO: interrupt
 			// excepttype_o[0] <= (csr_cause[15:8] & csr_status[15:8]) & ({8{~csr_status[1]}}) & ({8{csr_status[0]}});
 		end
+
+	assign not_stall_o = not_stall_i;
 endmodule

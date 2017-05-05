@@ -108,6 +108,8 @@
     `define EXE_SRET     12'b000100000010
     `define EXE_HRET     12'b001000000010
     `define EXE_MRET     12'b001100000010
+    `define EXE_WFI      12'b000100000101
+
 `define EXE_CSRRW        3'b001
 `define EXE_CSRRS        3'b010
 `define EXE_CSRRC        3'b011
@@ -304,6 +306,8 @@
 `define CSR_mcause_ECALL_FROM_H         {1'b0, 31'd10}
 `define CSR_mcause_ECALL_FROM_M         {1'b0, 31'd11}
 
+`define CSR_mcause_IRQ_M_TIMER          {1'b1, 31'd7}
+
 
 
 // Privilege
@@ -493,6 +497,24 @@
 `define CSR_mip_seip_bus 9:9
 `define CSR_mip_heip_bus 10:10
 `define CSR_mip_meip_bus 11:11
+
+
+/* mie */
+`define CSR_mie_usie_bus 0:0
+`define CSR_mie_ssie_bus 1:1
+`define CSR_mie_hsie_bus 2:2
+`define CSR_mie_msie_bus 3:3
+
+`define CSR_mie_utie_bus 4:4
+`define CSR_mie_stie_bus 5:5
+`define CSR_mie_htie_bus 6:6
+`define CSR_mie_mtie_bus 7:7
+
+`define CSR_mie_ueie_bus 8:8
+`define CSR_mie_seie_bus 9:9
+`define CSR_mie_heie_bus 10:10
+`define CSR_mie_meie_bus 11:11
+
 
 `ifdef RV32
 	`define CSR_sptbr_ppn_bus 21:0

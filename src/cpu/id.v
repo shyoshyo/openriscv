@@ -120,7 +120,7 @@ module id(
 
 	output reg[`ExceptionTypeBus] excepttype_o,
 	output wire[`RegBus] current_inst_address_o,
-	output wire not_stall_o,
+	output reg not_stall_o,
 
 	// step_o 表示当前处于那个步骤
 	output reg step_o,
@@ -211,10 +211,12 @@ module id(
 		if (rst_n == `RstEnable)
 		begin
 			excepttype_o <= `ZeroWord;
+			not_stall_o <= 1'b0;
 		end
 		else if(is_in_delayslot_i == `InDelaySlot)
 		begin
 			excepttype_o <= `ZeroWord;
+			not_stall_o <= 1'b0;
 		end
 		else
 		begin
@@ -235,10 +237,11 @@ module id(
 				`PRV_M: excepttype_o[`Exception_ECALL_FROM_M] <= excepttype_is_syscall;
 				default: begin end
 			endcase
+
+			not_stall_o <= not_stall_i;
 		end
 
 	assign current_inst_address_o = pc_i;
-	assign not_stall_o = not_stall_i;
 
 	/******************* 对指令进行译码 ********************/
 
@@ -1037,7 +1040,6 @@ module id(
 							if(reg1_addr_o == `ZeroRegAddr && wd_o == `ZeroRegAddr && imm_i_type == 32'b0)
 							begin
 								instvalid <= `InstValid;
-
 								excepttype_is_fence_i <= `True_v;
 							end
 							
@@ -1070,16 +1072,21 @@ module id(
 									end
 
 									`EXE_SRET:
-									begin
-										instvalid <= `InstValid;
-										excepttype_is_sret <= `True_v;
-									end
+										if(prv_i >= `PRV_S)
+										begin
+											instvalid <= `InstValid;
+											excepttype_is_sret <= `True_v;
+										end
 
 									`EXE_MRET:
-									begin
+										if(prv_i >= `PRV_M)
+										begin
+											instvalid <= `InstValid;
+											excepttype_is_mret <= `True_v;
+										end
+
+									`EXE_WFI:
 										instvalid <= `InstValid;
-										excepttype_is_mret <= `True_v;
-									end
 
 									default:
 									begin

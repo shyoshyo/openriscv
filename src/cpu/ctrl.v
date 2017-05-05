@@ -37,7 +37,8 @@ module ctrl(
 	input wire rst_n,
 	
 
-	input wire[`ExceptionTypeBus] excepttype_i,
+	input wire flushreq_from_csr,
+	// input wire[`ExceptionTypeBus] excepttype_i,
 	
 	//来自取址阶段的暂停请求
 	input wire stallreq_from_if,
@@ -54,7 +55,7 @@ module ctrl(
 	//来自回写阶段的暂停请求
 	input wire stallreq_from_wb,
 
-	output reg flush,
+	output wire flush,
 	output reg[5:0] stall
 	
 );
@@ -63,17 +64,10 @@ module ctrl(
 
 	always @ (*)
 		if(rst_n == `RstEnable)
-		begin
 			stall <= {`NoStop, `NoStop, `NoStop, `NoStop, `NoStop, `NoStop};
-			flush <= `NoFlush;
-		end
-		else if(excepttype_i != `ZeroWord)
-		begin
+		else if(flushreq_from_csr == `Flush)
 			stall <= {`NoStop, `NoStop, `NoStop, `NoStop, `NoStop, `NoStop};
-			flush <= `Flush;
-		end
 		else
-		begin
 			stall <=
 			{
 				(stallreq_from_wb == `Stop) ? `Stop : `NoStop,
@@ -92,6 +86,6 @@ module ctrl(
 					stallreq_from_mem == `Stop || stallreq_from_wb == `Stop) ? `Stop : `NoStop
 			};
 
-			flush <= `NoFlush;
-		end
+	assign flush = flushreq_from_csr;
+
 endmodule

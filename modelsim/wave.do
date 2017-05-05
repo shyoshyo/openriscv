@@ -4,6 +4,7 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/rst_n
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/clk
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/wishbone_clk
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/timer_int_i
 add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/prv_o
 add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_ack_id
 add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/iwishbone_bus_if/cpu_addr_i
@@ -183,9 +184,8 @@ add wave -noupdate -expand -group reg -label a2 -radix ascii {/openriscv_min_sop
 add wave -noupdate -expand -group reg -label {reg x31, t6} -radix hexadecimal {/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/regfile1/regs[31]}
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_o
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/excepttype_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/excepttype_o
-add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/flush
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mepc_addr
 add wave -noupdate -expand /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/stall
 add wave -noupdate -expand -group {CSR Reg} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mscratch
 add wave -noupdate -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o
@@ -216,9 +216,7 @@ add wave -noupdate -group {write CSR} -radix hexadecimal /openriscv_min_sopc_tb/
 add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/wishbone_clk
 add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/clk
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/stall
-add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/flush
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/excepttype_o
-add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ctrl0/excepttype_i
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_o
 add wave -noupdate -group exception /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0/current_inst_address_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/uart_top0/stx_pad_o
@@ -256,7 +254,7 @@ add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/op
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_tlb_exception_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/inst_tlb_exception_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {first {640487 ps} 1} {{Cursor 7} {160444910029 ps} 1} {{Cursor 8} {67144169516 ps} 1} {{Cursor 9} {364073000000 ps} 1} {{Cursor 5} {363964000000 ps} 1} {{Cursor 6} {364292000000 ps} 1} {{Cursor 7} {364455398310 ps} 0}
+WaveRestoreCursors {first {640487 ps} 1} {{Cursor 7} {160444910029 ps} 1} {{Cursor 8} {67144169516 ps} 1} {{Cursor 9} {364073000000 ps} 1} {{Cursor 5} {363964000000 ps} 1} {{Cursor 6} {364292000000 ps} 1} {{Cursor 7} {22266849 ps} 0}
 quietly wave cursor active 7
 configure wave -namecolwidth 211
 configure wave -valuecolwidth 175
@@ -272,4 +270,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {641203999351 ps} {641239873719 ps}
+WaveRestoreZoom {0 ps} {2709808064 ps}

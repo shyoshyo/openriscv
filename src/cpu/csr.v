@@ -24,9 +24,9 @@
 //////////////////////////////////////////////////////////////////////
 // Module:  csr
 // File:    csr.v
-// Author:  Lei Silei, shyoshyo
-// E-mail:  leishangwen@163.com, shyoshyo@qq.com
-// Description:实现了一些 CSR
+// Author:  shyoshyo
+// E-mail:  shyoshyo@qq.com
+// Description: CSR
 // 
 // Revision: 1.0
 //////////////////////////////////////////////////////////////////////
@@ -59,6 +59,8 @@ module csr(
 	input wire[`RegBus] current_inst_addr_i,
 	input wire[`RegBus] current_data_addr_i,
 
+	input wire not_stall_i,
+
 	// delatslot(TODO: FIXME)
 	input wire is_in_delayslot_i,
 
@@ -67,6 +69,7 @@ module csr(
 	output reg protect_o,
 
 	// next pc for excpetion
+	output reg flushreq,
 	output reg[`RegBus] exception_new_pc_o,
 
 	output reg [1:0] prv_o,
@@ -119,6 +122,7 @@ module csr(
 
 
 	wire[`CSR_mip_mtip_bus] mip_mtip = timer_int_i;
+	reg[`CSR_mie_mtie_bus] mie_mtie;
 
 	reg[`CSR_mucounteren_tm_bus] mucounteren_tm;
 	reg[`CSR_mscounteren_tm_bus] mscounteren_tm;
@@ -194,7 +198,15 @@ module csr(
 	begin
 		next_prv = prv_o;
 
-		if(has_cause)
+		if(!not_stall_i)
+		begin
+			
+		end
+		else if(mip_mtip == 1'b1 && mie_mtie == 1'b1 && (prv_o < `PRV_M || mstatus_mie == 1'b1))
+		begin
+
+		end
+		else if(has_cause)
 		begin
 			next_prv <= `PRV_M;
 		end
@@ -262,6 +274,8 @@ module csr(
 			mstatus_mie <= 1'b0;
 			mstatus_sie <= 1'b0;
 			mstatus_uie <= 1'b0;
+
+			mie_mtie <= 1'b0;
 
 			mscounteren_tm <= 1'b0;
 			mucounteren_tm <= 1'b0;
@@ -344,6 +358,7 @@ module csr(
 						mstatus_uie <= data_i[`CSR_mstatus_uie_bus];
 					end
 
+					`CSR_mie:         mie_mtie <= data_i[`CSR_mie_mtie_bus];
 					`CSR_mscounteren: mscounteren_tm <= data_i[`CSR_mscounteren_tm_bus];
 					`CSR_mucounteren: mucounteren_tm <= data_i[`CSR_mucounteren_tm_bus];
 
@@ -378,7 +393,32 @@ module csr(
 					end
 				endcase
 			
-			if(has_cause)
+			if(!not_stall_i)
+			begin
+				
+			end
+			else if(mip_mtip == 1'b1 && mie_mtie == 1'b1 && (prv_o < `PRV_M || mstatus_mie == 1'b1))
+			begin
+				mepc_addr <= current_inst_addr_i[`CSR_mepc_addr_bus];
+				mcause <= `CSR_mcause_IRQ_M_TIMER;
+				if(has_badaddr) mbadaddr <= badaddr;
+
+				case(prv_o)
+					`PRV_U: mstatus_mpie <= mstatus_uie;
+					`PRV_S: mstatus_mpie <= mstatus_sie;
+					`PRV_M: mstatus_mpie <= mstatus_mie;
+					default: begin end
+				endcase
+				case(prv_o)
+					`PRV_U: mstatus_mpp <= `PRV_U;
+					`PRV_S: mstatus_mpp <= `PRV_S;
+					`PRV_M: mstatus_mpp <= `PRV_M;
+					default: begin end
+				endcase
+				mstatus_mie <= 1'b0;
+
+			end
+			else if(has_cause)
 			begin
 				mepc_addr <= current_inst_addr_i[`CSR_mepc_addr_bus];
 				mcause <= cause;
@@ -400,20 +440,12 @@ module csr(
 			end
 			else if(excepttype_i[`Exception_ERET_FROM_U])
 			begin
-				/*
-				require_privilege(PRV_U); => trap_illegal_instruction
-				*/
-				
 				// x = u -> y = u
 				mstatus_uie <= mstatus_upie;
 				mstatus_upie <= 1'b1;
 			end
 			else if(excepttype_i[`Exception_ERET_FROM_S])
 			begin
-				/*
-				require_privilege(PRV_S); => trap_illegal_instruction
-				 */
-				
 				case(mstatus_spp)
 					`PRV_U:
 					begin
@@ -437,10 +469,6 @@ module csr(
 			end
 			else if(excepttype_i[`Exception_ERET_FROM_M])
 			begin
-				/*
-				require_privilege(PRV_M); => trap_illegal_instruction
-				 */
-				
 				case(mstatus_mpp)
 					`PRV_U:
 					begin
@@ -563,14 +591,27 @@ module csr(
 	always @(*)
 	if(rst_n == `RstEnable)
 	begin
+		flushreq <= `NoFlush;
 		exception_new_pc_o <= `ZeroWord;
 	end
 	else
 	begin
+		flushreq <= `NoFlush;
 		exception_new_pc_o <= `ZeroWord;
 
-		if(has_cause)
+		if(!not_stall_i)
 		begin
+			
+		end
+		else if(mip_mtip == 1'b1 && mie_mtie == 1'b1 && (prv_o < `PRV_M || mstatus_mie == 1'b1))
+		begin
+			flushreq <= `Flush;
+			exception_new_pc_o <= `ZeroWord;
+			exception_new_pc_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
+		end
+		else if(has_cause)
+		begin
+			flushreq <= `Flush;
 			// TODO:
 			exception_new_pc_o <= `ZeroWord;
 			exception_new_pc_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
@@ -581,6 +622,8 @@ module csr(
 			// exception_new_pc_o <= 
 			$display("TODO: should not arrive here");
 			$stop;
+
+			flushreq <= `Flush;
 		end
 		else if(excepttype_i[`Exception_ERET_FROM_S])
 		begin
@@ -588,17 +631,22 @@ module csr(
 			// exception_new_pc_o <= 
 			$display("TODO: should not arrive here");
 			$stop;
+
+			flushreq <= `Flush;
 		end
 		else if(excepttype_i[`Exception_ERET_FROM_M])
 		begin
+			flushreq <= `Flush;
 			exception_new_pc_o <= `ZeroWord;
 			exception_new_pc_o[`CSR_mepc_addr_bus] <= mepc_addr;
 		end
 		else if(excepttype_i[`Exception_FENCEI] == 1'b1)
 		begin
+			flushreq <= `Flush;
 			exception_new_pc_o <= current_inst_addr_i + 4'd4;
 		end
 	end
+	
 	// CSR protect
 	always @(*)
 		if (rst_n == `RstEnable)
@@ -637,7 +685,6 @@ module csr(
 				`CSR_mstatus,
 				`CSR_mip,
 				`CSR_mie,
-
 
 				`CSR_mscounteren,
 				`CSR_mucounteren,
@@ -706,6 +753,7 @@ module csr(
 
 				`CSR_mip:       data_o[`CSR_mip_mtip_bus] <= mip_mtip;
 
+				`CSR_mie:       data_o[`CSR_mie_mtie_bus] <= mie_mtie;
 
 				`CSR_mscounteren: data_o[`CSR_mscounteren_tm_bus] <= mscounteren_tm;
 				`CSR_mucounteren: data_o[`CSR_mucounteren_tm_bus] <= mucounteren_tm;

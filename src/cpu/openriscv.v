@@ -189,6 +189,7 @@ module openriscv(
 	wire mem_is_in_delayslot_o;
 	wire[`RegBus] mem_current_inst_address_o;
 	wire[`RegBus] mem_current_data_address_o;
+	wire mem_not_stall_o;
 	
 	//连接MEM/WB模块的输出与回写阶段的输入	
 	wire wb_wreg_i;
@@ -240,6 +241,7 @@ module openriscv(
 	wire[`RegBus] branch_target_address;
 
 	wire[5:0] stall;
+	wire flush;
 	wire stallreq_from_if;
 	wire stallreq_from_id;
 	wire stallreq_from_ex;
@@ -250,11 +252,9 @@ module openriscv(
 
 	wire[`RegBus] csr_data_o;
 	wire csr_protect_o;
-
-	wire flush;
-	wire[`RegBus] exception_new_pc;
-
+	wire flushreq_from_csr;
 	wire[1:0] prv;
+	wire[`RegBus] exception_new_pc;
 
 
 	//pc_reg例化
@@ -655,6 +655,7 @@ module openriscv(
 		// 当前指令的地址
 		.current_inst_address_o(mem_current_inst_address_o),
 		.current_data_address_o(mem_current_data_address_o),
+		.not_stall_o(mem_not_stall_o),
 
 		/*
 		// 最新的 EPC 值
@@ -710,7 +711,7 @@ module openriscv(
 	ctrl ctrl0(
 		.rst_n(rst_n),
 
-		.excepttype_i(mem_excepttype_o),
+		.flushreq_from_csr(flushreq_from_csr),
 
 		//来自取址阶段的暂停请求
 		.stallreq_from_if(stallreq_from_if),
@@ -780,10 +781,12 @@ module openriscv(
 		.current_inst_addr_i(mem_current_inst_address_o),
 		.current_data_addr_i(mem_current_data_address_o),
 		.is_in_delayslot_i(mem_is_in_delayslot_o),
+		.not_stall_i(mem_not_stall_o),
 		
 		.data_o(csr_data_o),
 		.protect_o(csr_protect_o),
 		
+		.flushreq(flushreq_from_csr),
 		.exception_new_pc_o(exception_new_pc),
 
 		.prv_o(prv),
