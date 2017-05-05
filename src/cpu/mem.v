@@ -62,10 +62,8 @@ module mem(
 
 	//协处理器csr的写信号
 	input wire[`CSRWriteTypeBus] csr_reg_we_i,
-	input wire[`CSRAddrBus] csr_reg_write_addr_i,
+	input wire[`CSRAddrBus] csr_reg_addr_i,
 	input wire[`RegBus] csr_reg_data_i,
-	input wire csr_write_tlb_index_i,
-	input wire csr_write_tlb_random_i,
 
 
 	input wire[`ExceptionTypeBus] excepttype_i,
@@ -89,7 +87,7 @@ module mem(
 
 	//协处理器csr的写信号
 	output reg[`CSRWriteTypeBus] csr_reg_we_o,
-	output reg[`CSRAddrBus] csr_reg_write_addr_o,
+	output reg[`CSRAddrBus] csr_reg_addr_o,
 	output reg[`RegBus] csr_reg_data_o,
 
 	// 最终确认的异常类型
@@ -140,7 +138,7 @@ module mem(
 			wdata_o <= `ZeroWord;
 
 			csr_reg_we_o <= `CSRWriteDisable;
-			csr_reg_write_addr_o <= `NOPRegAddr;
+			csr_reg_addr_o <= `NOPRegAddr;
 			csr_reg_data_o <= `ZeroWord;
 
 			mem_addr_o <= `ZeroWord;
@@ -169,7 +167,7 @@ module mem(
 			wdata_o <= wdata_i;
 
 			csr_reg_we_o <= csr_reg_we_i;
-			csr_reg_write_addr_o <= csr_reg_write_addr_i;
+			csr_reg_addr_o <= csr_reg_addr_i;
 			csr_reg_data_o <= csr_reg_data_i;
 
 			mem_addr_o <= `ZeroWord;

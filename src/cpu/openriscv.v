@@ -103,7 +103,9 @@ module openriscv(
 	wire[`ExceptionTypeBus] id_excepttype_o;
 	wire[`RegBus] id_current_inst_address_o;
 	wire id_not_stall_o;
+ 	wire id_csr_reg_re_o;
 	wire[`CSRWriteTypeBus] id_csr_reg_we_o;
+	wire[`CSRAddrBus] id_csr_reg_addr_o;
 	wire[`RegBus] id_csr_reg_data_o;
 	
 	//连接ID/EX模块的输出与执行阶段EX模块的输入
@@ -121,6 +123,7 @@ module openriscv(
 	wire[`RegBus] ex_current_inst_address_i;
 	wire ex_not_stall_i;
 	wire[`CSRWriteTypeBus] ex_csr_reg_we_i;
+	wire[`CSRAddrBus] ex_csr_reg_addr_i;
 	wire[`RegBus] ex_csr_reg_data_i;
 
 	wire [`PhyAddrBus]ex_mem_phy_addr_i;
@@ -137,7 +140,7 @@ module openriscv(
 	wire[`RegBus] ex_reg1_o;
 	wire[`RegBus] ex_reg2_o;
 	wire[`CSRWriteTypeBus] ex_csr_reg_we_o;
-	wire[`CSRAddrBus] ex_csr_reg_write_addr_o;
+	wire[`CSRAddrBus] ex_csr_reg_addr_o;
 	wire[`RegBus] ex_csr_reg_data_o;
 	wire[`ExceptionTypeBus] ex_excepttype_o;
 	wire[`RegBus] ex_current_inst_address_o;
@@ -160,7 +163,7 @@ module openriscv(
 	wire [1:0] mem_cnt_i;
 	wire [`RegBus] mem_original_data_i;
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_i;
-	wire[`CSRAddrBus] mem_csr_reg_write_addr_i;
+	wire[`CSRAddrBus] mem_csr_reg_addr_i;
 	wire[`RegBus] mem_csr_reg_data_i;
 	wire[`ExceptionTypeBus] mem_excepttype_i;
 	wire mem_is_in_delayslot_i;
@@ -180,7 +183,7 @@ module openriscv(
 	wire [1:0] mem_cnt_o;
 	wire [`RegBus] mem_original_data_o;
 	wire[`CSRWriteTypeBus] mem_csr_reg_we_o;
-	wire[`CSRAddrBus] mem_csr_reg_write_addr_o;
+	wire[`CSRAddrBus] mem_csr_reg_addr_o;
 	wire[`RegBus] mem_csr_reg_data_o;
 	wire[`ExceptionTypeBus] mem_excepttype_o;
 	wire mem_is_in_delayslot_o;
@@ -195,7 +198,7 @@ module openriscv(
 	wire [`PhyAddrBus] wb_LLbit_addr_i;
 	wire wb_LLbit_we_i;
 	wire[`CSRWriteTypeBus] wb_csr_reg_we_i;
-	wire[`CSRAddrBus] wb_csr_reg_write_addr_i;
+	wire[`CSRAddrBus] wb_csr_reg_addr_i;
 	wire[`RegBus] wb_csr_reg_data_i;
 	wire wb_is_in_delayslot_i;
 	wire[`RegBus] wb_current_inst_address_i;
@@ -246,8 +249,7 @@ module openriscv(
 	wire [`PhyAddrBus]LLbit_addr_o;
 
 	wire[`RegBus] csr_data_o;
- 	wire[`CSRAddrBus] csr_raddr_i;
- 	wire csr_re_i;
+	wire csr_protect_o;
 
 	wire flush;
 	wire[`RegBus] exception_new_pc;
@@ -340,8 +342,7 @@ module openriscv(
 		
 		.prv_i(prv),
 		.csr_reg_data_i(csr_data_o),
-		.csr_reg_read_o(csr_re_i),
-		.csr_reg_read_addr_o(csr_raddr_i),
+		.csr_protect_i(csr_protect_o),
 
 		//送到regfile的信息
 		.reg1_read_o(reg1_read),
@@ -374,7 +375,9 @@ module openriscv(
 		.excepttype_o(id_excepttype_o),
 		.current_inst_address_o(id_current_inst_address_o),
 		.not_stall_o(id_not_stall_o),
+		.csr_reg_read_o(id_csr_reg_re_o),
 		.csr_reg_we_o(id_csr_reg_we_o),
+		.csr_reg_addr_o(id_csr_reg_addr_o),
 		.csr_reg_data_o(id_csr_reg_data_o),
 		
 		// 暂停请求
@@ -419,6 +422,7 @@ module openriscv(
 		.id_current_inst_address(id_current_inst_address_o),
 		.id_not_stall(id_not_stall_o),
 		.id_csr_reg_we(id_csr_reg_we_o),
+		.id_csr_reg_addr(id_csr_reg_addr_o),
 		.id_csr_reg_data(id_csr_reg_data_o),
 
 		// 译码阶段要传回去的信息
@@ -440,6 +444,7 @@ module openriscv(
 		.ex_current_inst_address(ex_current_inst_address_i),
 		.ex_not_stall(ex_not_stall_i),
 		.ex_csr_reg_we(ex_csr_reg_we_i),
+		.ex_csr_reg_addr(ex_csr_reg_addr_i),
 		.ex_csr_reg_data(ex_csr_reg_data_i),
 
 		// 传回 id 阶段
@@ -480,6 +485,7 @@ module openriscv(
 		.current_inst_address_i(ex_current_inst_address_i),
 		.not_stall_i(ex_not_stall_i),
 		.csr_reg_we_i(ex_csr_reg_we_i),
+		.csr_reg_addr_i(ex_csr_reg_addr_i),
 		.csr_reg_data_i(ex_csr_reg_data_i),
 		
 		.mem_phy_addr_i(ex_mem_phy_addr_i),
@@ -487,7 +493,7 @@ module openriscv(
 		
 		//向下一流水级传递，用于写csr中的寄存器
 		.csr_reg_we_o(ex_csr_reg_we_o),
-		.csr_reg_write_addr_o(ex_csr_reg_write_addr_o),
+		.csr_reg_addr_o(ex_csr_reg_addr_o),
 		.csr_reg_data_o(ex_csr_reg_data_o),
 
 		//EX模块的输出到EX/MEM模块信息
@@ -540,7 +546,7 @@ module openriscv(
 		.ex_mem_addr(ex_mem_addr_o),
 		.ex_reg2(ex_reg2_o),
 		.ex_csr_reg_we(ex_csr_reg_we_o),
-		.ex_csr_reg_write_addr(ex_csr_reg_write_addr_o),
+		.ex_csr_reg_addr(ex_csr_reg_addr_o),
 		.ex_csr_reg_data(ex_csr_reg_data_o),
 		.ex_excepttype(ex_excepttype_o),
 		.ex_is_in_delayslot(ex_is_in_delayslot_o),
@@ -562,7 +568,7 @@ module openriscv(
 		.mem_mem_addr(mem_mem_addr_i),
 		.mem_reg2(mem_reg2_i),
 		.mem_csr_reg_we(mem_csr_reg_we_i),
-		.mem_csr_reg_write_addr(mem_csr_reg_write_addr_i),
+		.mem_csr_reg_addr(mem_csr_reg_addr_i),
 		.mem_csr_reg_data(mem_csr_reg_data_i),
 
 		.mem_excepttype(mem_excepttype_i),
@@ -605,7 +611,7 @@ module openriscv(
 		.mem_addr_i(mem_mem_addr_i),
 		.reg2_i(mem_reg2_i),
 		.csr_reg_we_i(mem_csr_reg_we_i),
-		.csr_reg_write_addr_i(mem_csr_reg_write_addr_i),
+		.csr_reg_addr_i(mem_csr_reg_addr_i),
 		.csr_reg_data_i(mem_csr_reg_data_i),
 
 		.excepttype_i(mem_excepttype_i),
@@ -640,7 +646,7 @@ module openriscv(
 		.original_data_o(mem_original_data_o),
 
 		.csr_reg_we_o(mem_csr_reg_we_o),
-		.csr_reg_write_addr_o(mem_csr_reg_write_addr_o),
+		.csr_reg_addr_o(mem_csr_reg_addr_o),
 		.csr_reg_data_o(mem_csr_reg_data_o),
 		
 		// 最终确认的异常类型
@@ -679,7 +685,7 @@ module openriscv(
 		.mem_LLbit_addr(mem_LLbit_addr_o),
 		.mem_LLbit_value(mem_LLbit_value_o),
 		.mem_csr_reg_we(mem_csr_reg_we_o),
-		.mem_csr_reg_write_addr(mem_csr_reg_write_addr_o),
+		.mem_csr_reg_addr(mem_csr_reg_addr_o),
 		.mem_csr_reg_data(mem_csr_reg_data_o),
 
 		.mem_cnt_i(mem_cnt_o),
@@ -693,7 +699,7 @@ module openriscv(
 		.wb_LLbit_addr(wb_LLbit_addr_i),
 		.wb_LLbit_value(wb_LLbit_value_i),
 		.wb_csr_reg_we(wb_csr_reg_we_i),
-		.wb_csr_reg_write_addr(wb_csr_reg_write_addr_i),
+		.wb_csr_reg_addr(wb_csr_reg_addr_i),
 		.wb_csr_reg_data(wb_csr_reg_data_i),
 
 		// send back to mem
@@ -761,11 +767,12 @@ module openriscv(
 		.rst_n(rst_n),
 		
 		.we_i(mem_csr_reg_we_i),
-		.waddr_i(mem_csr_reg_write_addr_i),
+		.waddr_i(mem_csr_reg_addr_i),
 		.data_i(mem_csr_reg_data_i),
 
-		.re_i(csr_re_i),
-		.raddr_i(csr_raddr_i),
+		.re_i(id_csr_reg_re_o),
+		.will_write_in_mem_i(id_csr_reg_we_o),
+		.raddr_i(id_csr_reg_addr_o),
 		
 		.excepttype_i(mem_excepttype_o),
 		.timer_int_i(timer_int_i),
@@ -775,6 +782,7 @@ module openriscv(
 		.is_in_delayslot_i(mem_is_in_delayslot_o),
 		
 		.data_o(csr_data_o),
+		.protect_o(csr_protect_o),
 		
 		.exception_new_pc_o(exception_new_pc),
 

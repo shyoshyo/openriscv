@@ -66,6 +66,7 @@ module ex(
 
 	//csr
 	input wire[`CSRWriteTypeBus] csr_reg_we_i,
+	input wire[`CSRAddrBus] csr_reg_addr_i,
 	input wire[`RegBus] csr_reg_data_i,
 
 	// TLB 提供的物理地址
@@ -74,7 +75,7 @@ module ex(
 
 	//向下一流水级传递，用于写csr中的寄存器
 	output wire[`CSRWriteTypeBus] csr_reg_we_o,
-	output wire[`CSRAddrBus] csr_reg_write_addr_o,
+	output wire[`CSRAddrBus] csr_reg_addr_o,
 	output wire[`RegBus] csr_reg_data_o,
 
 	// 是否写寄存器，以及寄存器的地址和要写的值
@@ -460,7 +461,7 @@ module ex(
 		end
 
 	/******************* 这条指令要写到 csr 的内容 **********************/
-	assign csr_reg_write_addr_o = inst_i[31:20];
+	assign csr_reg_addr_o = csr_reg_addr_i;
 	assign csr_reg_data_o = imm_i;
 	assign csr_reg_we_o = csr_reg_we_i;
 endmodule

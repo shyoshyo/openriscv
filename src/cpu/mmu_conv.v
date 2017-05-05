@@ -55,6 +55,7 @@ module mmu_conv
 
 	input wire [`CSR_mstatus_vm_bus] vm_i,
 	input wire [1:0]prv_i,
+	input wire mxr_i,
 
 	input wire ce_i,
 	input wire ex_i,
@@ -170,7 +171,16 @@ module mmu_conv
 				end
 				else
 				begin
-					if(tlb_pte[i][`PTE_R] == 1'b0) protect_exception[i] <= 1'b1;
+					if(mxr_i)
+					begin
+						if(tlb_pte[i][`PTE_R] == 1'b0 && tlb_pte[i][`PTE_X] == 1'b0)
+							protect_exception[i] <= 1'b1;
+					end
+					else
+					begin
+						if(tlb_pte[i][`PTE_R] == 1'b0)
+							protect_exception[i] <= 1'b1;
+					end
 				end
 
 				if(prv_i == `PRV_U && tlb_pte[i][`PTE_U] == 1'b0)

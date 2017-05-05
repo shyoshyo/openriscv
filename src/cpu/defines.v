@@ -323,6 +323,10 @@
 
 //CSR ¼Ä´æÆ÷µØÖ·
 `define CSRAddrBus 11:0
+`define CSRAddrRWBus 11:10
+	`define CSRAddrReadOnly 2'b11
+`define CSRAddrPrvBus 9:8
+
 /* User Trap Setup */
 `define CSR_ustatus 12'h000
 `define CSR_uie 12'h004
@@ -447,6 +451,9 @@
 	`define CSR_mstatus_vm_Sv48 5'h10
 `endif
 
+`define CSR_mstatus_mxr_bus 19:19
+`define CSR_mstatus_mprv_bus 17:17
+
 `define CSR_mstatus_fs_bus 14:13
 `define CSR_mstatus_fs_Off 2'h0
 `define CSR_mstatus_fs_Initial 2'h1
@@ -510,6 +517,11 @@
 `define PTE_G 5:5
 `define PTE_A 6:6
 `define PTE_D 7:7
+
+`define CSR_mucounteren_tm_bus 1:1
+`define CSR_mscounteren_tm_bus 1:1
+
+`define CSR_stvec_addr_bus 31:2
 
 
 /*

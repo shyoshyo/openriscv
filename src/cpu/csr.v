@@ -44,6 +44,7 @@ module csr(
 
 	// CSR read port
 	input wire re_i,
+	input wire[`CSRWriteTypeBus]will_write_in_mem_i,
 	input wire[`CSRAddrBus] raddr_i,
 	
 
@@ -63,6 +64,7 @@ module csr(
 
 	// CSR read port
 	output reg[`RegBus] data_o,
+	output reg protect_o,
 
 	// next pc for excpetion
 	output reg[`RegBus] exception_new_pc_o,
@@ -102,6 +104,8 @@ module csr(
 	reg[`RegBus] mbadaddr;
 
 	reg[`CSR_mstatus_vm_bus] mstatus_vm;
+	reg[`CSR_mstatus_mxr_bus] mstatus_mxr;
+	reg[`CSR_mstatus_mprv_bus] mstatus_mprv;
 	reg[`CSR_mstatus_fs_bus] mstatus_fs;
 	wire[`CSR_mstatus_sd_bus] mstatus_sd = (mstatus_fs == `CSR_mstatus_fs_Dirty);
 	reg[`CSR_mstatus_mpp_bus] mstatus_mpp;
@@ -115,6 +119,9 @@ module csr(
 
 
 	wire[`CSR_mip_mtip_bus] mip_mtip = timer_int_i;
+
+	reg[`CSR_mucounteren_tm_bus] mucounteren_tm;
+	reg[`CSR_mscounteren_tm_bus] mscounteren_tm;
 
 
 	wire has_cause = 
@@ -176,6 +183,10 @@ module csr(
 	wire[3:0] data_tlb_index;
 	wire data_tlb_access_we_o;
 	wire data_tlb_dirty_we_o;
+
+
+	reg[`RegBus] sscratch;
+	reg[`CSR_stvec_addr_bus] stvec_addr;
 
 	/* privilege transfer */
 	reg [1:0] next_prv;
@@ -240,6 +251,8 @@ module csr(
 			mideleg <= `ZeroWord;
 
 			mstatus_vm <= `CSR_mstatus_vm_Mbare;
+			mstatus_mxr <= 1'b0;
+			mstatus_mprv <= 1'b0;
 			mstatus_fs <= `CSR_mstatus_fs_Off;
 			mstatus_mpp <= `PRV_U;
 			mstatus_spp <= `PRV_U;
@@ -250,7 +263,11 @@ module csr(
 			mstatus_sie <= 1'b0;
 			mstatus_uie <= 1'b0;
 
+			mscounteren_tm <= 1'b0;
+			mucounteren_tm <= 1'b0;
+
 			sptbr_ppn <= `ZeroWord;
+			mtlbindex <= `ZeroWord;
 			mtlbvpn[0] <= `ZeroWord; mtlbmask[0] <= `ZeroWord; mtlbpte[0] <= `ZeroWord; mtlbptevaddr[0] <= `ZeroWord;
 			mtlbvpn[1] <= `ZeroWord; mtlbmask[1] <= `ZeroWord; mtlbpte[1] <= `ZeroWord; mtlbptevaddr[1] <= `ZeroWord;
 			mtlbvpn[2] <= `ZeroWord; mtlbmask[2] <= `ZeroWord; mtlbpte[2] <= `ZeroWord; mtlbptevaddr[2] <= `ZeroWord;
@@ -267,7 +284,6 @@ module csr(
 			mtlbvpn[13] <= `ZeroWord; mtlbmask[13] <= `ZeroWord; mtlbpte[13] <= `ZeroWord; mtlbptevaddr[13] <= `ZeroWord;
 			mtlbvpn[14] <= `ZeroWord; mtlbmask[14] <= `ZeroWord; mtlbpte[14] <= `ZeroWord; mtlbptevaddr[14] <= `ZeroWord;
 			mtlbvpn[15] <= `ZeroWord; mtlbmask[15] <= `ZeroWord; mtlbpte[15] <= `ZeroWord; mtlbptevaddr[15] <= `ZeroWord;
-
 
 			prv_o <= `PRV_M;
 		end
@@ -304,6 +320,8 @@ module csr(
 							default: begin end
 						endcase
 
+						mstatus_mxr <= data_i[`CSR_mstatus_mxr_bus];
+						mstatus_mprv <= data_i[`CSR_mstatus_mprv_bus];
 						mstatus_fs <= data_i[`CSR_mstatus_fs_bus];
 
 						case(data_i[`CSR_mstatus_mpp_bus])
@@ -326,6 +344,9 @@ module csr(
 						mstatus_uie <= data_i[`CSR_mstatus_uie_bus];
 					end
 
+					`CSR_mscounteren: mscounteren_tm <= data_i[`CSR_mscounteren_tm_bus];
+					`CSR_mucounteren: mucounteren_tm <= data_i[`CSR_mucounteren_tm_bus];
+
 					`CSR_sptbr:     sptbr_ppn <= data_i[`CSR_sptbr_ppn_bus];
 
 					`CSR_mtlbindex: mtlbindex <= data_i[`CSR_mtlbindex_bus];
@@ -334,6 +355,24 @@ module csr(
 					`CSR_mtlbpte:   mtlbpte[mtlbindex] <= data_i;
 					`CSR_mtlbptevaddr: mtlbptevaddr[mtlbindex] <= data_i;
 
+					`CSR_sscratch:  sscratch <= data_i;
+					`CSR_stvec:     stvec_addr <= data_i[`CSR_stvec_addr_bus];
+					
+					`CSR_sstatus:
+					begin
+						mstatus_fs <= data_i[`CSR_mstatus_fs_bus];
+
+						case({1'b0, data_i[`CSR_mstatus_spp_bus]})
+							`PRV_S, `PRV_U:
+								mstatus_spp <= data_i[`CSR_mstatus_spp_bus];
+							default: begin end
+						endcase
+
+						mstatus_spie <= data_i[`CSR_mstatus_spie_bus];
+						mstatus_upie <= data_i[`CSR_mstatus_upie_bus];
+						mstatus_sie <= data_i[`CSR_mstatus_sie_bus];
+						mstatus_uie <= data_i[`CSR_mstatus_uie_bus];
+					end
 					default:
 					begin
 					end
@@ -466,6 +505,7 @@ module csr(
 
 		.vm_i(mstatus_vm),
 		.prv_i(next_prv),
+		.mxr_i(mstatus_mxr),
 
 		.ce_i(inst_ce_i),
 		.ex_i(1'b1),
@@ -503,7 +543,8 @@ module csr(
 		.tlb15_vpn_i(mtlbvpn[15]), .tlb15_pte_i(mtlbpte[15]), .tlb15_mask_i(mtlbmask[15]),
 
 		.vm_i(mstatus_vm),
-		.prv_i(next_prv),
+		.prv_i(mstatus_mprv == 1'b1 ? mstatus_mpp : next_prv),
+		.mxr_i(mstatus_mxr),
 
 		.ce_i(data_ce_i),
 		.ex_i(1'b0),
@@ -558,6 +599,66 @@ module csr(
 			exception_new_pc_o <= current_inst_addr_i + 4'd4;
 		end
 	end
+	// CSR protect
+	always @(*)
+		if (rst_n == `RstEnable)
+			protect_o <= 1'b0;
+		else if(re_i == `ReadDisable && will_write_in_mem_i == `CSRWriteDisable)
+			protect_o <= 1'b0;
+		else if(prv_o < raddr_i[`CSRAddrPrvBus])
+		begin
+			protect_o <= 1'b1;
+		end
+		else if(will_write_in_mem_i == `CSRWrite && raddr_i[`CSRAddrRWBus] == `CSRAddrReadOnly)
+		begin
+			protect_o <= 1'b1;
+		end
+		else
+		begin
+			protect_o <= 1'b0;
+
+			case (raddr_i)
+				`CSR_misa,
+
+				`CSR_mvendorid,
+				`CSR_mimpid,
+				`CSR_marchid,
+				`CSR_mhartid,
+
+				`CSR_mscratch,
+				`CSR_mtvec,
+				`CSR_mepc,
+				`CSR_medeleg,
+				`CSR_mideleg,
+
+				`CSR_mcause,
+				`CSR_mbadaddr,
+
+				`CSR_mstatus,
+				`CSR_mip,
+				`CSR_mie,
+
+
+				`CSR_mscounteren,
+				`CSR_mucounteren,
+
+				`CSR_sptbr,
+
+				`CSR_mtlbindex,
+				`CSR_mtlbvpn,
+				`CSR_mtlbmask,
+				`CSR_mtlbpte,
+				`CSR_mtlbptevaddr,
+
+				`CSR_sscratch,
+				`CSR_stvec,
+				`CSR_sstatus:
+					protect_o <= 1'b0;
+				
+				default:
+					protect_o <= 1'b1;
+			endcase
+		end
 
 	// CSR read
 	always @(*)
@@ -589,6 +690,8 @@ module csr(
 				`CSR_mstatus:
 				begin
 					data_o[`CSR_mstatus_vm_bus] <= mstatus_vm;
+					data_o[`CSR_mstatus_mxr_bus] <= mstatus_mxr;
+					data_o[`CSR_mstatus_mprv_bus] <= mstatus_mprv;
 					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;
 					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
 					data_o[`CSR_mstatus_mpp_bus] <= mstatus_mpp;
@@ -601,8 +704,11 @@ module csr(
 					data_o[`CSR_mstatus_uie_bus] <= mstatus_uie;
 				end
 
-				`CSR_mip:
-					data_o[`CSR_mip_mtip_bus] <= mip_mtip;
+				`CSR_mip:       data_o[`CSR_mip_mtip_bus] <= mip_mtip;
+
+
+				`CSR_mscounteren: data_o[`CSR_mscounteren_tm_bus] <= mscounteren_tm;
+				`CSR_mucounteren: data_o[`CSR_mucounteren_tm_bus] <= mucounteren_tm;
 
 				`CSR_sptbr:     data_o[`CSR_sptbr_ppn_bus] <= sptbr_ppn;
 
@@ -611,9 +717,20 @@ module csr(
 				`CSR_mtlbmask:  data_o <= mtlbmask[mtlbindex];
 				`CSR_mtlbpte:   data_o <= mtlbpte[mtlbindex];
 				`CSR_mtlbptevaddr: data_o <= mtlbptevaddr[mtlbindex];
-				default:
+
+				`CSR_sscratch:  data_o <= sscratch;
+				`CSR_stvec:     data_o[`CSR_stvec_addr_bus] <= stvec_addr;
+				`CSR_sstatus:
 				begin
+					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;
+					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
+					data_o[`CSR_mstatus_spp_bus] <= mstatus_spp;
+					data_o[`CSR_mstatus_spie_bus] <= mstatus_spie;
+					data_o[`CSR_mstatus_upie_bus] <= mstatus_upie;
+					data_o[`CSR_mstatus_sie_bus] <= mstatus_sie;
+					data_o[`CSR_mstatus_uie_bus] <= mstatus_uie;
 				end
+				default:        begin end
 			endcase
 		end
 

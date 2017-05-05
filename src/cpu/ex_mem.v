@@ -56,7 +56,7 @@ module ex_mem(
 
 	// 要写入 csr 的信息
 	input wire[`CSRWriteTypeBus] ex_csr_reg_we,
-	input wire[`CSRAddrBus] ex_csr_reg_write_addr,
+	input wire[`CSRAddrBus] ex_csr_reg_addr,
 	input wire[`RegBus] ex_csr_reg_data,
 
 	// 要写入的物理地址
@@ -82,7 +82,7 @@ module ex_mem(
 
 	// 要写入 csr 的信息
 	output reg[`CSRWriteTypeBus] mem_csr_reg_we,
-	output reg[`CSRAddrBus] mem_csr_reg_write_addr,
+	output reg[`CSRAddrBus] mem_csr_reg_addr,
 	output reg[`RegBus] mem_csr_reg_data,
 
 	// 送到下一阶段的异常的信息
@@ -116,7 +116,7 @@ module ex_mem(
 			mem_reg2 <= `ZeroWord;
 
 			mem_csr_reg_we <= `CSRWriteDisable;
-			mem_csr_reg_write_addr <= `NOPRegAddr;
+			mem_csr_reg_addr <= `NOPRegAddr;
 			mem_csr_reg_data <= `ZeroWord;
 
 			mem_excepttype <= `ZeroWord;
@@ -143,7 +143,7 @@ module ex_mem(
 			mem_reg2 <= `ZeroWord;
 
 			mem_csr_reg_we <= `CSRWriteDisable;
-			mem_csr_reg_write_addr <= `NOPRegAddr;
+			mem_csr_reg_addr <= `NOPRegAddr;
 			mem_csr_reg_data <= `ZeroWord;
 
 			mem_excepttype <= `ZeroWord;
@@ -169,7 +169,7 @@ module ex_mem(
 			mem_reg2 <= `ZeroWord;
 
 			mem_csr_reg_we <= `CSRWriteDisable;
-			mem_csr_reg_write_addr <= `NOPRegAddr;
+			mem_csr_reg_addr <= `NOPRegAddr;
 			mem_csr_reg_data <= `ZeroWord;
 
 			mem_excepttype <= `ZeroWord;
@@ -195,7 +195,7 @@ module ex_mem(
 			mem_reg2 <= ex_reg2;
 			
 			mem_csr_reg_we <= ex_csr_reg_we;
-			mem_csr_reg_write_addr <= ex_csr_reg_write_addr;
+			mem_csr_reg_addr <= ex_csr_reg_addr;
 			mem_csr_reg_data <= ex_csr_reg_data;
 
 			mem_excepttype <= ex_excepttype;

@@ -32,7 +32,7 @@
 `include "defines.v"
 
 `define RAM_PHYSICAL_ADDR_BEGIN            34'h08000_0000
-`define RAM_PHYSICAL_ADDR_LEN              34'h00800_0000
+`define RAM_PHYSICAL_ADDR_LEN              34'h00100_0000
 
 `define UART_PHYSICAL_ADDR_BEGIN           34'h0bfd003f8
 `define UART_PHYSICAL_ADDR_LEN             34'h20
@@ -65,19 +65,24 @@ module phy_bus_addr_conv(
 
 	always @(*)
 		if (rst_n == `RstEnable)
+		begin
 			bus_addr_o <= `ZeroWord;
-		else if (`RAM_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `RAM_PHYSICAL_ADDR_BEGIN + `RAM_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h0, ram_index[27:0]};
-		else if (`UART_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `UART_PHYSICAL_ADDR_BEGIN + `UART_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h1, uart_index[27:2], 2'h0};
-		else if (`CONFIG_STRING_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `CONFIG_STRING_PHYSICAL_ADDR_BEGIN + `CONFIG_STRING_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h3, config_string_index[27:0]};
-		else if (`MTIME_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `MTIME_PHYSICAL_ADDR_BEGIN + `MTIME_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h3, mtime_index[27:0] + 12'h3f0};
-		else if (`MTIMECMP_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `MTIMECMP_PHYSICAL_ADDR_BEGIN + `MTIMECMP_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h3, mtimecmp_index[27:0] + 12'h3f8};
-		else if (`IPI_PHYSICAL_ADDR_BEGIN <= phy_addr_i && phy_addr_i < `IPI_PHYSICAL_ADDR_BEGIN + `IPI_PHYSICAL_ADDR_LEN)
-			bus_addr_o <= {4'h3, ipi_index[27:0] + 12'h3ec};
+		end
 		else
-			bus_addr_o <= ~`ZeroWord;
+		begin
+			if (ram_index < `RAM_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h0, ram_index[27:0]};
+			else if (uart_index < `UART_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h1, uart_index[27:2], 2'h0};
+			else if (config_string_index < `CONFIG_STRING_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h3, config_string_index[27:0]};
+			else if (mtime_index < `MTIME_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h3, mtime_index[27:0] + 12'h3f0};
+			else if (mtimecmp_index < `MTIMECMP_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h3, mtimecmp_index[27:0] + 12'h3f8};
+			else if (ipi_index < `IPI_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h3, ipi_index[27:0] + 12'h3ec};
+			else
+				bus_addr_o <= ~`ZeroWord;
+		end
 endmodule

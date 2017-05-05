@@ -1,6 +1,7 @@
 onerror {resume}
 quietly virtual signal -install /openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0 { (context /openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0 )&{wishbone_we_i ,wishbone_addr_i }} ram_we_addr_i
 quietly WaveActivateNextPane {} 0
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/rst_n
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/clk
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/wishbone_clk
 add wave -noupdate -group iwishbone /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/prv_o
@@ -43,9 +44,47 @@ add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/pc_reg0
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_inst
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_pc
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/if_excepttype
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/marchid
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mbadaddr
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mcause
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/medeleg
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mepc_addr
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mhartid
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mideleg
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mimpid
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mip_mtip
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/misa
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mscratch
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_fs
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_mie
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_mpie
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_mpp
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_sd
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_sie
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_spie
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_spp
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_uie
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_upie
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_vm
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbindex
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbmask
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbpte
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbptevaddr
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbvpn
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtvec_addr
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mvendorid
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/prv_o
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/raddr_i
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/re_i
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/rst_n
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/sptbr_ppn
+add wave -noupdate -label {Contributors: csr_protect_i} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_protect_i} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/will_write_in_mem_i
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_inst
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_pc
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/if_id0/id_excepttype
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_reg_addr_o
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_reg_data_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/is_in_delayslot_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/is_in_delayslot_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/branch_flag_o
@@ -53,6 +92,55 @@ add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/sta
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/stallreq_for_reg2_loadrelate
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg1_o
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/csr_reg_data_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/ex_wd_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/ex_wdata_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/ex_wreg_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/imm
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/mem_wd_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/mem_wdata_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/mem_wreg_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/pre_inst_is_load
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_addr_o
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_data_i
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_read_o
+add wave -noupdate -label {Contributors: reg2_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/reg2_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/rst_n
+add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/marchid
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mbadaddr
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mcause
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/medeleg
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mepc_addr
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mhartid
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mideleg
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mimpid
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mip_mtip
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/misa
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mscratch
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_fs
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_mie
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_mpie
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_mpp
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_sd
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_sie
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_spie
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_spp
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_uie
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_upie
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mstatus_vm
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbindex
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbmask
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbpte
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbptevaddr
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtlbvpn
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mtvec_addr
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mvendorid
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/prv_o
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/raddr_i
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/re_i
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/rst_n
+add wave -noupdate -label {Contributors: data_o} -group {Contributors: sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_o} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/sptbr_ppn
 add wave -noupdate -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_current_inst_address
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex0/data_tlb_exception_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex0/data_tlb_r_exception_o
@@ -76,13 +164,10 @@ add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openri
 add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr_i
 add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_o
 add wave -noupdate -group llbit -radix hexadecimal /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/LLbit_reg0/LLbit_addr_o
-add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_write_addr
 add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_we
 add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_data
-add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_write_addr
 add wave -noupdate -group csr_write -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_we
 add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_data
-add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_write_addr
 add wave -noupdate -group csr_write -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_we
 add wave -noupdate -group csr_write /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_data
 add wave -noupdate -group csr_write -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id_ex0/id_csr_reg_we
@@ -116,13 +201,10 @@ add wave -noupdate -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openris
 add wave -noupdate -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_i
 add wave -noupdate -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/waddr_i
 add wave -noupdate -group csr /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/we_i
-add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_write_addr
 add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_we
 add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/wb_csr_reg_data
-add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_write_addr
 add wave -noupdate -group {write CSR} -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_we
 add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem_wb0/mem_csr_reg_data
-add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_write_addr
 add wave -noupdate -group {write CSR} -radix symbolic /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_we
 add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_csr_reg_data
 add wave -noupdate -group {write CSR} /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex_mem0/ex_current_inst_address
@@ -160,22 +242,22 @@ add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/config_string_and_timer0/timer_int_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mip_mtip
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/data_ram0/ram_we_addr_i
-add wave -noupdate -expand -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/hit
-add wave -noupdate -expand -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/protect_exception
-add wave -noupdate -expand -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/tlb_exception_o
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/hit
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/vir_addr_i
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/phy_addr_o
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/protect_exception
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb_exception_o
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_mask_i
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_pte_i
-add wave -noupdate -expand -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_vpn_i
+add wave -noupdate -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/hit
+add wave -noupdate -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/protect_exception
+add wave -noupdate -group mmv_conv1 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv1/tlb_exception_o
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/hit
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/vir_addr_i
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/phy_addr_o
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/protect_exception
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb_exception_o
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_mask_i
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_pte_i
+add wave -noupdate -group mmuconv0 /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/mmu_conv0/tlb0_vpn_i
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/data_tlb_exception_o
 add wave -noupdate /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/csr0/inst_tlb_exception_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {first {640487 ps} 1} {{Cursor 7} {160444910029 ps} 1} {{Cursor 8} {160449552562 ps} 0}
-quietly wave cursor active 3
+WaveRestoreCursors {first {640487 ps} 1} {{Cursor 7} {160444910029 ps} 1} {{Cursor 8} {67144169516 ps} 1} {{Cursor 9} {364073000000 ps} 1} {{Cursor 5} {363964000000 ps} 1} {{Cursor 6} {364292000000 ps} 1} {{Cursor 7} {364455398310 ps} 0}
+quietly wave cursor active 7
 configure wave -namecolwidth 211
 configure wave -valuecolwidth 175
 configure wave -justifyvalue left
@@ -190,4 +272,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {160432625161 ps} {160456373519 ps}
+WaveRestoreZoom {641203999351 ps} {641239873719 ps}

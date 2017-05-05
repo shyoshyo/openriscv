@@ -75,10 +75,11 @@ module id(
 	//与csr相连，读取其中csr寄存器的值
 	input wire [1:0]prv_i,
 	input wire[`RegBus] csr_reg_data_i,
+	input wire csr_protect_i,
 	output wire[`RegBus] csr_reg_data_o,
 	output reg csr_reg_read_o,
-	output wire[`CSRAddrBus] csr_reg_read_addr_o,
 	output reg[`CSRWriteTypeBus] csr_reg_we_o,
+	output wire[`CSRAddrBus] csr_reg_addr_o,
 
 	//送到 regfile 的信息，用于访问寄存器
 	output reg reg1_read_o,
@@ -136,7 +137,7 @@ module id(
 	// 源寄存器
 	assign reg1_addr_o = inst_i[19:15];
 	assign reg2_addr_o = inst_i[24:20];
-	assign csr_reg_read_addr_o = inst_i[31:20];
+	assign csr_reg_addr_o = inst_i[31:20];
 
 	// 目標寄存器
 	assign wd_o = inst_i[11:7];
@@ -218,7 +219,8 @@ module id(
 		else
 		begin
 			excepttype_o <= excepttype_i;
-			excepttype_o[`Exception_INST_ILLEGAL] <= instvalid;
+			
+			excepttype_o[`Exception_INST_ILLEGAL] <= (instvalid | csr_protect_i);
 			excepttype_o[`Exception_BREAK] <= excepttype_is_break;
 
 			excepttype_o[`Exception_ERET_FROM_U] <= excepttype_is_uret;
@@ -1113,7 +1115,7 @@ module id(
 							imm <= reg1_o | csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
-							if(wd_o != `ZeroRegAddr)
+							if(reg1_addr_o != `ZeroRegAddr)
 								csr_reg_we_o <= `CSRWrite;
 						end
 						
@@ -1129,7 +1131,7 @@ module id(
 							imm <= reg1_o & ~csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
-							if(wd_o != `ZeroRegAddr)
+							if(reg1_addr_o != `ZeroRegAddr)
 								csr_reg_we_o <= `CSRWrite;
 						end
 						
@@ -1159,7 +1161,7 @@ module id(
 							imm <= zimm | csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
-							if(wd_o != `ZeroRegAddr)
+							if(reg1_addr_o != `ZeroRegAddr)
 								csr_reg_we_o <= `CSRWrite;
 						end
 
@@ -1174,7 +1176,7 @@ module id(
 							imm <= zimm & ~csr_reg_data_i;
 
 							csr_reg_read_o <= `ReadEnable;
-							if(wd_o != `ZeroRegAddr)
+							if(reg1_addr_o != `ZeroRegAddr)
 								csr_reg_we_o <= `CSRWrite;
 						end
 

@@ -56,6 +56,7 @@ module id_ex(
 	input wire[`ExceptionTypeBus] id_excepttype,
 
 	input wire[`CSRWriteTypeBus] id_csr_reg_we,
+	input wire[`CSRAddrBus] id_csr_reg_addr,
 	input wire[`RegBus] id_csr_reg_data,
 
 	// 译码阶段要传回去的信息
@@ -78,6 +79,7 @@ module id_ex(
 	output reg ex_not_stall,
 
 	output reg[`CSRWriteTypeBus] ex_csr_reg_we,
+	output reg[`CSRAddrBus] ex_csr_reg_addr,
 	output reg[`RegBus] ex_csr_reg_data,
 
 	// 传回 id 阶段
@@ -104,6 +106,7 @@ module id_ex(
 			ex_not_stall <= `False_v;
 
 			ex_csr_reg_we <= `CSRWriteDisable;
+			ex_csr_reg_addr <= `ZeroWord;
 			ex_csr_reg_data <= `ZeroWord;
 
 			is_in_delayslot_o <= `NotInDelaySlot;
@@ -127,6 +130,7 @@ module id_ex(
 			ex_not_stall <= `False_v;
 
 			ex_csr_reg_we <= `CSRWriteDisable;
+			ex_csr_reg_addr <= `ZeroWord;
 			ex_csr_reg_data <= `ZeroWord;
 
 			is_in_delayslot_o <= `NotInDelaySlot;
@@ -150,6 +154,7 @@ module id_ex(
 			ex_not_stall <= `False_v;
 
 			ex_csr_reg_we <= `CSRWriteDisable;
+			ex_csr_reg_addr <= `ZeroWord;
 			ex_csr_reg_data <= `ZeroWord;
 
 			// no is_in_delayslot_o, for inputs of id must be kept
@@ -174,6 +179,7 @@ module id_ex(
 			ex_not_stall <= id_not_stall;
 
 			ex_csr_reg_we <= id_csr_reg_we;
+			ex_csr_reg_addr <= id_csr_reg_addr;
 			ex_csr_reg_data <= id_csr_reg_data;
 
 			is_in_delayslot_o <= next_inst_in_delayslot_i;

@@ -16,7 +16,7 @@
 .ascii "ram {\n"
 .ascii "  0 {\n"
 .ascii "    addr 0x80000000;\n"
-.ascii "    size 0xf0000000;\n"
+.ascii "    size 0x01000000;\n"
 .ascii "  };\n"
 .ascii "};\n"
 .ascii "uart {\n"
