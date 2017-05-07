@@ -40,6 +40,7 @@ module openriscv(
 	
 	input wire timer_int_i,
 	input wire software_int_i,
+	input wire external_int_i,
 	
 	// inst wishbone
 	input wire[`WishboneDataBus]   iwishbone_data_i,
@@ -778,6 +779,7 @@ module openriscv(
 		.excepttype_i(mem_excepttype_o),
 		.timer_int_i(timer_int_i),
 		.software_int_i(software_int_i),
+		.external_int_i(external_int_i),
 		.current_inst_addr_i(mem_current_inst_address_o),
 		.current_data_addr_i(mem_current_data_address_o),
 		.is_in_delayslot_i(mem_is_in_delayslot_o),

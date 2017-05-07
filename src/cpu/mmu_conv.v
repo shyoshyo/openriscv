@@ -64,10 +64,9 @@ module mmu_conv
 	output reg [`PhyAddrBus] phy_addr_o,
 
 	output reg tlb_exception_o,
+	output reg tlb_update_o,
 
-	output reg [3:0]hit_index_o,
-	output reg access_we_o,
-	output reg dirty_we_o
+	output reg [3:0]hit_index_o
 );
 	/************************* TLB 表 *************************/
 
@@ -130,6 +129,7 @@ module mmu_conv
 
 	reg [15:0]hit;
 	reg [15:0]protect_exception;
+	reg [15:0]update_exception;
 	wire [`PhyAddrBus]phy_addr[15:0];
 
 	generate
@@ -182,9 +182,16 @@ module mmu_conv
 							protect_exception[i] <= 1'b1;
 					end
 				end
+			end
 
-				if(prv_i == `PRV_U && tlb_pte[i][`PTE_U] == 1'b0)
-					protect_exception[i] <= 1'b1;
+			always @(*)
+			begin
+				update_exception[i] <= !hit[i];
+
+				if(tlb_pte[i][`PTE_A] == 1'b0)
+					update_exception[i] <= 1'b1;
+				if(we_i == `WriteEnable && tlb_pte[i][`PTE_D] == 1'b0)
+					update_exception[i] <= 1'b1;
 			end
 
 			assign phy_addr[i] = ({tlb_pte[i], 2'b00} & tlb_mask[i]) | (vir_addr_i & ~tlb_mask[i]);
@@ -217,7 +224,7 @@ module mmu_conv
 		if(hit[0]) hit_index_o <= 4'd0;
 	end
 
-	assign tlb_exception = tlb_miss_exception | protect_exception[hit_index_o];
+	assign tlb_exception = tlb_miss_exception | protect_exception[hit_index_o] | update_exception[hit_index_o];
 
 	/*********************** 計算物理地址 ***********************/
 
@@ -227,16 +234,14 @@ module mmu_conv
 			phy_addr_o <= `ZeroWord;
 
 			tlb_exception_o <= `False_v;
-			access_we_o <= `False_v;
-			dirty_we_o <= `False_v;
+			tlb_update_o <= `False_v;
 		end
 		else if (ce_i == `ChipDisable)
 		begin
 			phy_addr_o <= `ZeroWord;
 
 			tlb_exception_o <= `False_v;
-			access_we_o <= `False_v;
-			dirty_we_o <= `False_v;
+			tlb_update_o <= `False_v;
 		end
 		else if(prv_i == `PRV_M || vm_i == `CSR_mstatus_vm_Mbare)
 		begin
@@ -244,8 +249,7 @@ module mmu_conv
 			phy_addr_o[`RegBus] <= vir_addr_i;
 			
 			tlb_exception_o <= `False_v;
-			access_we_o <= `False_v;
-			dirty_we_o <= `False_v;
+			tlb_update_o <= `False_v;
 		end
 `ifdef RV32
 		else if(vm_i == `CSR_mstatus_vm_Sv32)
@@ -258,10 +262,10 @@ module mmu_conv
 				phy_addr_o <= phy_addr[hit_index_o];
 
 			tlb_exception_o <= tlb_exception;
-			access_we_o <= 
-				(tlb_exception == 1'b0) ? `True_v : `False_v;
-			dirty_we_o <= 
-				(we_i == `WriteEnable && tlb_exception == 1'b0) ? `True_v : `False_v;
+			if(tlb_miss_exception)
+				tlb_update_o <= `False_v;
+			else
+				tlb_update_o <= update_exception[hit_index_o];
 		end
 		else
 		begin
@@ -271,8 +275,7 @@ module mmu_conv
 			phy_addr_o <= `ZeroWord;
 
 			tlb_exception_o <= `False_v;
-			access_we_o <= `False_v;
-			dirty_we_o <= `False_v;
+			tlb_update_o <= `False_v;
 		end
 
 endmodule

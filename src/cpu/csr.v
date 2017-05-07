@@ -53,6 +53,7 @@ module csr(
 	
 	// Interrupt source
 	input wire timer_int_i,
+	input wire external_int_i,
 	input wire software_int_i,
 
 	// inst vaddr & data vaddr
@@ -86,7 +87,6 @@ module csr(
 	output wire [`PhyAddrBus] data_phy_addr_o,
 	output wire data_tlb_exception_o
 );
-
 `ifdef RV32
 	wire[`RegBus] misa = {2'b01, 4'b0, 26'h0141101};
 `else
@@ -98,14 +98,6 @@ module csr(
 	wire[`RegBus] mimpid = `ZeroWord;
 	wire[`RegBus] mhartid = `ZeroWord;
 
-	reg[`RegBus] mscratch;
-	reg[`CSR_mtvec_addr_bus] mtvec_addr;
-	reg[`CSR_mepc_addr_bus] mepc_addr;
-	reg[`CSR_medeleg_bus] medeleg;
-	reg[`CSR_mideleg_bus] mideleg;
-	reg[`RegBus] mcause;
-	reg[`RegBus] mbadaddr;
-
 	reg[`CSR_mstatus_vm_bus] mstatus_vm;
 	reg[`CSR_mstatus_mxr_bus] mstatus_mxr;
 	reg[`CSR_mstatus_mprv_bus] mstatus_mprv;
@@ -115,153 +107,317 @@ module csr(
 	reg[`CSR_mstatus_spp_bus] mstatus_spp;
 	reg[`CSR_mstatus_mpie_bus] mstatus_mpie;
 	reg[`CSR_mstatus_spie_bus] mstatus_spie;
-	reg[`CSR_mstatus_upie_bus] mstatus_upie;
 	reg[`CSR_mstatus_mie_bus] mstatus_mie;
 	reg[`CSR_mstatus_sie_bus] mstatus_sie;
-	reg[`CSR_mstatus_uie_bus] mstatus_uie;
-
+	wire[`CSR_mstatus_uie_bus] mstatus_uie = 1'b0;
 
 	wire[`CSR_mip_mtip_bus] mip_mtip = timer_int_i;
+	reg[`CSR_mip_stip_bus] mip_stip;
 	reg[`CSR_mie_mtie_bus] mie_mtie;
+	reg[`CSR_mie_stie_bus] mie_stie;
+	wire[`CSR_mip_msip_bus] mip_msip = software_int_i;
+	reg[`CSR_mip_ssip_bus] mip_ssip;
+	reg[`CSR_mie_msie_bus] mie_msie;
+	reg[`CSR_mie_ssie_bus] mie_ssie;
+	wire[`CSR_mip_meip_bus] mip_meip = external_int_i;
+	reg[`CSR_mie_meie_bus] mie_meie;
 
 	reg[`CSR_mucounteren_tm_bus] mucounteren_tm;
 	reg[`CSR_mscounteren_tm_bus] mscounteren_tm;
 
+	reg[`RegBus] mscratch;
+	reg[`CSR_mepc_addr_bus] mepc_addr;
 
-	wire has_cause = 
-		excepttype_i[`Exception_INST_MISALIGNED] ? 1'b1 :
-		excepttype_i[`Exception_INST_ACCESS_FAULT] ? 1'b1 : 
-		excepttype_i[`Exception_INST_ILLEGAL] ? 1'b1 : 
-		excepttype_i[`Exception_BREAK] ? 1'b1 : 
-		excepttype_i[`Exception_LOAD_MISALIGNED] ? 1'b1 : 
-		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? 1'b1 : 
-		excepttype_i[`Exception_STORE_MISALIGNED] ? 1'b1 : 
-		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? 1'b1 : 
-		excepttype_i[`Exception_ECALL_FROM_U] ? 1'b1 : 
-		excepttype_i[`Exception_ECALL_FROM_S] ? 1'b1 : 
-		excepttype_i[`Exception_ECALL_FROM_M] ? 1'b1 : 
-		1'b0;
 
-	wire [`RegBus] cause = 
-		excepttype_i[`Exception_INST_MISALIGNED] ? `CSR_mcause_INST_MISALIGNED :
-		excepttype_i[`Exception_INST_ACCESS_FAULT] ? `CSR_mcause_INST_ACCESS_FAULT : 
-		excepttype_i[`Exception_INST_ILLEGAL] ? `CSR_mcause_INST_ILLEGAL : 
-		excepttype_i[`Exception_BREAK] ? `CSR_mcause_BREAK : 
-		excepttype_i[`Exception_LOAD_MISALIGNED] ? `CSR_mcause_LOAD_MISALIGNED : 
-		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? `CSR_mcause_LOAD_ACCESS_FAULT : 
-		excepttype_i[`Exception_STORE_MISALIGNED] ? `CSR_mcause_STORE_MISALIGNED : 
-		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? `CSR_mcause_STORE_ACCESS_FAULT : 
-		excepttype_i[`Exception_ECALL_FROM_U] ? `CSR_mcause_ECALL_FROM_U : 
-		excepttype_i[`Exception_ECALL_FROM_S] ? `CSR_mcause_ECALL_FROM_S : 
-		excepttype_i[`Exception_ECALL_FROM_M] ? `CSR_mcause_ECALL_FROM_M : 
-		`ZeroWord;
+	reg[`CSR_mtvec_addr_bus] mtvec_addr;
+	reg[`CSR_medeleg_bus] medeleg;
+	reg[`CSR_mideleg_bus] mideleg;
 
-	wire has_badaddr = 
-		excepttype_i[`Exception_INST_MISALIGNED] ? 1'b1 :
-		excepttype_i[`Exception_INST_ACCESS_FAULT] ? 1'b1 :
-		excepttype_i[`Exception_LOAD_MISALIGNED] ? 1'b1 : 
-		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? 1'b1 : 
-		excepttype_i[`Exception_STORE_MISALIGNED] ? 1'b1 : 
-		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? 1'b1 : 
-		1'b0;
-	
-	wire [`RegBus]badaddr = 
-		excepttype_i[`Exception_INST_MISALIGNED] ? current_inst_addr_i :
-		excepttype_i[`Exception_INST_ACCESS_FAULT] ? current_inst_addr_i :
-		excepttype_i[`Exception_LOAD_MISALIGNED] ? current_data_addr_i : 
-		excepttype_i[`Exception_LOAD_ACCESS_FAULT] ? current_data_addr_i : 
-		excepttype_i[`Exception_STORE_MISALIGNED] ? current_data_addr_i : 
-		excepttype_i[`Exception_STORE_ACCESS_FAULT] ? current_data_addr_i : 
-		`ZeroWord;
-	
+	reg[`CSR_mcause_intr_bus] mcause_intr;
+	reg[`CSR_mcause_code_bus] mcause_code;
+	reg[`RegBus] mbadaddr;
+
+
+	reg[`CSR_stvec_addr_bus] stvec_addr;
+	reg[`RegBus] sscratch;
+	reg[`CSR_sepc_addr_bus] sepc_addr;
+	reg[`CSR_scause_intr_bus] scause_intr;
+	reg[`CSR_scause_code_bus] scause_code;
+	reg[`RegBus] sbadaddr;
+
 	reg[`CSR_sptbr_ppn_bus] sptbr_ppn;
 
 	reg [`CSR_mtlbindex_bus]mtlbindex;
+	reg [`CSR_mtlbindex_update_bus] mtlbindex_update;
 	reg [`RegBus]mtlbvpn[15:0];
 	reg [`RegBus]mtlbmask[15:0];
 	reg [`RegBus]mtlbpte[15:0];
 	reg [`RegBus]mtlbptevaddr[15:0];
+
 	wire[3:0] inst_tlb_index;
-	wire inst_tlb_access_we_o;
-	wire inst_tlb_dirty_we_o;
+	wire inst_tlb_update;
+	wire inst_tlb_exception;
 	wire[3:0] data_tlb_index;
-	wire data_tlb_access_we_o;
-	wire data_tlb_dirty_we_o;
+	wire data_tlb_update;
+	wire data_tlb_exception;
 
 
-	reg[`RegBus] sscratch;
-	reg[`CSR_stvec_addr_bus] stvec_addr;
+	wire m_intr_globally_enabled =
+		(not_stall_i == 1'b1) && ((prv_o < `PRV_M) || (prv_o == `PRV_M && mstatus_mie == 1'b1));
+	wire s_intr_globally_enabled =
+		(not_stall_i == 1'b1) && ((prv_o < `PRV_S) || (prv_o == `PRV_S && mstatus_sie == 1'b1));
+
+	wire m_mtime_intr = mip_mtip & mie_mtie & m_intr_globally_enabled & ~mideleg[`CSR_mideleg_mtie_bus];
+	wire m_msoft_intr = mip_msip & mie_msie & m_intr_globally_enabled & ~mideleg[`CSR_mideleg_msie_bus];
+	wire m_mextr_intr = mip_meip & mie_meie & m_intr_globally_enabled & ~mideleg[`CSR_mideleg_meie_bus];
+	wire m_stime_intr = mip_stip & mie_stie & m_intr_globally_enabled & ~mideleg[`CSR_mideleg_stie_bus];
+	wire m_ssoft_intr = mip_ssip & mie_ssie & m_intr_globally_enabled & ~mideleg[`CSR_mideleg_ssie_bus];
+	
+	wire m_intr =
+		m_mtime_intr | m_msoft_intr | m_mextr_intr | 
+		m_stime_intr | m_ssoft_intr;
+
+	wire s_mtime_intr = mip_mtip & mie_mtie & s_intr_globally_enabled & mideleg[`CSR_mideleg_mtie_bus];
+	wire s_msoft_intr = mip_msip & mie_msie & s_intr_globally_enabled & mideleg[`CSR_mideleg_msie_bus];
+	wire s_mextr_intr = mip_meip & mie_meie & s_intr_globally_enabled & mideleg[`CSR_mideleg_meie_bus];
+	wire s_stime_intr = mip_stip & mie_stie & s_intr_globally_enabled & mideleg[`CSR_mideleg_stie_bus];
+	wire s_ssoft_intr = mip_ssip & mie_ssie & s_intr_globally_enabled & mideleg[`CSR_mideleg_ssie_bus];
+	
+	wire s_intr =
+		s_mtime_intr | s_msoft_intr | s_mextr_intr | 
+		s_stime_intr | s_ssoft_intr;
+
+	wire m_inst_misaligned_trap = not_stall_i & 
+		excepttype_i[`Exception_INST_MISALIGNED] & 
+		~medeleg[`CSR_medeleg_INST_MISALIGNED_bus];
+
+	wire m_inst_access_fault_trap = not_stall_i & 
+		excepttype_i[`Exception_INST_ACCESS_FAULT] & 
+		~medeleg[`CSR_medeleg_INST_ACCESS_FAULT_bus];
+
+	wire m_inst_illegal_trap = not_stall_i & 
+		excepttype_i[`Exception_INST_ILLEGAL] & 
+		~medeleg[`CSR_medeleg_INST_ILLEGAL_bus];
+
+	wire m_break_trap = not_stall_i & 
+		excepttype_i[`Exception_BREAK] & 
+		~medeleg[`CSR_medeleg_BREAK_bus];
+
+	wire m_load_misaligned_trap = not_stall_i & 
+		excepttype_i[`Exception_LOAD_MISALIGNED] & 
+		~medeleg[`CSR_medeleg_LOAD_MISALIGNED_bus];
+
+	wire m_load_access_fault_trap = not_stall_i & 
+		excepttype_i[`Exception_LOAD_ACCESS_FAULT] & 
+		~medeleg[`CSR_medeleg_LOAD_ACCESS_FAULT_bus];
+
+	wire m_store_misaligned_trap = not_stall_i & 
+		excepttype_i[`Exception_STORE_MISALIGNED] & 
+		~medeleg[`CSR_medeleg_STORE_MISALIGNED_bus];
+
+	wire m_store_access_fault_trap = not_stall_i & 
+		excepttype_i[`Exception_STORE_ACCESS_FAULT] & 
+		~medeleg[`CSR_medeleg_STORE_ACCESS_FAULT_bus];
+
+	wire m_ecall_from_u_trap = not_stall_i & 
+		excepttype_i[`Exception_ECALL_FROM_U] & 
+		~medeleg[`CSR_medeleg_ECALL_FROM_U_bus];
+
+	wire m_ecall_from_s_trap = not_stall_i & 
+		excepttype_i[`Exception_ECALL_FROM_S] & 
+		~medeleg[`CSR_medeleg_ECALL_FROM_S_bus];
+
+	wire m_ecall_from_m_trap = not_stall_i & 
+		excepttype_i[`Exception_ECALL_FROM_M];
+
+	wire m_trap =
+		m_inst_misaligned_trap |
+		m_inst_access_fault_trap |
+		m_inst_illegal_trap |
+		m_break_trap |
+		m_load_misaligned_trap |
+		m_load_access_fault_trap |
+		m_store_misaligned_trap |
+		m_store_access_fault_trap |
+		m_ecall_from_u_trap |
+		m_ecall_from_s_trap |
+		m_ecall_from_m_trap;
+
+	wire eret_from_m_trap = not_stall_i & excepttype_i[`Exception_ERET_FROM_M];
+	wire eret_from_s_trap = not_stall_i & excepttype_i[`Exception_ERET_FROM_S];
+	wire fence_i_trap = not_stall_i & excepttype_i[`Exception_FENCEI];
+
+	wire s_inst_misaligned_trap = not_stall_i & 
+		excepttype_i[`Exception_INST_MISALIGNED] & 
+		medeleg[`CSR_medeleg_INST_MISALIGNED_bus];
+
+	wire s_inst_access_fault_trap = not_stall_i & 
+		excepttype_i[`Exception_INST_ACCESS_FAULT] & 
+		medeleg[`CSR_medeleg_INST_ACCESS_FAULT_bus];
+
+	wire s_inst_illegal_trap = not_stall_i & 
+		excepttype_i[`Exception_INST_ILLEGAL] & 
+		medeleg[`CSR_medeleg_INST_ILLEGAL_bus];
+
+	wire s_break_trap = not_stall_i & 
+		excepttype_i[`Exception_BREAK] & 
+		medeleg[`CSR_medeleg_BREAK_bus];
+
+	wire s_load_misaligned_trap = not_stall_i & 
+		excepttype_i[`Exception_LOAD_MISALIGNED] & 
+		medeleg[`CSR_medeleg_LOAD_MISALIGNED_bus];
+
+	wire s_load_access_fault_trap = not_stall_i & 
+		excepttype_i[`Exception_LOAD_ACCESS_FAULT] & 
+		medeleg[`CSR_medeleg_LOAD_ACCESS_FAULT_bus];
+
+	wire s_store_misaligned_trap = not_stall_i & 
+		excepttype_i[`Exception_STORE_MISALIGNED] & 
+		medeleg[`CSR_medeleg_STORE_MISALIGNED_bus];
+
+	wire s_store_access_fault_trap = not_stall_i & 
+		excepttype_i[`Exception_STORE_ACCESS_FAULT] & 
+		medeleg[`CSR_medeleg_STORE_ACCESS_FAULT_bus];
+
+	wire s_ecall_from_u_trap = not_stall_i & 
+		excepttype_i[`Exception_ECALL_FROM_U] & 
+		medeleg[`CSR_medeleg_ECALL_FROM_U_bus];
+
+	wire s_ecall_from_s_trap = not_stall_i & 
+		excepttype_i[`Exception_ECALL_FROM_S] & 
+		medeleg[`CSR_medeleg_ECALL_FROM_S_bus];
+
+	wire s_trap =
+		s_inst_misaligned_trap |
+		s_inst_access_fault_trap |
+		s_inst_illegal_trap |
+		s_break_trap |
+		s_load_misaligned_trap |
+		s_load_access_fault_trap |
+		s_store_misaligned_trap |
+		s_store_access_fault_trap |
+		s_ecall_from_u_trap |
+		s_ecall_from_s_trap;
+
+
+	/*
+
+	reg [`CSR_medeleg_bus]m_std_trap_excepttype;
+	reg [`CSR_medeleg_bus]s_std_trap_excepttype;
+	always @(*)
+		if(not_stall_i == 1'b0)
+		begin
+			m_std_trap_excepttype <= `ZeroWord;
+			s_std_trap_excepttype <= `ZeroWord;
+		end
+		else
+		begin
+			m_std_trap_excepttype <= excepttype_i[`CSR_medeleg_bus] & ~medeleg;
+			s_std_trap_excepttype <= excepttype_i[`CSR_medeleg_bus] & medeleg;
+		end
+
+	wire m_std_trap = |m_std_trap_excepttype;
+	wire s_std_trap = |s_std_trap_excepttype;
+	*/
+	
+	assign data_tlb_exception_o = data_tlb_exception;
+	assign inst_tlb_exception_o = inst_tlb_exception;
 
 	/* privilege transfer */
+	// 計算異常時跳轉到的位置
 	reg [1:0] next_prv;
 	always @ (*)
-	begin
-		next_prv = prv_o;
-
-		if(!not_stall_i)
+		if(rst_n == `RstEnable)
 		begin
-			
-		end
-		else if(mip_mtip == 1'b1 && mie_mtie == 1'b1 && (prv_o < `PRV_M || mstatus_mie == 1'b1))
-		begin
-
-		end
-		else if(has_cause)
-		begin
+			flushreq <= `NoFlush;
+			exception_new_pc_o <= `ZeroWord;
 			next_prv <= `PRV_M;
+			
 		end
-		else if(excepttype_i[`Exception_ERET_FROM_U])
+		else
 		begin
+			flushreq <= `NoFlush;
+			exception_new_pc_o <= `ZeroWord;
+			next_prv = prv_o;
+
+			if(not_stall_i == 1'b0)
+			begin
+			end
+			else if(m_intr)
+			begin
+				flushreq <= `Flush;
+				exception_new_pc_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
+				next_prv <= `PRV_M;
+			end
+			else if(s_intr)
+			begin
+				flushreq <= `Flush;
+				exception_new_pc_o[`CSR_mtvec_addr_bus] <= stvec_addr;
+				next_prv <= `PRV_S;
+			end
+			else if(m_trap)
+			begin
+				flushreq <= `Flush;
+				exception_new_pc_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
+				next_prv <= `PRV_M;
+			end
+			else if(s_trap)
+			begin
+				flushreq <= `Flush;
+				exception_new_pc_o[`CSR_mtvec_addr_bus] <= stvec_addr;
+				next_prv <= `PRV_S;
+			end
+			else if(eret_from_s_trap)
+			begin
+				flushreq <= `Flush;
+				exception_new_pc_o[`CSR_mepc_addr_bus] <= sepc_addr;
+
+				case(mstatus_spp)
+					`PRV_U: next_prv <= `PRV_U;
+					`PRV_S: next_prv <= `PRV_S;
+
+					default: begin end
+				endcase
+			end
+			else if(eret_from_m_trap)
+			begin
+				flushreq <= `Flush;
+				exception_new_pc_o[`CSR_mepc_addr_bus] <= mepc_addr;
+
+				case(mstatus_mpp)
+					`PRV_U: next_prv <= `PRV_U;
+					`PRV_S: next_prv <= `PRV_S;
+					`PRV_M: next_prv <= `PRV_M;
+
+					default: begin end
+				endcase
+			end
+			else if(fence_i_trap)
+			begin
+				flushreq <= `Flush;
+				exception_new_pc_o <= current_inst_addr_i + 4'd4;
+			end
 			/*
-			require_privilege(PRV_U); => trap_illegal_instruction
+			else if(we_i == `CSRWrite)
+			begin
+				case (waddr_i)
+					`CSR_sptbr:
+					begin
+						flushreq <= `Flush;
+						exception_new_pc_o <= current_inst_addr_i + 4'd4;
+
+						// data_tlb_exception_o <= 1'b1;
+						// inst_tlb_exception_o <= 1'b1;
+					end
+				endcase
+			end
 			*/
-			
-			next_prv <= `PRV_U;
 		end
-		else if(excepttype_i[`Exception_ERET_FROM_S])
-		begin
-			/*
-			require_privilege(PRV_S); => trap_illegal_instruction
-			 */
-			
-			case(mstatus_spp)
-				`PRV_U: next_prv <= `PRV_U;
-				`PRV_S: next_prv <= `PRV_S;
-
-				default: begin end
-			endcase
-		end
-		else if(excepttype_i[`Exception_ERET_FROM_M])
-		begin
-			/*
-			require_privilege(PRV_M); => trap_illegal_instruction
-			 */
-			
-			case(mstatus_mpp)
-				`PRV_U: next_prv <= `PRV_U;
-				`PRV_S: next_prv <= `PRV_S;
-				`PRV_M: next_prv <= `PRV_M;
-
-				default: begin end
-			endcase
-		end
-		else if(excepttype_i[`Exception_FENCEI])
-		begin
-			
-		end
-	end
-
 
 	// write & modify CSR
 	always @ (posedge clk or negedge rst_n)
 		if (rst_n == `RstEnable)
 		begin
-			mscratch <= `ZeroWord;
-			mtvec_addr <= `ZeroWord;
-			mepc_addr <= `ZeroWord;
-			medeleg <= `ZeroWord;
-			mideleg <= `ZeroWord;
-
 			mstatus_vm <= `CSR_mstatus_vm_Mbare;
 			mstatus_mxr <= 1'b0;
 			mstatus_mprv <= 1'b0;
@@ -270,18 +426,41 @@ module csr(
 			mstatus_spp <= `PRV_U;
 			mstatus_mpie <= 1'b0;
 			mstatus_spie <= 1'b0;
-			mstatus_upie <= 1'b0;
 			mstatus_mie <= 1'b0;
 			mstatus_sie <= 1'b0;
-			mstatus_uie <= 1'b0;
 
+			mip_stip <= 1'b0;
 			mie_mtie <= 1'b0;
+			mie_stie <= 1'b0;
+			mip_ssip <= 1'b0;
+			mie_msie <= 1'b0;
+			mie_ssie <= 1'b0;
+			mie_meie <= 1'b0;
 
-			mscounteren_tm <= 1'b0;
 			mucounteren_tm <= 1'b0;
+			mscounteren_tm <= 1'b0;
+
+			mscratch <= `ZeroWord;
+			mepc_addr <= `ZeroWord;
+
+			mtvec_addr <= `ZeroWord;
+			medeleg <= `ZeroWord;
+			mideleg <= `ZeroWord;
+
+			mcause_intr <= 1'b0;
+			mcause_code <= `ZeroWord;
+
+			mbadaddr <= `ZeroWord;
+
+			stvec_addr <= `ZeroWord;
+			sscratch <= `ZeroWord;
+			sepc_addr <= `ZeroWord;
+			scause_intr <= 1'b0;
+			scause_code <= `ZeroWord;
+			sbadaddr <= `ZeroWord;
 
 			sptbr_ppn <= `ZeroWord;
-			mtlbindex <= `ZeroWord;
+			mtlbindex <= `ZeroWord; mtlbindex_update <= 1'b0;
 			mtlbvpn[0] <= `ZeroWord; mtlbmask[0] <= `ZeroWord; mtlbpte[0] <= `ZeroWord; mtlbptevaddr[0] <= `ZeroWord;
 			mtlbvpn[1] <= `ZeroWord; mtlbmask[1] <= `ZeroWord; mtlbpte[1] <= `ZeroWord; mtlbptevaddr[1] <= `ZeroWord;
 			mtlbvpn[2] <= `ZeroWord; mtlbmask[2] <= `ZeroWord; mtlbpte[2] <= `ZeroWord; mtlbptevaddr[2] <= `ZeroWord;
@@ -303,23 +482,236 @@ module csr(
 		end
 		else
 		begin
-			if(we_i == `CSRWrite)
+			if(!not_stall_i)
+			begin
+				
+			end
+			else if(m_intr)
+			begin
+				mepc_addr <= current_inst_addr_i[`CSR_mepc_addr_bus];
+
+				if(m_ssoft_intr)
+					{mcause_intr, mcause_code} <= `CSR_mcause_IRQ_S_SOFT;
+				else if(m_msoft_intr)
+					{mcause_intr, mcause_code} <= `CSR_mcause_IRQ_M_SOFT;
+				else if(m_stime_intr)
+					{mcause_intr, mcause_code} <= `CSR_mcause_IRQ_S_TIMER;
+				else if(m_mtime_intr)
+					{mcause_intr, mcause_code} <= `CSR_mcause_IRQ_M_TIMER;
+				else if(m_mextr_intr)
+					{mcause_intr, mcause_code} <= `CSR_mcause_IRQ_M_EXTERNAL;
+
+				case(prv_o)
+					`PRV_U: mstatus_mpie <= mstatus_uie;
+					`PRV_S: mstatus_mpie <= mstatus_sie;
+					`PRV_M: mstatus_mpie <= mstatus_mie;
+					default: begin end
+				endcase
+				case(prv_o)
+					`PRV_U: mstatus_mpp <= `PRV_U;
+					`PRV_S: mstatus_mpp <= `PRV_S;
+					`PRV_M: mstatus_mpp <= `PRV_M;
+					default: begin end
+				endcase
+				mstatus_mie <= 1'b0;
+			end
+			else if(s_intr)
+			begin
+				sepc_addr <= current_inst_addr_i[`CSR_sepc_addr_bus];
+				
+				if(s_ssoft_intr)
+					{scause_intr, scause_code} <= `CSR_scause_IRQ_S_SOFT;
+				else if(s_msoft_intr)
+					{scause_intr, scause_code} <= `CSR_scause_IRQ_M_SOFT;
+				else if(s_stime_intr)
+					{scause_intr, scause_code} <= `CSR_scause_IRQ_S_TIMER;
+				else if(s_mtime_intr)
+					{scause_intr, scause_code} <= `CSR_scause_IRQ_M_TIMER;
+				else if(s_mextr_intr)
+					{scause_intr, scause_code} <= `CSR_scause_IRQ_M_EXTERNAL;
+				
+				case(prv_o)
+					`PRV_U: mstatus_spie <= mstatus_uie;
+					`PRV_S: mstatus_spie <= mstatus_sie;
+					default: begin end
+				endcase
+				case(prv_o)
+					`PRV_U: mstatus_spp <= `PRV_U;
+					`PRV_S: mstatus_spp <= `PRV_S;
+					default: begin end
+				endcase
+				mstatus_sie <= 1'b0;
+			end
+			else if(m_trap)
+			begin
+				mepc_addr <= current_inst_addr_i[`CSR_mepc_addr_bus];
+
+				if(m_inst_misaligned_trap)
+				begin
+					{mcause_intr, mcause_code} <= `CSR_mcause_INST_MISALIGNED;
+					mbadaddr <= current_inst_addr_i;
+				end
+				else if(m_inst_access_fault_trap)
+				begin
+					{mcause_intr, mcause_code} <= `CSR_mcause_INST_ACCESS_FAULT;
+					mbadaddr <= current_inst_addr_i;
+				end
+				else if(m_inst_illegal_trap)
+					{mcause_intr, mcause_code} <= `CSR_mcause_INST_ILLEGAL;
+				else if(m_break_trap)
+					{mcause_intr, mcause_code} <= `CSR_mcause_BREAK;
+				else if(m_load_misaligned_trap)
+				begin
+					{mcause_intr, mcause_code} <= `CSR_mcause_LOAD_MISALIGNED;
+					mbadaddr <= current_data_addr_i;
+				end
+				else if(m_load_access_fault_trap)
+				begin
+					{mcause_intr, mcause_code} <= `CSR_mcause_LOAD_ACCESS_FAULT;
+					mbadaddr <= current_data_addr_i;
+				end
+				else if(m_store_misaligned_trap)
+				begin
+					{mcause_intr, mcause_code} <= `CSR_mcause_STORE_MISALIGNED;
+					mbadaddr <= current_data_addr_i;
+				end
+				else if(m_store_access_fault_trap)
+				begin
+					{mcause_intr, mcause_code} <= `CSR_mcause_STORE_ACCESS_FAULT;
+					mbadaddr <= current_data_addr_i;
+				end
+				else if(m_ecall_from_u_trap)
+					{mcause_intr, mcause_code} <= `CSR_mcause_ECALL_FROM_U;
+				else if(m_ecall_from_s_trap)
+					{mcause_intr, mcause_code} <= `CSR_mcause_ECALL_FROM_S;
+				else if(m_ecall_from_m_trap)
+					{mcause_intr, mcause_code} <= `CSR_mcause_ECALL_FROM_M;
+
+				case(prv_o)
+					`PRV_U: mstatus_mpie <= mstatus_uie;
+					`PRV_S: mstatus_mpie <= mstatus_sie;
+					`PRV_M: mstatus_mpie <= mstatus_mie;
+					default: begin end
+				endcase
+				case(prv_o)
+					`PRV_U: mstatus_mpp <= `PRV_U;
+					`PRV_S: mstatus_mpp <= `PRV_S;
+					`PRV_M: mstatus_mpp <= `PRV_M;
+					default: begin end
+				endcase
+				mstatus_mie <= 1'b0;
+			end
+			else if(s_trap)
+			begin
+				sepc_addr <= current_inst_addr_i[`CSR_sepc_addr_bus];
+
+
+				if(s_inst_misaligned_trap)
+				begin
+					{scause_intr, scause_code} <= `CSR_scause_INST_MISALIGNED;
+					sbadaddr <= current_inst_addr_i;
+				end
+				else if(s_inst_access_fault_trap)
+				begin
+					{scause_intr, scause_code} <= `CSR_scause_INST_ACCESS_FAULT;
+					sbadaddr <= current_inst_addr_i;
+				end
+				else if(s_inst_illegal_trap)
+					{scause_intr, scause_code} <= `CSR_scause_INST_ILLEGAL;
+				else if(s_break_trap)
+					{scause_intr, scause_code} <= `CSR_scause_BREAK;
+				else if(s_load_misaligned_trap)
+				begin
+					{scause_intr, scause_code} <= `CSR_scause_LOAD_MISALIGNED;
+					sbadaddr <= current_data_addr_i;
+				end
+				else if(s_load_access_fault_trap)
+				begin
+					{scause_intr, scause_code} <= `CSR_scause_LOAD_ACCESS_FAULT;
+					sbadaddr <= current_data_addr_i;
+				end
+				else if(s_store_misaligned_trap)
+				begin
+					{scause_intr, scause_code} <= `CSR_scause_STORE_MISALIGNED;
+					sbadaddr <= current_data_addr_i;
+				end
+				else if(s_store_access_fault_trap)
+				begin
+					{scause_intr, scause_code} <= `CSR_scause_STORE_ACCESS_FAULT;
+					sbadaddr <= current_data_addr_i;
+				end
+				else if(s_ecall_from_u_trap)
+					{scause_intr, scause_code} <= `CSR_scause_ECALL_FROM_U;
+				else if(s_ecall_from_s_trap)
+					{scause_intr, scause_code} <= `CSR_scause_ECALL_FROM_S;
+
+				case(prv_o)
+					`PRV_U: mstatus_spie <= mstatus_uie;
+					`PRV_S: mstatus_spie <= mstatus_sie;
+					default: begin end
+				endcase
+				case(prv_o)
+					`PRV_U: mstatus_spp <= `PRV_U;
+					`PRV_S: mstatus_spp <= `PRV_S;
+					default: begin end
+				endcase
+				mstatus_sie <= 1'b0;
+			end
+			else if(eret_from_s_trap)
+			begin
+				case(mstatus_spp)
+					`PRV_U:
+					begin
+						//mstatus_uie <= mstatus_spie;
+						mstatus_spie <= 1'b1;
+						mstatus_spp <= `PRV_U_1;
+					end
+					`PRV_S:
+					begin
+						mstatus_sie <= mstatus_spie;
+						mstatus_spie <= 1'b1;
+						mstatus_spp <= `PRV_U_1;
+					end
+
+					default:
+					begin
+					end
+				endcase
+			end
+			else if(eret_from_m_trap)
+			begin
+				case(mstatus_mpp)
+					`PRV_U:
+					begin
+						//mstatus_uie <= mstatus_mpie;
+						mstatus_mpie <= 1'b1;
+						mstatus_mpp <= `PRV_U;
+					end
+					`PRV_S:
+					begin
+						mstatus_sie <= mstatus_mpie;
+						mstatus_mpie <= 1'b1;
+						mstatus_mpp <= `PRV_U;
+					end
+					`PRV_M:
+					begin
+						mstatus_mie <= mstatus_mpie;
+						mstatus_mpie <= 1'b1;
+						mstatus_mpp <= `PRV_U;
+					end
+
+					default:
+					begin
+					end
+				endcase
+			end
+			else if(fence_i_trap)
+			begin
+
+			end
+			else if(we_i == `CSRWrite)
+			begin
 				case (waddr_i)
-					`CSR_mscratch:
-						mscratch <= data_i;
-					`CSR_mtvec:
-						mtvec_addr <= data_i[`CSR_mtvec_addr_bus];
-					`CSR_mepc:
-						mepc_addr <= data_i[`CSR_mepc_addr_bus];
-					`CSR_medeleg:
-						medeleg <= data_i[`CSR_medeleg_bus];
-					`CSR_mideleg:
-						mideleg <= data_i[`CSR_mideleg_bus];
-					`CSR_mcause:
-						mcause <= data_i;
-					`CSR_mbadaddr:
-						mbadaddr <= data_i;
-					
 					`CSR_mstatus:
 					begin
 						case(data_i[`CSR_mstatus_vm_bus])
@@ -352,27 +744,67 @@ module csr(
 
 						mstatus_mpie <= data_i[`CSR_mstatus_mpie_bus];
 						mstatus_spie <= data_i[`CSR_mstatus_spie_bus];
-						mstatus_upie <= data_i[`CSR_mstatus_upie_bus];
 						mstatus_mie <= data_i[`CSR_mstatus_mie_bus];
 						mstatus_sie <= data_i[`CSR_mstatus_sie_bus];
-						mstatus_uie <= data_i[`CSR_mstatus_uie_bus];
 					end
-
-					`CSR_mie:         mie_mtie <= data_i[`CSR_mie_mtie_bus];
-					`CSR_mscounteren: mscounteren_tm <= data_i[`CSR_mscounteren_tm_bus];
-					`CSR_mucounteren: mucounteren_tm <= data_i[`CSR_mucounteren_tm_bus];
-
-					`CSR_sptbr:     sptbr_ppn <= data_i[`CSR_sptbr_ppn_bus];
-
-					`CSR_mtlbindex: mtlbindex <= data_i[`CSR_mtlbindex_bus];
-					`CSR_mtlbvpn:   mtlbvpn[mtlbindex] <= data_i;
-					`CSR_mtlbmask:  mtlbmask[mtlbindex] <= data_i;
-					`CSR_mtlbpte:   mtlbpte[mtlbindex] <= data_i;
-					`CSR_mtlbptevaddr: mtlbptevaddr[mtlbindex] <= data_i;
-
-					`CSR_sscratch:  sscratch <= data_i;
-					`CSR_stvec:     stvec_addr <= data_i[`CSR_stvec_addr_bus];
-					
+					`CSR_mip:
+					begin
+						mip_stip <= data_i[`CSR_mip_stip_bus];
+						mip_ssip <= data_i[`CSR_mip_ssip_bus];
+					end
+					`CSR_mie:
+					begin
+						mie_mtie <= data_i[`CSR_mie_mtie_bus];
+						mie_stie <= data_i[`CSR_mie_stie_bus];
+						mie_msie <= data_i[`CSR_mie_msie_bus];
+						mie_ssie <= data_i[`CSR_mie_ssie_bus];
+						mie_meie <= data_i[`CSR_mie_meie_bus];
+					end
+					`CSR_mscounteren:
+						mscounteren_tm <= data_i[`CSR_mscounteren_tm_bus];
+					`CSR_mucounteren:
+						mucounteren_tm <= data_i[`CSR_mucounteren_tm_bus];
+					`CSR_mscratch:
+						mscratch <= data_i;
+					`CSR_mepc:
+						mepc_addr <= data_i[`CSR_mepc_addr_bus];
+					`CSR_mtvec:
+						mtvec_addr <= data_i[`CSR_mtvec_addr_bus];
+					`CSR_medeleg:
+						medeleg <= data_i[`CSR_medeleg_bus];
+					`CSR_mideleg:
+						mideleg <= data_i[`CSR_mideleg_bus];
+					`CSR_mcause:
+					begin
+						case({data_i[`CSR_mcause_intr_bus], data_i[`CSR_mcause_code_bus]})
+							`CSR_mcause_INST_MISALIGNED,
+							`CSR_mcause_INST_ACCESS_FAULT,
+							`CSR_mcause_INST_ILLEGAL,
+							`CSR_mcause_BREAK,
+							`CSR_mcause_LOAD_MISALIGNED,
+							`CSR_mcause_LOAD_ACCESS_FAULT,
+							`CSR_mcause_STORE_MISALIGNED,
+							`CSR_mcause_STORE_ACCESS_FAULT,
+							`CSR_mcause_ECALL_FROM_U,
+							`CSR_mcause_ECALL_FROM_S,
+							`CSR_mcause_ECALL_FROM_H,
+							`CSR_mcause_ECALL_FROM_M,
+							`CSR_mcause_IRQ_S_SOFT,
+							`CSR_mcause_IRQ_M_SOFT,
+							`CSR_mcause_IRQ_S_TIMER,
+							`CSR_mcause_IRQ_M_TIMER,
+							`CSR_mcause_IRQ_M_EXTERNAL:
+							begin
+								mcause_intr <= data_i[`CSR_mcause_intr_bus];
+								mcause_code <= data_i[`CSR_mcause_code_bus];
+							end
+							default:
+							begin
+							end
+						endcase
+					end
+					`CSR_mbadaddr:
+						mbadaddr <= data_i;
 					`CSR_sstatus:
 					begin
 						mstatus_fs <= data_i[`CSR_mstatus_fs_bus];
@@ -384,128 +816,112 @@ module csr(
 						endcase
 
 						mstatus_spie <= data_i[`CSR_mstatus_spie_bus];
-						mstatus_upie <= data_i[`CSR_mstatus_upie_bus];
 						mstatus_sie <= data_i[`CSR_mstatus_sie_bus];
-						mstatus_uie <= data_i[`CSR_mstatus_uie_bus];
 					end
-					default:
+					`CSR_stvec:
+						stvec_addr <= data_i[`CSR_stvec_addr_bus];
+					`CSR_sip:
 					begin
+						mip_stip <= data_i[`CSR_mip_stip_bus];
+						mip_ssip <= data_i[`CSR_mip_ssip_bus];
 					end
-				endcase
-			
-			if(!not_stall_i)
-			begin
-				
-			end
-			else if(mip_mtip == 1'b1 && mie_mtie == 1'b1 && (prv_o < `PRV_M || mstatus_mie == 1'b1))
-			begin
-				mepc_addr <= current_inst_addr_i[`CSR_mepc_addr_bus];
-				mcause <= `CSR_mcause_IRQ_M_TIMER;
-				if(has_badaddr) mbadaddr <= badaddr;
+					`CSR_sie:
+					begin
+						mie_stie <= data_i[`CSR_mie_stie_bus];
+						mie_ssie <= data_i[`CSR_mie_ssie_bus];
+					end
+					`CSR_sscratch:  sscratch <= data_i;
+					`CSR_sepc:
+						sepc_addr <= data_i[`CSR_sepc_addr_bus];
+					`CSR_scause:
+					begin
+						case({data_i[`CSR_scause_intr_bus], data_i[`CSR_scause_code_bus]})
+							`CSR_scause_INST_MISALIGNED,
+							`CSR_scause_INST_ACCESS_FAULT,
+							`CSR_scause_INST_ILLEGAL,
+							`CSR_scause_BREAK,
+							`CSR_scause_LOAD_MISALIGNED,
+							`CSR_scause_LOAD_ACCESS_FAULT,
+							`CSR_scause_STORE_MISALIGNED,
+							`CSR_scause_STORE_ACCESS_FAULT,
+							`CSR_scause_ECALL_FROM_U,
+							`CSR_scause_ECALL_FROM_S,
+							`CSR_scause_IRQ_S_SOFT,
+							`CSR_scause_IRQ_S_TIMER:
+							begin
+								scause_intr <= data_i[`CSR_scause_intr_bus];
+								scause_code <= data_i[`CSR_scause_code_bus];
+							end
+							default:
+							begin
+							end
+						endcase
+					end
+					`CSR_sbadaddr:
+						sbadaddr <= data_i;
+					`CSR_sptbr:
+					begin
+						sptbr_ppn <= data_i[`CSR_sptbr_ppn_bus];
 
-				case(prv_o)
-					`PRV_U: mstatus_mpie <= mstatus_uie;
-					`PRV_S: mstatus_mpie <= mstatus_sie;
-					`PRV_M: mstatus_mpie <= mstatus_mie;
-					default: begin end
-				endcase
-				case(prv_o)
-					`PRV_U: mstatus_mpp <= `PRV_U;
-					`PRV_S: mstatus_mpp <= `PRV_S;
-					`PRV_M: mstatus_mpp <= `PRV_M;
-					default: begin end
-				endcase
-				mstatus_mie <= 1'b0;
-
-			end
-			else if(has_cause)
-			begin
-				mepc_addr <= current_inst_addr_i[`CSR_mepc_addr_bus];
-				mcause <= cause;
-				if(has_badaddr) mbadaddr <= badaddr;
-
-				case(prv_o)
-					`PRV_U: mstatus_mpie <= mstatus_uie;
-					`PRV_S: mstatus_mpie <= mstatus_sie;
-					`PRV_M: mstatus_mpie <= mstatus_mie;
-					default: begin end
-				endcase
-				case(prv_o)
-					`PRV_U: mstatus_mpp <= `PRV_U;
-					`PRV_S: mstatus_mpp <= `PRV_S;
-					`PRV_M: mstatus_mpp <= `PRV_M;
-					default: begin end
-				endcase
-				mstatus_mie <= 1'b0;
-			end
-			else if(excepttype_i[`Exception_ERET_FROM_U])
-			begin
-				// x = u -> y = u
-				mstatus_uie <= mstatus_upie;
-				mstatus_upie <= 1'b1;
-			end
-			else if(excepttype_i[`Exception_ERET_FROM_S])
-			begin
-				case(mstatus_spp)
-					`PRV_U:
-					begin
-						// x = s -> y = u
-						mstatus_uie <= mstatus_spie;
-						mstatus_spie <= 1'b1;
-						mstatus_spp <= `PRV_U_1;
+						mtlbpte[0][`PTE_V] <= 1'b0;
+						mtlbpte[1][`PTE_V] <= 1'b0;
+						mtlbpte[2][`PTE_V] <= 1'b0;
+						mtlbpte[3][`PTE_V] <= 1'b0;
+						mtlbpte[4][`PTE_V] <= 1'b0;
+						mtlbpte[5][`PTE_V] <= 1'b0;
+						mtlbpte[6][`PTE_V] <= 1'b0;
+						mtlbpte[7][`PTE_V] <= 1'b0;
+						mtlbpte[8][`PTE_V] <= 1'b0;
+						mtlbpte[9][`PTE_V] <= 1'b0;
+						mtlbpte[10][`PTE_V] <= 1'b0;
+						mtlbpte[11][`PTE_V] <= 1'b0;
+						mtlbpte[12][`PTE_V] <= 1'b0;
+						mtlbpte[13][`PTE_V] <= 1'b0;
+						mtlbpte[14][`PTE_V] <= 1'b0;
+						mtlbpte[15][`PTE_V] <= 1'b0;
 					end
-					`PRV_S:
+					`CSR_mtlbindex:
 					begin
-						// x = s -> y = s
-						mstatus_sie <= mstatus_spie;
-						mstatus_spie <= 1'b1;
-						mstatus_spp <= `PRV_U_1;
+						mtlbindex <= data_i[`CSR_mtlbindex_bus];
+						mtlbindex_update <= 1'b0;
 					end
-
-					default:
-					begin
-					end
-				endcase
-			end
-			else if(excepttype_i[`Exception_ERET_FROM_M])
-			begin
-				case(mstatus_mpp)
-					`PRV_U:
-					begin
-						// x = m -> y = u
-						mstatus_uie <= mstatus_mpie;
-						mstatus_mpie <= 1'b1;
-						mstatus_mpp <= `PRV_U;
-					end
-					`PRV_S:
-					begin
-						// x = m -> y = s
-						mstatus_sie <= mstatus_mpie;
-						mstatus_mpie <= 1'b1;
-						mstatus_mpp <= `PRV_U;
-					end
-					`PRV_M:
-					begin
-						// x = m -> y = m
-						mstatus_mie <= mstatus_mpie;
-						mstatus_mpie <= 1'b1;
-						mstatus_mpp <= `PRV_U;
-					end
+					`CSR_mtlbvpn:
+						mtlbvpn[mtlbindex] <= data_i;
+					`CSR_mtlbmask:
+						mtlbmask[mtlbindex] <= data_i;
+					`CSR_mtlbpte:
+						mtlbpte[mtlbindex] <= data_i;
+					`CSR_mtlbptevaddr:
+						mtlbptevaddr[mtlbindex] <= data_i;
 
 					default:
 					begin
 					end
 				endcase
 			end
-			else if(excepttype_i[`Exception_FENCEI])
-			begin
-				
-			end
 
-			if(inst_tlb_access_we_o) mtlbpte[inst_tlb_index][`PTE_A] <= 1'b1;
-			if(inst_tlb_dirty_we_o)  mtlbpte[inst_tlb_index][`PTE_D] <= 1'b1;
-			if(data_tlb_access_we_o) mtlbpte[data_tlb_index][`PTE_A] <= 1'b1;
-			if(data_tlb_dirty_we_o)  mtlbpte[data_tlb_index][`PTE_D] <= 1'b1;
+			if(data_tlb_update)
+			begin
+				mtlbindex <= data_tlb_index;
+				mtlbindex_update <= 1'b1;
+			end
+			else if(data_tlb_exception)
+			begin
+				mtlbindex_update <= 1'b0;
+			end
+			else if(inst_tlb_update)
+			begin
+				mtlbindex <= inst_tlb_index;
+				mtlbindex_update <= 1'b1;	
+			end
+			else if(inst_tlb_exception)
+			begin
+				mtlbindex_update <= 1'b0;
+			end
+			// if(inst_tlb_access_we_o) mtlbpte[inst_tlb_index][`PTE_A] <= 1'b1;
+			// if(inst_tlb_dirty_we_o)  mtlbpte[inst_tlb_index][`PTE_D] <= 1'b1;
+			// if(data_tlb_access_we_o) mtlbpte[data_tlb_index][`PTE_A] <= 1'b1;
+			// if(data_tlb_dirty_we_o)  mtlbpte[data_tlb_index][`PTE_D] <= 1'b1;
 
 			prv_o <= next_prv;
 		end
@@ -542,11 +958,10 @@ module csr(
 		.vir_addr_i(inst_vir_addr_i),
 		.phy_addr_o(inst_phy_addr_o),
 		
-		.tlb_exception_o(inst_tlb_exception_o),
+		.tlb_exception_o(inst_tlb_exception),
+		.tlb_update_o(inst_tlb_update),
 		
-		.hit_index_o(inst_tlb_index),
-		.access_we_o(inst_tlb_access_we_o),
-		.dirty_we_o(inst_tlb_dirty_we_o)
+		.hit_index_o(inst_tlb_index)
 	);
 
 
@@ -580,73 +995,14 @@ module csr(
 		.vir_addr_i(data_vir_addr_i),
 		.phy_addr_o(data_phy_addr_o),
 
-		.tlb_exception_o(data_tlb_exception_o),
+		.tlb_exception_o(data_tlb_exception),
+		.tlb_update_o(data_tlb_update),
 
-		.hit_index_o(data_tlb_index),
-		.access_we_o(data_tlb_access_we_o),
-		.dirty_we_o(data_tlb_dirty_we_o)
+		.hit_index_o(data_tlb_index)
 	);
 
-	// 計算異常時跳轉到的位置
-	always @(*)
-	if(rst_n == `RstEnable)
-	begin
-		flushreq <= `NoFlush;
-		exception_new_pc_o <= `ZeroWord;
-	end
-	else
-	begin
-		flushreq <= `NoFlush;
-		exception_new_pc_o <= `ZeroWord;
-
-		if(!not_stall_i)
-		begin
-			
-		end
-		else if(mip_mtip == 1'b1 && mie_mtie == 1'b1 && (prv_o < `PRV_M || mstatus_mie == 1'b1))
-		begin
-			flushreq <= `Flush;
-			exception_new_pc_o <= `ZeroWord;
-			exception_new_pc_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
-		end
-		else if(has_cause)
-		begin
-			flushreq <= `Flush;
-			// TODO:
-			exception_new_pc_o <= `ZeroWord;
-			exception_new_pc_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
-		end
-		else if(excepttype_i[`Exception_ERET_FROM_U])
-		begin
-			// TODO: 
-			// exception_new_pc_o <= 
-			$display("TODO: should not arrive here");
-			$stop;
-
-			flushreq <= `Flush;
-		end
-		else if(excepttype_i[`Exception_ERET_FROM_S])
-		begin
-			// TODO:
-			// exception_new_pc_o <= 
-			$display("TODO: should not arrive here");
-			$stop;
-
-			flushreq <= `Flush;
-		end
-		else if(excepttype_i[`Exception_ERET_FROM_M])
-		begin
-			flushreq <= `Flush;
-			exception_new_pc_o <= `ZeroWord;
-			exception_new_pc_o[`CSR_mepc_addr_bus] <= mepc_addr;
-		end
-		else if(excepttype_i[`Exception_FENCEI] == 1'b1)
-		begin
-			flushreq <= `Flush;
-			exception_new_pc_o <= current_inst_addr_i + 4'd4;
-		end
-	end
 	
+
 	// CSR protect
 	always @(*)
 		if (rst_n == `RstEnable)
@@ -669,37 +1025,39 @@ module csr(
 				`CSR_misa,
 
 				`CSR_mvendorid,
-				`CSR_mimpid,
 				`CSR_marchid,
+				`CSR_mimpid,
 				`CSR_mhartid,
 
-				`CSR_mscratch,
+				`CSR_mstatus,
 				`CSR_mtvec,
-				`CSR_mepc,
 				`CSR_medeleg,
 				`CSR_mideleg,
-
+				`CSR_mip,
+				`CSR_mie,
+				`CSR_mscounteren,
+				`CSR_mucounteren,
+				`CSR_mscratch,
+				`CSR_mepc,
 				`CSR_mcause,
 				`CSR_mbadaddr,
 
-				`CSR_mstatus,
-				`CSR_mip,
-				`CSR_mie,
-
-				`CSR_mscounteren,
-				`CSR_mucounteren,
-
+				`CSR_sstatus,
+				`CSR_stvec,
+				`CSR_sip,
+				`CSR_sie,
+				`CSR_sscratch,
+				`CSR_sepc,
+				`CSR_scause,
+				`CSR_sbadaddr,
 				`CSR_sptbr,
 
 				`CSR_mtlbindex,
 				`CSR_mtlbvpn,
 				`CSR_mtlbmask,
 				`CSR_mtlbpte,
-				`CSR_mtlbptevaddr,
+				`CSR_mtlbptevaddr:
 
-				`CSR_sscratch,
-				`CSR_stvec,
-				`CSR_sstatus:
 					protect_o <= 1'b0;
 				
 				default:
@@ -718,66 +1076,116 @@ module csr(
 			data_o <= `ZeroWord;
 
 			case (raddr_i)
-				`CSR_misa:      data_o <= misa;
+				`CSR_misa:
+					data_o <= misa;
 
-				`CSR_mvendorid: data_o <= mvendorid;
-				`CSR_mimpid:    data_o <= mimpid;
-				`CSR_marchid:   data_o <= marchid;
-				`CSR_mhartid:   data_o <= mhartid;
-
-				`CSR_mscratch:  data_o <= mscratch;
-				`CSR_mtvec:     data_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
-				`CSR_mepc:      data_o[`CSR_mepc_addr_bus] <= mepc_addr;
-				`CSR_medeleg:   data_o[`CSR_medeleg_bus] <= medeleg;
-				`CSR_mideleg:   data_o[`CSR_mideleg_bus] <= mideleg;
-
-				`CSR_mcause:    data_o <= mcause;
-				`CSR_mbadaddr:  data_o <= mbadaddr;
-
+				`CSR_mvendorid:
+					data_o <= mvendorid;
+				`CSR_marchid:
+					data_o <= marchid;
+				`CSR_mimpid:
+					data_o <= mimpid;
+				`CSR_mhartid:
+					data_o <= mhartid;
 				`CSR_mstatus:
 				begin
+					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
 					data_o[`CSR_mstatus_vm_bus] <= mstatus_vm;
 					data_o[`CSR_mstatus_mxr_bus] <= mstatus_mxr;
 					data_o[`CSR_mstatus_mprv_bus] <= mstatus_mprv;
 					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;
-					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
 					data_o[`CSR_mstatus_mpp_bus] <= mstatus_mpp;
 					data_o[`CSR_mstatus_spp_bus] <= mstatus_spp;
 					data_o[`CSR_mstatus_mpie_bus] <= mstatus_mpie;
 					data_o[`CSR_mstatus_spie_bus] <= mstatus_spie;
-					data_o[`CSR_mstatus_upie_bus] <= mstatus_upie;
 					data_o[`CSR_mstatus_mie_bus] <= mstatus_mie;
 					data_o[`CSR_mstatus_sie_bus] <= mstatus_sie;
-					data_o[`CSR_mstatus_uie_bus] <= mstatus_uie;
 				end
-
-				`CSR_mip:       data_o[`CSR_mip_mtip_bus] <= mip_mtip;
-
-				`CSR_mie:       data_o[`CSR_mie_mtie_bus] <= mie_mtie;
-
-				`CSR_mscounteren: data_o[`CSR_mscounteren_tm_bus] <= mscounteren_tm;
-				`CSR_mucounteren: data_o[`CSR_mucounteren_tm_bus] <= mucounteren_tm;
-
-				`CSR_sptbr:     data_o[`CSR_sptbr_ppn_bus] <= sptbr_ppn;
-
-				`CSR_mtlbindex: data_o[`CSR_mtlbindex_bus] <= mtlbindex;
-				`CSR_mtlbvpn:   data_o <= mtlbvpn[mtlbindex];
-				`CSR_mtlbmask:  data_o <= mtlbmask[mtlbindex];
-				`CSR_mtlbpte:   data_o <= mtlbpte[mtlbindex];
-				`CSR_mtlbptevaddr: data_o <= mtlbptevaddr[mtlbindex];
-
-				`CSR_sscratch:  data_o <= sscratch;
-				`CSR_stvec:     data_o[`CSR_stvec_addr_bus] <= stvec_addr;
+				`CSR_mtvec:
+					data_o[`CSR_mtvec_addr_bus] <= mtvec_addr;
+				`CSR_medeleg:
+					data_o[`CSR_medeleg_bus] <= medeleg;
+				`CSR_mideleg:
+					data_o[`CSR_mideleg_bus] <= mideleg;
+				`CSR_mip:
+				begin
+					data_o[`CSR_mip_mtip_bus] <= mip_mtip;
+					data_o[`CSR_mip_stip_bus] <= mip_stip;
+					data_o[`CSR_mip_msip_bus] <= mip_msip;
+					data_o[`CSR_mip_ssip_bus] <= mip_ssip;
+					data_o[`CSR_mip_meip_bus] <= mip_meip;
+				end
+				`CSR_mie:
+				begin
+					data_o[`CSR_mie_mtie_bus] <= mie_mtie;
+					data_o[`CSR_mie_stie_bus] <= mie_stie;
+					data_o[`CSR_mie_msie_bus] <= mie_msie;
+					data_o[`CSR_mie_ssie_bus] <= mie_ssie;
+					data_o[`CSR_mie_meie_bus] <= mie_meie;
+				end
+				`CSR_mscounteren:
+					data_o[`CSR_mscounteren_tm_bus] <= mscounteren_tm;
+				`CSR_mucounteren:
+					data_o[`CSR_mucounteren_tm_bus] <= mucounteren_tm;
+				`CSR_mscratch:
+					data_o <= mscratch;
+				`CSR_mepc:
+					data_o[`CSR_mepc_addr_bus] <= mepc_addr;
+				`CSR_mcause:
+				begin
+					data_o[`CSR_mcause_intr_bus] <= mcause_intr;
+					data_o[`CSR_mcause_code_bus] <= mcause_code;
+				end
+				`CSR_mbadaddr:
+					data_o <= mbadaddr;
+				
 				`CSR_sstatus:
 				begin
-					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;
 					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
+					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
 					data_o[`CSR_mstatus_spp_bus] <= mstatus_spp;
 					data_o[`CSR_mstatus_spie_bus] <= mstatus_spie;
-					data_o[`CSR_mstatus_upie_bus] <= mstatus_upie;
 					data_o[`CSR_mstatus_sie_bus] <= mstatus_sie;
-					data_o[`CSR_mstatus_uie_bus] <= mstatus_uie;
 				end
+				`CSR_stvec:
+					data_o[`CSR_stvec_addr_bus] <= stvec_addr;
+				`CSR_sip:
+				begin
+					data_o[`CSR_mip_stip_bus] <= mip_stip;
+					data_o[`CSR_mip_ssip_bus] <= mip_ssip;
+				end
+				`CSR_sie:
+				begin
+					data_o[`CSR_mie_stie_bus] <= mie_stie;
+					data_o[`CSR_mie_ssie_bus] <= mie_ssie;
+				end
+				`CSR_sscratch:
+					data_o <= sscratch;
+				`CSR_sepc:
+					data_o[`CSR_sepc_addr_bus] <= sepc_addr;
+				`CSR_scause:
+				begin
+					data_o[`CSR_scause_intr_bus] <= scause_intr;
+					data_o[`CSR_scause_code_bus] <= scause_code;
+				end
+				`CSR_sbadaddr:
+					data_o <= sbadaddr;
+				`CSR_sptbr:
+					data_o[`CSR_sptbr_ppn_bus] <= sptbr_ppn;
+
+				`CSR_mtlbindex:
+				begin
+					data_o[`CSR_mtlbindex_bus] <= mtlbindex;
+					data_o[`CSR_mtlbindex_update_bus] <= mtlbindex_update;
+				end
+				`CSR_mtlbvpn:
+					data_o <= mtlbvpn[mtlbindex];
+				`CSR_mtlbmask:
+					data_o <= mtlbmask[mtlbindex];
+				`CSR_mtlbpte:
+					data_o <= mtlbpte[mtlbindex];
+				`CSR_mtlbptevaddr:
+					data_o <= mtlbptevaddr[mtlbindex];
 				default:        begin end
 			endcase
 		end

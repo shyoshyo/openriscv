@@ -178,7 +178,6 @@ module id(
 	wire pre_inst_is_load;
 	reg excepttype_is_syscall;
 	reg excepttype_is_break;
-	reg excepttype_is_uret;
 	reg excepttype_is_sret;
 	reg excepttype_is_mret;
 	reg excepttype_is_fence_i;
@@ -225,7 +224,6 @@ module id(
 			excepttype_o[`Exception_INST_ILLEGAL] <= (instvalid | csr_protect_i);
 			excepttype_o[`Exception_BREAK] <= excepttype_is_break;
 
-			excepttype_o[`Exception_ERET_FROM_U] <= excepttype_is_uret;
 			excepttype_o[`Exception_ERET_FROM_S] <= excepttype_is_sret;
 			excepttype_o[`Exception_ERET_FROM_M] <= excepttype_is_mret;
 
@@ -266,7 +264,6 @@ module id(
 
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_break <= `False_v;
-			excepttype_is_uret <= `False_v;
 			excepttype_is_sret <= `False_v;
 			excepttype_is_mret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
@@ -294,7 +291,6 @@ module id(
 
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_break <= `False_v;
-			excepttype_is_uret <= `False_v;
 			excepttype_is_sret <= `False_v;
 			excepttype_is_mret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
@@ -322,7 +318,6 @@ module id(
 
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_break <= `False_v;
-			excepttype_is_uret <= `False_v;
 			excepttype_is_sret <= `False_v;
 			excepttype_is_mret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
@@ -355,7 +350,6 @@ module id(
 			// ÊÇ·ñ´¥·¢ syscall, break, eret Òì³£
 			excepttype_is_syscall <= `False_v;
 			excepttype_is_break <= `False_v;
-			excepttype_is_uret <= `False_v;
 			excepttype_is_sret <= `False_v;
 			excepttype_is_mret <= `False_v;
 			excepttype_is_fence_i <= `False_v;
@@ -1065,12 +1059,6 @@ module id(
 										excepttype_is_break <= `True_v;
 									end
 
-									`EXE_URET:
-									begin
-										instvalid <= `InstValid;
-										excepttype_is_uret <= `True_v;
-									end
-
 									`EXE_SRET:
 										if(prv_i >= `PRV_S)
 										begin
@@ -1119,7 +1107,7 @@ module id(
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
-							imm <= reg1_o | csr_reg_data_i;
+							imm <= csr_reg_data_i | reg1_o;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)
@@ -1135,7 +1123,7 @@ module id(
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
-							imm <= reg1_o & ~csr_reg_data_i;
+							imm <= csr_reg_data_i & ~reg1_o;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)
@@ -1165,7 +1153,7 @@ module id(
 							
 							wreg_o <= `WriteEnable;
 
-							imm <= zimm | csr_reg_data_i;
+							imm <= csr_reg_data_i | zimm;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)
@@ -1180,7 +1168,7 @@ module id(
 							
 							wreg_o <= `WriteEnable;
 
-							imm <= zimm & ~csr_reg_data_i;
+							imm <= csr_reg_data_i & ~zimm;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)

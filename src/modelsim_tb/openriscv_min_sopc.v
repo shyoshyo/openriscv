@@ -111,6 +111,7 @@ module openriscv_min_sopc(
 
 		.timer_int_i(timer_int),
 		.software_int_i(software_int),
+		.external_int_i(1'b0),
 
 		.dwishbone_data_i(m0_data_o),
 		.dwishbone_ack_i(m0_ack_o),

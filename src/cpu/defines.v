@@ -264,17 +264,6 @@
 
 // Æê≥£Óê–Õ
 `define ExceptionTypeBus 31:0
-/*
-`define Exception_IRQ_S_SOFT    1
-`define Exception_IRQ_H_SOFT    2
-`define Exception_IRQ_M_SOFT    3
-`define Exception_IRQ_S_TIMER   5
-`define Exception_IRQ_H_TIMER   6
-`define Exception_IRQ_M_TIMER   7
-`define Exception_IRQ_S_EXT     9
-`define Exception_IRQ_H_EXT     10
-`define Exception_IRQ_M_EXT     11
-*/
 `define Exception_INST_MISALIGNED      0
 `define Exception_INST_ACCESS_FAULT    1
 `define Exception_INST_ILLEGAL         2
@@ -293,23 +282,6 @@
 `define Exception_ERET_FROM_M          15
 `define Exception_FENCEI               21
 
-`define CSR_mcause_INST_MISALIGNED      {1'b0, 31'd0}
-`define CSR_mcause_INST_ACCESS_FAULT    {1'b0, 31'd1}
-`define CSR_mcause_INST_ILLEGAL         {1'b0, 31'd2}
-`define CSR_mcause_BREAK                {1'b0, 31'd3}
-`define CSR_mcause_LOAD_MISALIGNED      {1'b0, 31'd4}
-`define CSR_mcause_LOAD_ACCESS_FAULT    {1'b0, 31'd5}
-`define CSR_mcause_STORE_MISALIGNED     {1'b0, 31'd6}
-`define CSR_mcause_STORE_ACCESS_FAULT   {1'b0, 31'd7}
-`define CSR_mcause_ECALL_FROM_U         {1'b0, 31'd8}
-`define CSR_mcause_ECALL_FROM_S         {1'b0, 31'd9}
-`define CSR_mcause_ECALL_FROM_H         {1'b0, 31'd10}
-`define CSR_mcause_ECALL_FROM_M         {1'b0, 31'd11}
-
-`define CSR_mcause_IRQ_M_TIMER          {1'b1, 31'd7}
-
-
-
 // Privilege
 `define PRV_M   2'h3
 `define PRV_H   2'h2
@@ -319,11 +291,9 @@
 `define PRV_U_1 1'h0
 
 // CSR Wirte
-`define CSRWriteTypeBus  1:0
-`define CSRWriteDisable  2'h0
-`define CSRWrite         2'h1
-// `define CSRSet           2'h2
-// `define CSRClear         2'h3
+`define CSRWriteTypeBus  0:0
+`define CSRWriteDisable  1'h0
+`define CSRWrite         1'h1
 
 //CSR ºƒ¥Ê∆˜µÿ÷∑
 `define CSRAddrBus 11:0
@@ -331,21 +301,18 @@
 	`define CSRAddrReadOnly 2'b11
 `define CSRAddrPrvBus 9:8
 
-/* User Trap Setup */
+// CSR Listing
 `define CSR_ustatus 12'h000
 `define CSR_uie 12'h004
 `define CSR_utvec 12'h005
-/* User Trap Handling */
 `define CSR_uscratch 12'h040
 `define CSR_uepc 12'h041
 `define CSR_ucause 12'h042
 `define CSR_ubadaddr 12'h043
 `define CSR_uip 12'h044
-/* User Floating-Point CSRs */
 `define CSR_fflags 12'h001
 `define CSR_frm 12'h002
 `define CSR_fcsr 12'h003
-/* User Counter/Timers */
 `define CSR_cycle 12'hC00
 `define CSR_time 12'hC01
 `define CSR_instret 12'hC02
@@ -358,60 +325,48 @@
 `define CSR_hpmcounter3h 12'hC83
 `define CSR_hpmcounter4h 12'hC84
 `define CSR_hpmcounter31h 12'hC9F
-/* Supervisor Trap Setup */
 `define CSR_sstatus 12'h100
 `define CSR_sedeleg 12'h102
 `define CSR_sideleg 12'h103
 `define CSR_sie 12'h104
 `define CSR_stvec 12'h105
-/* Supervisor Trap Handling */
 `define CSR_sscratch 12'h140
 `define CSR_sepc 12'h141
 `define CSR_scause 12'h142
 `define CSR_sbadaddr 12'h143
 `define CSR_sip 12'h144
-/* Supervisor Protection and Translation */
 `define CSR_sptbr 12'h180
-/* Hypervisor Trap Setup */
 `define CSR_hstatus 12'h200
 `define CSR_hedeleg 12'h202
 `define CSR_hideleg 12'h203
 `define CSR_hie 12'h204
 `define CSR_htvec 12'h205
-/* Hypervisor Trap Handling */
 `define CSR_hscratch 12'h240
 `define CSR_hepc 12'h241
 `define CSR_hcause 12'h242
 `define CSR_hbadaddr 12'h243
 `define CSR_hip 12'h244
-/* Hypervisor Protection and Translation */
-// 0x28X TBD TBD TBD.
-/* Machine Information Registers */
 `define CSR_mvendorid 12'hF11
 `define CSR_marchid 12'hF12
 `define CSR_mimpid 12'hF13
 `define CSR_mhartid 12'hF14
-/* Machine Trap Setup */
 `define CSR_mstatus 12'h300
 `define CSR_misa 12'h301
 `define CSR_medeleg 12'h302
 `define CSR_mideleg 12'h303
 `define CSR_mie 12'h304
 `define CSR_mtvec 12'h305
-/* Machine Trap Handling */
 `define CSR_mscratch 12'h340
 `define CSR_mepc 12'h341
 `define CSR_mcause 12'h342
 `define CSR_mbadaddr 12'h343
 `define CSR_mip 12'h344
-/* Machine Protection and Translation */
 `define CSR_mbase 12'h380
 `define CSR_mbound 12'h381
 `define CSR_mibase 12'h382
 `define CSR_mibound 12'h383
 `define CSR_mdbase 12'h384
 `define CSR_mdbound 12'h385
-/* Machine Counter/Timers */
 `define CSR_mcycle 12'hB00
 `define CSR_minstret 12'hB02
 `define CSR_mhpmcounter3 12'hB03
@@ -422,108 +377,213 @@
 `define CSR_mhpmcounter3h 12'hB83
 `define CSR_mhpmcounter4h 12'hB84
 `define CSR_mhpmcounter31h 12'hB9F
-/* Machine Counter Setup */
 `define CSR_mucounteren 12'h320
 `define CSR_mscounteren 12'h321
 `define CSR_mhcounteren 12'h322
 `define CSR_mhpmevent3 12'h323
 `define CSR_mhpmevent4 12'h324
 `define CSR_mhpmevent31 12'h33F
-/* Debug/Trace Registers (shared with Debug Mode) */
 `define CSR_tselect 12'h7A0
 `define CSR_tdata1 12'h7A1
 `define CSR_tdata2 12'h7A2
 `define CSR_tdata3 12'h7A3
-/* Debug Mode Registers */
 `define CSR_dcsr 12'h7B0
 `define CSR_dpc 12'h7B1
 `define CSR_dscratch 12'h7B2
 
-
-`define CSR_mtvec_addr_bus 31:2
-`define CSR_mepc_addr_bus 31:2
-
-`define CSR_medeleg_bus 11:0
-`define CSR_mideleg_bus 11:0
-
 /* mstatus */
-`define CSR_mstatus_vm_bus 28:24
-`define CSR_mstatus_vm_Mbare 5'h0
-`define CSR_mstatus_vm_Sv32 5'h8
+`ifdef RV32
+	`define CSR_mstatus_sd_bus  31:31
+`else
+	`define CSR_mstatus_sd_bus  63:63
+`endif
+`define CSR_mstatus_vm_bus      28:24
+`define CSR_mstatus_mxr_bus     19:19
+`define CSR_mstatus_mprv_bus    17:17
+`define CSR_mstatus_fs_bus      14:13
+`define CSR_mstatus_mpp_bus     12:11
+`define CSR_mstatus_hpp_bus     10:9
+`define CSR_mstatus_spp_bus     8:8
+`define CSR_mstatus_mpie_bus    7:7
+`define CSR_mstatus_hpie_bus    6:6
+`define CSR_mstatus_spie_bus    5:5
+`define CSR_mstatus_upie_bus    4:4
+`define CSR_mstatus_mie_bus     3:3
+`define CSR_mstatus_hie_bus     2:2
+`define CSR_mstatus_sie_bus     1:1
+`define CSR_mstatus_uie_bus     0:0
+
+`define CSR_mstatus_vm_Mbare    5'h0
+`define CSR_mstatus_vm_Sv32     5'h8
 `ifndef RV32
 	`define CSR_mstatus_vm_Sv39 5'h9
 	`define CSR_mstatus_vm_Sv48 5'h10
 `endif
+`define CSR_mstatus_fs_Off      2'h0
+`define CSR_mstatus_fs_Initial  2'h1
+`define CSR_mstatus_fs_Clean    2'h2
+`define CSR_mstatus_fs_Dirty    2'h3
 
-`define CSR_mstatus_mxr_bus 19:19
-`define CSR_mstatus_mprv_bus 17:17
-
-`define CSR_mstatus_fs_bus 14:13
-`define CSR_mstatus_fs_Off 2'h0
-`define CSR_mstatus_fs_Initial 2'h1
-`define CSR_mstatus_fs_Clean 2'h2
-`define CSR_mstatus_fs_Dirty 2'h3
+/* mtvec */
 `ifdef RV32
-	`define CSR_mstatus_sd_bus 31:31
+	`define CSR_mtvec_addr_bus 31:2
 `else
-	`define CSR_mstatus_sd_bus 63:63
+	`define CSR_mtvec_addr_bus 63:2
 `endif
-`define CSR_mstatus_mpp_bus 12:11
-`define CSR_mstatus_hpp_bus 10:9
-`define CSR_mstatus_spp_bus 8:8
 
-`define CSR_mstatus_mpie_bus 7:7
-`define CSR_mstatus_hpie_bus 6:6
-`define CSR_mstatus_spie_bus 5:5
-`define CSR_mstatus_upie_bus 4:4
+/* medeleg */
+`define CSR_medeleg_bus 11:0
+`define CSR_medeleg_INST_MISALIGNED_bus    0:0
+`define CSR_medeleg_INST_ACCESS_FAULT_bus  1:1
+`define CSR_medeleg_INST_ILLEGAL_bus       2:2
+`define CSR_medeleg_BREAK_bus              3:3
+`define CSR_medeleg_LOAD_MISALIGNED_bus    4:4
+`define CSR_medeleg_LOAD_ACCESS_FAULT_bus  5:5
+`define CSR_medeleg_STORE_MISALIGNED_bus   6:6
+`define CSR_medeleg_STORE_ACCESS_FAULT_bus 7:7
+`define CSR_medeleg_ECALL_FROM_U_bus       8:8
+`define CSR_medeleg_ECALL_FROM_S_bus       9:9
+`define CSR_medeleg_ECALL_FROM_H_bus       10:10
+`define CSR_medeleg_ECALL_FROM_M_bus       11:11
 
-`define CSR_mstatus_mie_bus 3:3
-`define CSR_mstatus_hie_bus 2:2
-`define CSR_mstatus_sie_bus 1:1
-`define CSR_mstatus_uie_bus 0:0
+/* mideleg */
+`define CSR_mideleg_bus 11:0
+`define CSR_mideleg_usie_bus 0:0
+`define CSR_mideleg_ssie_bus 1:1
+`define CSR_mideleg_hsie_bus 2:2
+`define CSR_mideleg_msie_bus 3:3
+`define CSR_mideleg_utie_bus 4:4
+`define CSR_mideleg_stie_bus 5:5
+`define CSR_mideleg_htie_bus 6:6
+`define CSR_mideleg_mtie_bus 7:7
+`define CSR_mideleg_ueie_bus 8:8
+`define CSR_mideleg_seie_bus 9:9
+`define CSR_mideleg_heie_bus 10:10
+`define CSR_mideleg_meie_bus 11:11
+
 
 /* mip */
 `define CSR_mip_usip_bus 0:0
 `define CSR_mip_ssip_bus 1:1
 `define CSR_mip_hsip_bus 2:2
 `define CSR_mip_msip_bus 3:3
-
 `define CSR_mip_utip_bus 4:4
 `define CSR_mip_stip_bus 5:5
 `define CSR_mip_htip_bus 6:6
 `define CSR_mip_mtip_bus 7:7
-
 `define CSR_mip_ueip_bus 8:8
 `define CSR_mip_seip_bus 9:9
 `define CSR_mip_heip_bus 10:10
 `define CSR_mip_meip_bus 11:11
-
 
 /* mie */
 `define CSR_mie_usie_bus 0:0
 `define CSR_mie_ssie_bus 1:1
 `define CSR_mie_hsie_bus 2:2
 `define CSR_mie_msie_bus 3:3
-
 `define CSR_mie_utie_bus 4:4
 `define CSR_mie_stie_bus 5:5
 `define CSR_mie_htie_bus 6:6
 `define CSR_mie_mtie_bus 7:7
-
 `define CSR_mie_ueie_bus 8:8
 `define CSR_mie_seie_bus 9:9
 `define CSR_mie_heie_bus 10:10
 `define CSR_mie_meie_bus 11:11
 
+/* mscounteren */
+`define CSR_mscounteren_tm_bus 1:1
+/* mucounteren */
+`define CSR_mucounteren_tm_bus 1:1
 
+/* mepc */
+`ifdef RV32
+	`define CSR_mepc_addr_bus 31:2
+`else
+	`define CSR_mepc_addr_bus 63:2
+`endif
+
+/* mcause */
+`ifdef RV32
+	`define CSR_mcause_intr_bus 31:31
+`else
+	`define CSR_mcause_intr_bus 63:63
+`endif
+`define CSR_mcause_code_bus 3:0
+
+`define CSR_mcause_INST_MISALIGNED      {1'b0, 4'd0}
+`define CSR_mcause_INST_ACCESS_FAULT    {1'b0, 4'd1}
+`define CSR_mcause_INST_ILLEGAL         {1'b0, 4'd2}
+`define CSR_mcause_BREAK                {1'b0, 4'd3}
+`define CSR_mcause_LOAD_MISALIGNED      {1'b0, 4'd4}
+`define CSR_mcause_LOAD_ACCESS_FAULT    {1'b0, 4'd5}
+`define CSR_mcause_STORE_MISALIGNED     {1'b0, 4'd6}
+`define CSR_mcause_STORE_ACCESS_FAULT   {1'b0, 4'd7}
+`define CSR_mcause_ECALL_FROM_U         {1'b0, 4'd8}
+`define CSR_mcause_ECALL_FROM_S         {1'b0, 4'd9}
+`define CSR_mcause_ECALL_FROM_H         {1'b0, 4'd10}
+`define CSR_mcause_ECALL_FROM_M         {1'b0, 4'd11}
+`define CSR_mcause_IRQ_S_SOFT           {1'b1, 4'd1}
+`define CSR_mcause_IRQ_M_SOFT           {1'b1, 4'd3}
+`define CSR_mcause_IRQ_S_TIMER          {1'b1, 4'd5}
+`define CSR_mcause_IRQ_M_TIMER          {1'b1, 4'd7}
+`define CSR_mcause_IRQ_M_EXTERNAL       {1'b1, 4'd11}
+
+
+/* stvec */
+`ifdef RV32
+	`define CSR_stvec_addr_bus 31:2
+`else
+	`define CSR_stvec_addr_bus 63:2
+`endif
+
+/* sepc */
+`ifdef RV32
+	`define CSR_sepc_addr_bus 31:2
+`else
+	`define CSR_sepc_addr_bus 63:2
+`endif
+
+/* scause */
+`ifdef RV32
+	`define CSR_scause_intr_bus 31:31
+`else
+	`define CSR_scause_intr_bus 63:63
+`endif
+`define CSR_scause_code_bus 3:0
+
+`define CSR_scause_INST_MISALIGNED      {1'b0, 4'd0}
+`define CSR_scause_INST_ACCESS_FAULT    {1'b0, 4'd1}
+`define CSR_scause_INST_ILLEGAL         {1'b0, 4'd2}
+`define CSR_scause_BREAK                {1'b0, 4'd3}
+`define CSR_scause_LOAD_MISALIGNED      {1'b0, 4'd4}
+`define CSR_scause_LOAD_ACCESS_FAULT    {1'b0, 4'd5}
+`define CSR_scause_STORE_MISALIGNED     {1'b0, 4'd6}
+`define CSR_scause_STORE_ACCESS_FAULT   {1'b0, 4'd7}
+`define CSR_scause_ECALL_FROM_U         {1'b0, 4'd8}
+`define CSR_scause_ECALL_FROM_S         {1'b0, 4'd9}
+`define CSR_scause_IRQ_S_SOFT           {1'b1, 4'd1}
+`define CSR_scause_IRQ_S_TIMER          {1'b1, 4'd5}
+`define CSR_scause_IRQ_M_SOFT           {1'b1, 4'd1}
+`define CSR_scause_IRQ_M_TIMER          {1'b1, 4'd5}
+`define CSR_scause_IRQ_M_EXTERNAL       {1'b1, 4'd5}
+
+
+/* sptbr */
 `ifdef RV32
 	`define CSR_sptbr_ppn_bus 21:0
 `else
 	`define CSR_sptbr_ppn_bus 37:0
 `endif
 
+/* mtlb */
 `define CSR_mtlbindex      12'h7c0
 	`define CSR_mtlbindex_bus 3:0
+	`ifdef RV32
+		`define CSR_mtlbindex_update_bus 31:31
+	`else
+		`define CSR_mtlbindex_update_bus 63:63
+	`endif
+
 `define CSR_mtlbvpn        12'h7c1
 `define CSR_mtlbmask       12'h7c2
 `define CSR_mtlbpte        12'h7c3
@@ -539,51 +599,9 @@
 `define PTE_G 5:5
 `define PTE_A 6:6
 `define PTE_D 7:7
-
-`define CSR_mucounteren_tm_bus 1:1
-`define CSR_mscounteren_tm_bus 1:1
-
 `define CSR_stvec_addr_bus 31:2
 
 
-/*
-fcsr
-fflags
-mbadaddr
-mcause
-medeleg
-mepc
-mhartid
-mideleg
-mie
-mip
-misa
-mscounteren
-mscratch
-mstatus
-mtvec
-mucounteren
-sbadaddr
-scause
-sepc
-sie
-sptbr
-stvec
-
-sbadaddr
-scause
-sepc
-sie
-sptbr
-sscratch
-sstatus
-stvec
-*/
-
-
-
-
-//`define StartInstAddr    32'hbfc0_0000
 `define StartInstAddr    32'h8000_0000 // TODO: fix me
 
 //wishbone FSM
