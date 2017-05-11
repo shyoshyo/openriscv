@@ -45,7 +45,7 @@ module id_ex(
 	input wire[`AluSelBus] id_alusel,
 	input wire[`RegBus] id_reg1,
 	input wire[`RegBus] id_reg2,
-	input wire[`RegBus] id_imm,
+	input wire[`RegBus] id_mem_addr,
 	input wire[`RegAddrBus] id_wd,
 	input wire id_wreg,
 	input wire[`RegBus] id_link_address,
@@ -68,7 +68,7 @@ module id_ex(
 	output reg[`AluSelBus] ex_alusel,
 	output reg[`RegBus] ex_reg1,
 	output reg[`RegBus] ex_reg2,
-	output reg[`RegBus] ex_imm,
+	output reg[`RegBus] ex_mem_addr,
 	output reg[`RegAddrBus] ex_wd,
 	output reg ex_wreg,
 	output reg[`RegBus] ex_link_address,
@@ -94,7 +94,7 @@ module id_ex(
 			ex_alusel <= `EXE_RES_NOP;
 			ex_reg1 <= `ZeroWord;
 			ex_reg2 <= `ZeroWord;
-			ex_imm <= `ZeroWord;
+			ex_mem_addr <= `ZeroWord;
 			ex_wd <= `NOPRegAddr;
 			ex_wreg <= `WriteDisable;
 
@@ -118,7 +118,7 @@ module id_ex(
 			ex_alusel <= `EXE_RES_NOP;
 			ex_reg1 <= `ZeroWord;
 			ex_reg2 <= `ZeroWord;
-			ex_imm <= `ZeroWord;
+			ex_mem_addr <= `ZeroWord;
 			ex_wd <= `NOPRegAddr;
 			ex_wreg <= `WriteDisable;
 
@@ -142,7 +142,7 @@ module id_ex(
 			ex_alusel <= `EXE_RES_NOP;
 			ex_reg1 <= `ZeroWord;
 			ex_reg2 <= `ZeroWord;
-			ex_imm <= `ZeroWord;
+			ex_mem_addr <= `ZeroWord;
 			ex_wd <= `NOPRegAddr;
 			ex_wreg <= `WriteDisable;
 
@@ -167,7 +167,7 @@ module id_ex(
 			ex_alusel <= id_alusel;
 			ex_reg1 <= id_reg1;
 			ex_reg2 <= id_reg2;
-			ex_imm <= id_imm;
+			ex_mem_addr <= id_mem_addr;
 			ex_wd <= id_wd;
 			ex_wreg <= id_wreg;
 

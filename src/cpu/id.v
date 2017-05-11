@@ -97,7 +97,9 @@ module id(
 	// 参与计算的寄存器
 	output reg[`RegBus] reg1_o,
 	output reg[`RegBus] reg2_o,
-	output wire[`RegBus] imm_o,
+
+	// where to write in memory
+	output reg[`RegBus] mem_addr_o,
 	
 	// 需要写回的寄存器，以及是否需要写回
 	output wire[`RegAddrBus] wd_o,
@@ -257,6 +259,8 @@ module id(
 			
 			imm <= `ZeroWord;
 
+			mem_addr_o <= `ZeroWord;
+
 			branch_target_address_o <= `ZeroWord;
 			branch_flag_o <= `NotBranch;
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
@@ -284,6 +288,8 @@ module id(
 			
 			imm <= `ZeroWord;
 
+			mem_addr_o <= `ZeroWord;
+
 			branch_target_address_o <= `ZeroWord;
 			branch_flag_o <= `NotBranch;
 			next_inst_in_delayslot_o <= `NotInDelaySlot;
@@ -310,6 +316,8 @@ module id(
 			reg2_read_o <= `ReadDisable;
 			
 			imm <= `ZeroWord;
+
+			mem_addr_o <= `ZeroWord;
 
 			branch_target_address_o <= `ZeroWord;
 			branch_flag_o <= `NotBranch;
@@ -340,6 +348,8 @@ module id(
 			reg2_read_o <= `ReadDisable;
 			
 			imm <= `ZeroWord;
+
+			mem_addr_o <= `ZeroWord;
 
 			// 是否跳转，跳转地址，下一条指令是否在延迟槽中
 			branch_target_address_o <= `ZeroWord;
@@ -919,7 +929,7 @@ module id(
 							
 							reg1_read_o <= `ReadEnable;
 							
-							imm <= imm_i_type + reg1_o;
+							mem_addr_o <= imm_i_type + reg1_o;
 						end
 
 						`EXE_LH:
@@ -932,7 +942,7 @@ module id(
 							
 							reg1_read_o <= `ReadEnable;
 							
-							imm <= imm_i_type + reg1_o;
+							mem_addr_o <= imm_i_type + reg1_o;
 						end
 
 						`EXE_LW:
@@ -945,7 +955,7 @@ module id(
 							
 							reg1_read_o <= `ReadEnable;
 							
-							imm <= imm_i_type + reg1_o;
+							mem_addr_o <= imm_i_type + reg1_o;
 						end
 						
 						`EXE_LBU:
@@ -958,7 +968,7 @@ module id(
 							
 							reg1_read_o <= `ReadEnable;
 							
-							imm <= imm_i_type + reg1_o;
+							mem_addr_o <= imm_i_type + reg1_o;
 						end
 
 						`EXE_LHU:
@@ -971,7 +981,7 @@ module id(
 							
 							reg1_read_o <= `ReadEnable;
 							
-							imm <= imm_i_type + reg1_o;
+							mem_addr_o <= imm_i_type + reg1_o;
 						end
 
 						default:
@@ -990,7 +1000,7 @@ module id(
 							reg1_read_o <= `ReadEnable;
 							reg2_read_o <= `ReadEnable;
 							
-							imm <= imm_s_type + reg1_o;
+							mem_addr_o <= imm_s_type + reg1_o;
 						end
 
 						`EXE_SH:
@@ -1002,7 +1012,7 @@ module id(
 							reg1_read_o <= `ReadEnable;
 							reg2_read_o <= `ReadEnable;
 							
-							imm <= imm_s_type + reg1_o;
+							mem_addr_o <= imm_s_type + reg1_o;
 						end
 
 						`EXE_SW:
@@ -1014,7 +1024,7 @@ module id(
 							reg1_read_o <= `ReadEnable;
 							reg2_read_o <= `ReadEnable;
 							
-							imm <= imm_s_type + reg1_o;
+							mem_addr_o <= imm_s_type + reg1_o;
 						end
 
 						default:
@@ -1091,7 +1101,6 @@ module id(
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
-							imm <= reg1_o;
 
 							if(wd_o != `ZeroRegAddr)
 								csr_reg_read_o <= `ReadEnable;
@@ -1100,14 +1109,13 @@ module id(
 
 						`EXE_CSRRS:
 						begin
-							aluop_o <= `EXE_CSRRW_OP;
+							aluop_o <= `EXE_CSRRS_OP;
 							alusel_o <= `EXE_RES_MOVE;
 							instvalid <= `InstValid;
 							
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
-							imm <= csr_reg_data_i | reg1_o;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)
@@ -1116,14 +1124,13 @@ module id(
 						
 						`EXE_CSRRC:
 						begin
-							aluop_o <= `EXE_CSRRW_OP;
+							aluop_o <= `EXE_CSRRC_OP;
 							alusel_o <= `EXE_RES_MOVE;
 							instvalid <= `InstValid;
 							
 							wreg_o <= `WriteEnable;
 
 							reg1_read_o <= `ReadEnable;
-							imm <= csr_reg_data_i & ~reg1_o;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)
@@ -1147,13 +1154,13 @@ module id(
 						
 						`EXE_CSRRSI:
 						begin
-							aluop_o <= `EXE_CSRRW_OP;
+							aluop_o <= `EXE_CSRRS_OP;
 							alusel_o <= `EXE_RES_MOVE;
 							instvalid <= `InstValid;
 							
 							wreg_o <= `WriteEnable;
 
-							imm <= csr_reg_data_i | zimm;
+							imm <= zimm;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)
@@ -1162,13 +1169,13 @@ module id(
 
 						`EXE_CSRRCI:
 						begin
-							aluop_o <= `EXE_CSRRW_OP;
+							aluop_o <= `EXE_CSRRC_OP;
 							alusel_o <= `EXE_RES_MOVE;
 							instvalid <= `InstValid;
 							
 							wreg_o <= `WriteEnable;
 
-							imm <= csr_reg_data_i & ~zimm;
+							imm <= zimm;
 
 							csr_reg_read_o <= `ReadEnable;
 							if(reg1_addr_o != `ZeroRegAddr)
@@ -1196,7 +1203,7 @@ module id(
 									
 									reg1_read_o <= `ReadEnable;
 
-									imm <= reg1_o;
+									mem_addr_o <= reg1_o;
 								end
 
 							`EXE_SC:
@@ -1210,7 +1217,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 
 							`EXE_AMOSWAP:
@@ -1224,7 +1231,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 
 							`EXE_AMOADD:
@@ -1238,7 +1245,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 							
 							`EXE_AMOXOR:
@@ -1252,7 +1259,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 							
 							`EXE_AMOAND:
@@ -1266,7 +1273,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 							
 							`EXE_AMOOR:
@@ -1280,7 +1287,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 							
 							`EXE_AMOMIN:
@@ -1294,7 +1301,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 
 							`EXE_AMOMAX:
@@ -1308,7 +1315,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 
 							`EXE_AMOMINU:
@@ -1322,7 +1329,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 							
 							`EXE_AMOMAXU:
@@ -1336,7 +1343,7 @@ module id(
 								reg1_read_o <= `ReadEnable;
 								reg2_read_o <= `ReadEnable;
 								
-								imm <= reg1_o;
+								mem_addr_o <= reg1_o;
 							end
 							
 							default:
@@ -1409,10 +1416,6 @@ module id(
 			reg2_o <= `ZeroWord;
 	end
 
-	/***************** 确定源 imm ******************/
-
-	assign imm_o = imm;
-	
 	/*********** 确定这一条指令是否在延迟槽中 **********/
 
 	always @ (*)

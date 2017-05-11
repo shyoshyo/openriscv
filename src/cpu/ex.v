@@ -41,7 +41,7 @@ module ex(
 	input wire[`AluSelBus] alusel_i,
 	input wire[`RegBus] reg1_i,
 	input wire[`RegBus] reg2_i,
-	input wire[`RegBus] imm_i,
+	input wire[`RegBus] mem_addr_i,
 	input wire[`RegAddrBus] wd_i,
 	input wire wreg_i,
 	input wire[`InstBus] inst_i,
@@ -76,7 +76,7 @@ module ex(
 	//向下一流水级传递，用于写csr中的寄存器
 	output wire[`CSRWriteTypeBus] csr_reg_we_o,
 	output wire[`CSRAddrBus] csr_reg_addr_o,
-	output wire[`RegBus] csr_reg_data_o,
+	output reg[`RegBus] csr_reg_data_o,
 
 	// 是否写寄存器，以及寄存器的地址和要写的值
 	output reg[`RegAddrBus] wd_o,
@@ -203,9 +203,6 @@ module ex(
 			moveout <= `ZeroWord;
 		else
 			case (aluop_i)
-				`EXE_MOVZ_OP, `EXE_MOVN_OP:
-					moveout <= reg1_i;
-				
 				`EXE_CSRRW_OP, `EXE_CSRRS_OP, `EXE_CSRRC_OP:
 					moveout <= csr_reg_data_i;
 
@@ -387,7 +384,7 @@ module ex(
 	assign aluop_o = aluop_i;
 
 	//mem_addr传递到访存阶段，是加载、存储指令对应的存储器地址
-	assign mem_addr_o = imm_i;
+	assign mem_addr_o = mem_addr_i;
 
 	//将两个操作数也传递到访存阶段，也是为记载、存储指令准备的
 	// 存储，lwl, lwr 指令需要
@@ -462,6 +459,23 @@ module ex(
 
 	/******************* 这条指令要写到 csr 的内容 **********************/
 	assign csr_reg_addr_o = csr_reg_addr_i;
-	assign csr_reg_data_o = imm_i;
 	assign csr_reg_we_o = csr_reg_we_i;
+
+
+	always @ (*)
+		if(rst_n == `RstEnable)
+			csr_reg_data_o <= `ZeroWord;
+		else
+			case (aluop_i)
+				`EXE_CSRRW_OP:
+					csr_reg_data_o <= reg1_i;
+
+				`EXE_CSRRS_OP:
+					csr_reg_data_o <= csr_reg_data_i | reg1_i;
+
+				`EXE_CSRRC_OP:
+					csr_reg_data_o <= csr_reg_data_i & ~reg1_i;
+
+				default: csr_reg_data_o <= `ZeroWord;
+			endcase
 endmodule

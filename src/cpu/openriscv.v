@@ -95,7 +95,7 @@ module openriscv(
 	wire[`AluSelBus] id_alusel_o;
 	wire[`RegBus] id_reg1_o;
 	wire[`RegBus] id_reg2_o;
-	wire[`RegBus] id_imm_o;
+	wire[`RegBus] id_mem_addr_o;
 	wire id_wreg_o;
 	wire[`RegAddrBus] id_wd_o;
 	wire id_is_in_delayslot_o;
@@ -114,7 +114,7 @@ module openriscv(
 	wire[`AluSelBus] ex_alusel_i;
 	wire[`RegBus] ex_reg1_i;
 	wire[`RegBus] ex_reg2_i;
-	wire[`RegBus] ex_imm_i;
+	wire[`RegBus] ex_mem_addr_i;
 	wire ex_wreg_i;
 	wire[`RegAddrBus] ex_wd_i;
 	wire ex_is_in_delayslot_i;	
@@ -356,7 +356,7 @@ module openriscv(
 		.alusel_o(id_alusel_o),
 		.reg1_o(id_reg1_o),
 		.reg2_o(id_reg2_o),
-		.imm_o(id_imm_o),
+		.mem_addr_o(id_mem_addr_o),
 		.wd_o(id_wd_o),
 		.wreg_o(id_wreg_o),
 		.inst_o(id_inst_o),
@@ -413,7 +413,7 @@ module openriscv(
 		.id_alusel(id_alusel_o),
 		.id_reg1(id_reg1_o),
 		.id_reg2(id_reg2_o),
-		.id_imm(id_imm_o),
+		.id_mem_addr(id_mem_addr_o),
 		.id_wd(id_wd_o),
 		.id_wreg(id_wreg_o),
 		.id_link_address(id_link_address_o),
@@ -435,7 +435,7 @@ module openriscv(
 		.ex_alusel(ex_alusel_i),
 		.ex_reg1(ex_reg1_i),
 		.ex_reg2(ex_reg2_i),
-		.ex_imm(ex_imm_i),
+		.ex_mem_addr(ex_mem_addr_i),
 		.ex_wd(ex_wd_i),
 		.ex_wreg(ex_wreg_i),
 		.ex_link_address(ex_link_address_i),
@@ -463,7 +463,7 @@ module openriscv(
 		.alusel_i(ex_alusel_i),
 		.reg1_i(ex_reg1_i),
 		.reg2_i(ex_reg2_i),
-		.imm_i(ex_imm_i),
+		.mem_addr_i(ex_mem_addr_i),
 		.wd_i(ex_wd_i),
 		.wreg_i(ex_wreg_i),
 
