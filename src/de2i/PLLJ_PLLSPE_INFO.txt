@@ -1,0 +1,15 @@
+PLL_Name	cpu_clk:cpu_clk0|altpll:altpll_component|cpu_clk_altpll:auto_generated|pll1
+PLLJITTER	35
+PLLSPEmax	84
+PLLSPEmin	-53
+
+PLL_Name	sdram_clk:sdram_clk0|altpll:altpll_component|sdram_clk_altpll:auto_generated|pll1
+PLLJITTER	25
+PLLSPEmax	84
+PLLSPEmin	-53
+
+PLL_Name	wishbone_clk:wishbone_clk0|altpll:altpll_component|wishbone_clk_altpll:auto_generated|pll1
+PLLJITTER	30
+PLLSPEmax	84
+PLLSPEmin	-53
+
