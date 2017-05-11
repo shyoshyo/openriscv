@@ -43,6 +43,7 @@
 
 module config_string_and_timer(
 	input wire clk,
+	input wire cpu_clk,
 	input wire rst_n,
 
 	input wire[`WishboneAddrBus]           wishbone_addr_i,
@@ -54,7 +55,7 @@ module config_string_and_timer(
 	
 	output reg[`WishboneDataBus]           wishbone_data_o,
 	output wire                            wishbone_ack_o,
-	output wire                            timer_int_o,
+	output reg                             timer_int_o,
 	output reg                             software_int_o
 );
 	// request signal
@@ -78,7 +79,13 @@ module config_string_and_timer(
 	reg [63:0] mtime;
 	reg [63:0] mtimecmp;
 
-	assign timer_int_o = (mtime >= mtimecmp) ? `InterruptAssert : `InterruptNotAssert;
+	always @ (posedge cpu_clk or negedge rst_n)
+	begin
+		if (rst_n == `RstEnable)
+			timer_int_o <= `InterruptNotAssert;
+		else
+			timer_int_o <= (mtime >= mtimecmp) ? `InterruptAssert : `InterruptNotAssert;
+	end
 
 	wire[`WishboneDataBus]  mem[0:`DataMemNum-1];
 	`include"config_string_rom/config_string_rom.v"

@@ -611,9 +611,10 @@ module openriscv(
 		.aluop_i(mem_aluop_i),
 		.mem_addr_i(mem_mem_addr_i),
 		.reg2_i(mem_reg2_i),
-		.csr_reg_we_i(mem_csr_reg_we_i),
-		.csr_reg_addr_i(mem_csr_reg_addr_i),
-		.csr_reg_data_i(mem_csr_reg_data_i),
+
+		.csr_reg_we_i(`CSRWriteDisable),
+		.csr_reg_addr_i(`ZeroWord),
+		.csr_reg_data_i(`ZeroWord),
 
 		.excepttype_i(mem_excepttype_i),
 		.is_in_delayslot_i(mem_is_in_delayslot_i),

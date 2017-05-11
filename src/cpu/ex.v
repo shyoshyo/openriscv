@@ -123,16 +123,6 @@ module ex(
 
 	reg[`RegBus] arithout;
 	reg[`RegBus] multiout;
-
-	always @(*)
-		if (rst_n == `RstEnable)
-		begin
-			excepttype_o <= `ZeroWord;
-		end
-		else
-		begin
-			excepttype_o <= excepttype_i;
-		end
 	
 	assign is_in_delayslot_o = is_in_delayslot_i;
 	assign current_inst_address_o = current_inst_address_i;
@@ -397,20 +387,50 @@ module ex(
 	// for mmu to check whether writable
 	always @(*)
 		if(rst_n == `RstEnable)
+		begin
 			{mem_we_o, mem_ce_o} <= {`WriteDisable, `ChipDisable};
+			excepttype_o <= `ZeroWord;
+		end
 		else
+		begin
+			excepttype_o <= excepttype_i;
+
 			case(aluop_i)
 				`EXE_LB_OP, `EXE_LBU_OP, `EXE_LH_OP, `EXE_LHU_OP, `EXE_LW_OP, `EXE_LR_OP:
+				begin
 					{mem_we_o, mem_ce_o} <= {`WriteDisable, `ChipEnable};
+					excepttype_o[`Exception_LOAD_ACCESS_FAULT] <= data_tlb_r_exception_o;
+				end
 
 				`EXE_SB_OP, `EXE_SH_OP, `EXE_SW_OP, `EXE_SC_OP, `EXE_AMOSWAP_W_OP, `EXE_AMOADD_W_OP,
 				`EXE_AMOXOR_W_OP, `EXE_AMOAND_W_OP, `EXE_AMOOR_W_OP, `EXE_AMOMIN_W_OP, `EXE_AMOMAX_W_OP,
 				`EXE_AMOMINU_W_OP, `EXE_AMOMAXU_W_OP:
+				begin
 					{mem_we_o, mem_ce_o} <= {`WriteEnable, `ChipEnable};
+					excepttype_o[`Exception_STORE_ACCESS_FAULT] <= data_tlb_w_exception_o;
+				end
 					
 				default:
 					{mem_we_o, mem_ce_o} <= {`WriteDisable, `ChipDisable};
 			endcase
+
+			case(aluop_i)
+				`EXE_LH_OP, `EXE_LHU_OP:
+					if(mem_addr_o[0] != 1'b0) excepttype_o[`Exception_LOAD_MISALIGNED] <= 1'b1;
+				`EXE_SH_OP:
+					if(mem_addr_o[0] != 1'b0) excepttype_o[`Exception_STORE_MISALIGNED] <= 1'b1;
+				`EXE_LW_OP, `EXE_LR_OP:
+					if(mem_addr_o[1:0] != 2'b0) excepttype_o[`Exception_LOAD_MISALIGNED] <= 1'b1;
+				`EXE_SW_OP, `EXE_SC_OP, `EXE_AMOSWAP_W_OP, `EXE_AMOADD_W_OP,
+				`EXE_AMOXOR_W_OP, `EXE_AMOAND_W_OP, `EXE_AMOOR_W_OP, `EXE_AMOMIN_W_OP, `EXE_AMOMAX_W_OP,
+				`EXE_AMOMINU_W_OP, `EXE_AMOMAXU_W_OP:
+					if(mem_addr_o[1:0] != 2'b0) excepttype_o[`Exception_STORE_MISALIGNED] <= 1'b1;
+
+				default:
+				begin
+				end
+			endcase
+		end
 
 
 

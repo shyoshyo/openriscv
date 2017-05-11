@@ -298,27 +298,6 @@ module csr(
 		s_store_access_fault_trap |
 		s_ecall_from_u_trap |
 		s_ecall_from_s_trap;
-
-
-	/*
-
-	reg [`CSR_medeleg_bus]m_std_trap_excepttype;
-	reg [`CSR_medeleg_bus]s_std_trap_excepttype;
-	always @(*)
-		if(not_stall_i == 1'b0)
-		begin
-			m_std_trap_excepttype <= `ZeroWord;
-			s_std_trap_excepttype <= `ZeroWord;
-		end
-		else
-		begin
-			m_std_trap_excepttype <= excepttype_i[`CSR_medeleg_bus] & ~medeleg;
-			s_std_trap_excepttype <= excepttype_i[`CSR_medeleg_bus] & medeleg;
-		end
-
-	wire m_std_trap = |m_std_trap_excepttype;
-	wire s_std_trap = |s_std_trap_excepttype;
-	*/
 	
 	assign data_tlb_exception_o = data_tlb_exception;
 	assign inst_tlb_exception_o = inst_tlb_exception;
@@ -332,13 +311,12 @@ module csr(
 			flushreq <= `NoFlush;
 			exception_new_pc_o <= `ZeroWord;
 			next_prv <= `PRV_M;
-			
 		end
 		else
 		begin
 			flushreq <= `NoFlush;
 			exception_new_pc_o <= `ZeroWord;
-			next_prv = prv_o;
+			next_prv <= prv_o;
 
 			if(not_stall_i == 1'b0)
 			begin
@@ -397,21 +375,6 @@ module csr(
 				flushreq <= `Flush;
 				exception_new_pc_o <= current_inst_addr_i + 4'd4;
 			end
-			/*
-			else if(we_i == `CSRWrite)
-			begin
-				case (waddr_i)
-					`CSR_sptbr:
-					begin
-						flushreq <= `Flush;
-						exception_new_pc_o <= current_inst_addr_i + 4'd4;
-
-						// data_tlb_exception_o <= 1'b1;
-						// inst_tlb_exception_o <= 1'b1;
-					end
-				endcase
-			end
-			*/
 		end
 
 	// write & modify CSR
@@ -715,12 +678,12 @@ module csr(
 					`CSR_mstatus:
 					begin
 						case(data_i[`CSR_mstatus_vm_bus])
-`ifdef RV32
+						`ifdef RV32
 							`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32:
-`else
+						`else
 							`CSR_mstatus_vm_Mbare, `CSR_mstatus_vm_Sv32,
 							`CSR_mstatus_vm_Sv39, `CSR_mstatus_vm_Sv48:
-`endif
+						`endif
 								mstatus_vm <= data_i[`CSR_mstatus_vm_bus];
 
 							default: begin end
@@ -1142,7 +1105,7 @@ module csr(
 				`CSR_sstatus:
 				begin
 					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
-					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;					data_o[`CSR_mstatus_sd_bus] <= mstatus_sd;
+					data_o[`CSR_mstatus_fs_bus] <= mstatus_fs;
 					data_o[`CSR_mstatus_spp_bus] <= mstatus_spp;
 					data_o[`CSR_mstatus_spie_bus] <= mstatus_spie;
 					data_o[`CSR_mstatus_sie_bus] <= mstatus_sie;
