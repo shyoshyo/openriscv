@@ -255,8 +255,6 @@ module openriscv_min_sopc(
 		.pc_o(pc_o)
 	);
 
-	
-	/*
 	wire[31:0] s0_data_i;
 	wire[31:0] s0_data_o;
 	wire[31:0] s0_addr_o;
@@ -295,8 +293,8 @@ module openriscv_min_sopc(
 		.wb_data_o(s0_data_i),
 		.wb_cyc_i(s0_cyc_o)
 	);
-	*/
-
+	
+	/*
 	wire[31:0] s0_data_i;
 	wire[31:0] s0_data_o;
 	wire[31:0] s0_addr_o;
@@ -341,7 +339,7 @@ module openriscv_min_sopc(
 		.DQ(flash_dq_io),
 		.A(flash_addr_o)
 	);
-
+	*/
 
 	wire[31:0] s1_data_i;
 	wire[31:0] s1_data_o;

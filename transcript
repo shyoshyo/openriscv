@@ -625,3 +625,165 @@ run -a
 # memcpy 80427000 / 80497049
 # memcpy 80428000 / 80497049
 # memcpy 80429000 / 80497049
+memcpy restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# value = hex f0123456
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# s[0] = hex 21345678
+# s[1] = hex 9a876543
+# mem_size = 01000000
+# MEGAPAGE_SIZE = 00400000
+# first_free_paddr = 80015000
+# ==== begin: memcpy ====
+# memcpy 80400000 / 80403ffd
+# memcpy 80401000 / 80403ffd
+# memcpy 80402000 / 80403ffd
+# memcpy 80403000 / 80403ffd
+# 
+# ====  end: memcpy ====
+# ==== begin: memset ====
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80404000 / 80404010
+# 
+# ====  end: memset ====
+# 80400000, ffc00000, 01000000
+# ==== begin: memset ====
+# memset 80405000 / 80406000
+# 
+# ====  end: memset ====
+# ==== begin: memset ====
+# memset 80406000 / 80407000
+# 
+# ====  end: memset ====
+#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
+# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
+# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
+# rr                vvvvvvvvvvvvvvvvvvvvvv      
+# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
+# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
+# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
+# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
+# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
+# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
+# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
+# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
+# 
+#        INSTRUCTION SETS WANT TO BE FREE
+# ../machine/minit.c:205: mie = 0000082a
+# 
+# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0000028, mbadaddr = 0xc0003ffc, ex 0, rd 0, wt 1
+# (THU.CST) os is loading ...
+# 
+# 
+# Special kernel symbols:
+#   entry  0xc000000c (virtual)
+#   etext  0xc0000d1c (virtual)
+#   edata  0xc0004000 (virtual)
+#   end    0xc0004004 (virtual)
+# Kernel executable memory footprint: 16KB
+# ++ setup timer interrupts
+run -a
+# 100 ticks
