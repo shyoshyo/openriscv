@@ -78,18 +78,25 @@ module config_string_and_timer(
 
 	reg [63:0] mtime;
 	reg [63:0] mtimecmp;
+	reg software_int;
 
 	always @ (posedge cpu_clk or negedge rst_n)
 	begin
 		if (rst_n == `RstEnable)
+		begin
 			timer_int_o <= `InterruptNotAssert;
+			software_int_o <= `InterruptNotAssert;
+		end
 		else
+		begin
 			timer_int_o <= (mtime >= mtimecmp) ? `InterruptAssert : `InterruptNotAssert;
+			software_int_o <= software_int;
+		end
 	end
 
 	wire[`WishboneDataBus]  mem[0:`DataMemNum-1];
 	`include"config_string_rom/config_string_rom.v"
-	assign mem[251] = {31'h0, software_int_o};
+	assign mem[251] = {31'h0, software_int};
 	assign mem[252] = mtime[31:0];
 	assign mem[253] = mtime[63:32];
 	assign mem[254] = mtimecmp[31:0];
@@ -112,7 +119,7 @@ module config_string_and_timer(
 
 			mtime <= 64'h0;
 			mtimecmp <= 64'hffff_ffff_ffff_ffff;
-			software_int_o <= 1'b0;
+			software_int <= 1'b0;
 			wishbone_data_o <= `ZeroWord;
 		end
 		else if(request == 1'b0)
@@ -131,7 +138,7 @@ module config_string_and_timer(
 					10'd251:
 					begin
 						if (wishbone_sel_i[0] == 1'b1)
-							software_int_o <= wishbone_data_i[0];
+							software_int <= wishbone_data_i[0];
 					end
 
 					10'd252:

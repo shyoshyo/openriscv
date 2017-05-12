@@ -8,864 +8,10 @@
 # //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
 # //
 # Loading project riscv
-vsim -vopt work.openriscv_min_sopc_tb
-# vsim -vopt work.openriscv_min_sopc_tb 
-# ** Note: (vsim-3812) Design is being optimized...
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.wb_conmax_slave_if(fast)
-run -a
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
-# 
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
-# 
-# reiko
-# plic_ndevs = 0
-# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
-# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
-# mem_size = 01000000
-# ==== begin: memcpy ====
-# memcpy 80400000 / 80497049
-# memcpy 80401000 / 80497049
-# memcpy 80402000 / 80497049
-# memcpy 80403000 / 80497049
-# memcpy 80404000 / 80497049
-# memcpy 80405000 / 80497049
-# memcpy 80406000 / 80497049
-# memcpy 80407000 / 80497049
-# memcpy 80408000 / 80497049
-# memcpy 80409000 / 80497049
-# memcpy 8040a000 / 80497049
-# memcpy 8040b000 / 80497049
-# memcpy 8040c000 / 80497049
-# memcpy 8040d000 / 80497049
-# memcpy 8040e000 / 80497049
-# memcpy 8040f000 / 80497049
-# memcpy 80410000 / 80497049
-# memcpy 80411000 / 80497049
-# memcpy 80412000 / 80497049
-# memcpy 80413000 / 80497049
-# memcpy 80414000 / 80497049
-# memcpy 80415000 / 80497049
-# memcpy 80416000 / 80497049
-# memcpy 80417000 / 80497049
-# memcpy 80418000 / 80497049
-# memcpy 80419000 / 80497049
-# memcpy 8041a000 / 80497049
-# memcpy 8041b000 / 80497049
-# memcpy 8041c000 / 80497049
-# memcpy 8041d000 / 80497049
-# memcpy 8041e000 / 80497049
-# memcpy 8041f000 / 80497049
-# memcpy 80420000 / 80497049
-# memcpy 80421000 / 80497049
-# memcpy 80422000 / 80497049
-# memcpy 80423000 / 80497049
-# memcpy 80424000 / 80497049
-# memcpy 80425000 / 80497049
-# memcpy 80426000 / 80497049
-# memcpy 80427000 / 80497049
-# memcpy 80428000 / 80497049
-# memcpy 80429000 / 80497049
-# memcpy 8042a000 / 80497049
-# memcpy 8042b000 / 80497049
-# memcpy 8042c000 / 80497049
-# memcpy 8042d000 / 80497049
-# memcpy 8042e000 / 80497049
-# memcpy 8042f000 / 80497049
-# memcpy 80430000 / 80497049
-# memcpy 80431000 / 80497049
-# memcpy 80432000 / 80497049
-# memcpy 80433000 / 80497049
-# memcpy 80434000 / 80497049
-# memcpy 80435000 / 80497049
-# memcpy 80436000 / 80497049
-# memcpy 80437000 / 80497049
-# memcpy 80438000 / 80497049
-# memcpy 80439000 / 80497049
-# memcpy 8043a000 / 80497049
-# memcpy 8043b000 / 80497049
-# memcpy 8043c000 / 80497049
-# memcpy 8043d000 / 80497049
-# memcpy 8043e000 / 80497049
-# memcpy 8043f000 / 80497049
-# memcpy 80440000 / 80497049
-# memcpy 80441000 / 80497049
-# memcpy 80442000 / 80497049
-# memcpy 80443000 / 80497049
-# memcpy 80444000 / 80497049
-# memcpy 80445000 / 80497049
-# memcpy 80446000 / 80497049
-# memcpy 80447000 / 80497049
-# memcpy 80448000 / 80497049
-# memcpy 80449000 / 80497049
-# memcpy 8044a000 / 80497049
-# memcpy 8044b000 / 80497049
-# memcpy 8044c000 / 80497049
-# memcpy 8044d000 / 80497049
-# memcpy 8044e000 / 80497049
-# memcpy 8044f000 / 80497049
-# memcpy 80450000 / 80497049
-# memcpy 80451000 / 80497049
-# memcpy 80452000 / 80497049
-# memcpy 80453000 / 80497049
-# memcpy 80454000 / 80497049
-# memcpy 80455000 / 80497049
-# memcpy 80456000 / 80497049
-# memcpy 80457000 / 80497049
-# memcpy 80458000 / 80497049
-# memcpy 80459000 / 80497049
-# memcpy 8045a000 / 80497049
-# memcpy 8045b000 / 80497049
-# memcpy 8045c000 / 80497049
-# memcpy 8045d000 / 80497049
-# memcpy 8045e000 / 80497049
-# memcpy 8045f000 / 80497049
-# memcpy 80460000 / 80497049
-# memcpy 80461000 / 80497049
-# memcpy 80462000 / 80497049
-# memcpy 80463000 / 80497049
-# memcpy 80464000 / 80497049
-# memcpy 80465000 / 80497049
-# memcpy 80466000 / 80497049
-# memcpy 80467000 / 80497049
-# memcpy 80468000 / 80497049
-# memcpy 80469000 / 80497049
-# memcpy 8046a000 / 80497049
-# memcpy 8046b000 / 80497049
-# memcpy 8046c000 / 80497049
-# memcpy 8046d000 / 80497049
-# memcpy 8046e000 / 80497049
-# memcpy 8046f000 / 80497049
-# memcpy 80470000 / 80497049
-# memcpy 80471000 / 80497049
-# memcpy 80472000 / 80497049
-# memcpy 80473000 / 80497049
-# memcpy 80474000 / 80497049
-# memcpy 80475000 / 80497049
-# memcpy 80476000 / 80497049
-# memcpy 80477000 / 80497049
-# memcpy 80478000 / 80497049
-# memcpy 80479000 / 80497049
-# memcpy 8047a000 / 80497049
-# memcpy 8047b000 / 80497049
-# memcpy 8047c000 / 80497049
-# memcpy 8047d000 / 80497049
-# memcpy 8047e000 / 80497049
-# memcpy 8047f000 / 80497049
-# memcpy 80480000 / 80497049
-# memcpy 80481000 / 80497049
-# memcpy 80482000 / 80497049
-# memcpy 80483000 / 80497049
-# memcpy 80484000 / 80497049
-# memcpy 80485000 / 80497049
-# memcpy 80486000 / 80497049
-# memcpy 80487000 / 80497049
-# memcpy 80488000 / 80497049
-# memcpy 80489000 / 80497049
-# memcpy 8048a000 / 80497049
-# memcpy 8048b000 / 80497049
-# memcpy 8048c000 / 80497049
-# memcpy 8048d000 / 80497049
-# memcpy 8048e000 / 80497049
-# memcpy 8048f000 / 80497049
-# memcpy 80490000 / 80497049
-# memcpy 80491000 / 80497049
-# memcpy 80492000 / 80497049
-# memcpy 80493000 / 80497049
-# memcpy 80494000 / 80497049
-# memcpy 80495000 / 80497049
-# memcpy 80496000 / 80497049
-# memcpy 80497000 / 80497049
-# 
-# ====  end: memcpy ====
-# ==== begin: memset ====
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 80498000 / 8049a8b4
-# memset 80499000 / 8049a8b4
-# memset 8049a000 / 8049a8b4
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 8049b000 / 8049c000
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 8049c000 / 8049d000
-# 
-# ====  end: memset ====
-#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
-# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
-# rr                vvvvvvvvvvvvvvvvvvvvvv      
-# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
-# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
-# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
-# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
-# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
-# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
-# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
-# 
-#        INSTRUCTION SETS WANT TO BE FREE
-# ../machine/minit.c:199: mie = 0000082a
-# 
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0000010, mbadaddr = 0xc0019ffc, ex 0, rd 0, wt 1
-# (THU.CST) os is loading ...
-# 
-# Special kernel symbols:
-#   entry  0xc000000c (virtual)
-#   etext  0xc00137c4 (virtual)
-#   edata  0xc0097000 (virtual)
-#   end    0xc009711c (virtual)
-# Kernel executable memory footprint: 605KB
-# memory management: default_pmm_manager
-# physcial memory map:
-#   memory: 0x00c00000, [0x80400000, 0x80ffffff].
-# mem_begin: 0x804be000, mem_end: 0x81000000
-# check_alloc_page() succeeded!
-# check_pgdir() succeeded!
-restart
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.wb_conmax_slave_if(fast)
-run -a
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
-# 
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
-# 
-# reiko
-# plic_ndevs = 0
-# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
-# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
-# mem_size = 01000000
-# ==== begin: memcpy ====
-# memcpy 80400000 / 80497049
-# memcpy 80401000 / 80497049
-# memcpy 80402000 / 80497049
-# memcpy 80403000 / 80497049
-# memcpy 80404000 / 80497049
-# memcpy 80405000 / 80497049
-# memcpy 80406000 / 80497049
-# memcpy 80407000 / 80497049
-# memcpy 80408000 / 80497049
-# memcpy 80409000 / 80497049
-# memcpy 8040a000 / 80497049
-# memcpy 8040b000 / 80497049
-# memcpy 8040c000 / 80497049
-# memcpy 8040d000 / 80497049
-# memcpy 8040e000 / 80497049
-# memcpy 8040f000 / 80497049
-# memcpy 80410000 / 80497049
-# memcpy 80411000 / 80497049
-# memcpy 80412000 / 80497049
-# memcpy 80413000 / 80497049
-# memcpy 80414000 / 80497049
-# memcpy 80415000 / 80497049
-# memcpy 80416000 / 80497049
-# memcpy 80417000 / 80497049
-# memcpy 80418000 / 80497049
-# memcpy 80419000 / 80497049
-# memcpy 8041a000 / 80497049
-# memcpy 8041b000 / 80497049
-# memcpy 8041c000 / 80497049
-# memcpy 8041d000 / 80497049
-# memcpy 8041e000 / 80497049
-# memcpy 8041f000 / 80497049
-# memcpy 80420000 / 80497049
-# memcpy 80421000 / 80497049
-# memcpy 80422000 / 80497049
-# memcpy 80423000 / 80497049
-# memcpy 80424000 / 80497049
-# memcpy 80425000 / 80497049
-# memcpy 80426000 / 80497049
-# memcpy 80427000 / 80497049
-# memcpy 80428000 / 80497049
-# memcpy 80429000 / 80497049
-# memcpy 8042a000 / 80497049
-# memcpy 8042b000 / 80497049
-# memcpy 8042c000 / 80497049
-# memcpy 8042d000 / 80497049
-# memcpy 8042e000 / 80497049
-# memcpy 8042f000 / 80497049
-# memcpy 80430000 / 80497049
-# memcpy 80431000 / 80497049
-# memcpy 80432000 / 80497049
-# memcpy 80433000 / 80497049
-# memcpy 80434000 / 80497049
-# memcpy 80435000 / 80497049
-# memcpy 80436000 / 80497049
-# memcpy 80437000 / 80497049
-# memcpy 80438000 / 80497049
-# memcpy 80439000 / 80497049
-# memcpy 8043a000 / 80497049
-# memcpy 8043b000 / 80497049
-# memcpy 8043c000 / 80497049
-# memcpy 8043d000 / 80497049
-# memcpy 8043e000 / 80497049
-# memcpy 8043f000 / 80497049
-# memcpy 80440000 / 80497049
-# memcpy 80441000 / 80497049
-# memcpy 80442000 / 80497049
-# memcpy 80443000 / 80497049
-# memcpy 80444000 / 80497049
-# memcpy 80445000 / 80497049
-# memcpy 80446000 / 80497049
-# memcpy 80447000 / 80497049
-# memcpy 80448000 / 80497049
-# memcpy 80449000 / 80497049
-# memcpy 8044a000 / 80497049
-# memcpy 8044b000 / 80497049
-# memcpy 8044c000 / 80497049
-# memcpy 8044d000 / 80497049
-# memcpy 8044e000 / 80497049
-# memcpy 8044f000 / 80497049
-# memcpy 80450000 / 80497049
-# memcpy 80451000 / 80497049
-# memcpy 80452000 / 80497049
-# memcpy 80453000 / 80497049
-# memcpy 80454000 / 80497049
-# memcpy 80455000 / 80497049
-# memcpy 80456000 / 80497049
-# memcpy 80457000 / 80497049
-# memcpy 80458000 / 80497049
-# memcpy 80459000 / 80497049
-# memcpy 8045a000 / 80497049
-# memcpy 8045b000 / 80497049
-# memcpy 8045c000 / 80497049
-# memcpy 8045d000 / 80497049
-# memcpy 8045e000 / 80497049
-# memcpy 8045f000 / 80497049
-# memcpy 80460000 / 80497049
-# memcpy 80461000 / 80497049
-# memcpy 80462000 / 80497049
-# memcpy 80463000 / 80497049
-# memcpy 80464000 / 80497049
-# memcpy 80465000 / 80497049
-# memcpy 80466000 / 80497049
-# memcpy 80467000 / 80497049
-# memcpy 80468000 / 80497049
-# memcpy 80469000 / 80497049
-# memcpy 8046a000 / 80497049
-# memcpy 8046b000 / 80497049
-# memcpy 8046c000 / 80497049
-# memcpy 8046d000 / 80497049
-# memcpy 8046e000 / 80497049
-# memcpy 8046f000 / 80497049
-# memcpy 80470000 / 80497049
-# memcpy 80471000 / 80497049
-# memcpy 80472000 / 80497049
-# memcpy 80473000 / 80497049
-# memcpy 80474000 / 80497049
-# memcpy 80475000 / 80497049
-# memcpy 80476000 / 80497049
-# memcpy 80477000 / 80497049
-# memcpy 80478000 / 80497049
-# memcpy 80479000 / 80497049
-# memcpy 8047a000 / 80497049
-# memcpy 8047b000 / 80497049
-# memcpy 8047c000 / 80497049
-# memcpy 8047d000 / 80497049
-# memcpy 8047e000 / 80497049
-# memcpy 8047f000 / 80497049
-# memcpy 80480000 / 80497049
-# memcpy 80481000 / 80497049
-# memcpy 80482000 / 80497049
-# memcpy 80483000 / 80497049
-# memcpy 80484000 / 80497049
-# memcpy 80485000 / 80497049
-# memcpy 80486000 / 80497049
-# memcpy 80487000 / 80497049
-# memcpy 80488000 / 80497049
-# memcpy 80489000 / 80497049
-# memcpy 8048a000 / 80497049
-# memcpy 8048b000 / 80497049
-# memcpy 8048c000 / 80497049
-# memcpy 8048d000 / 80497049
-# memcpy 8048e000 / 80497049
-# memcpy 8048f000 / 80497049
-# memcpy 80490000 / 80497049
-# memcpy 80491000 / 80497049
-# memcpy 80492000 / 80497049
-# memcpy 80493000 / 80497049
-# memcpy 80494000 / 80497049
-# memcpy 80495000 / 80497049
-# memcpy 80496000 / 80497049
-# memcpy 80497000 / 80497049
-# 
-# ====  end: memcpy ====
-# ==== begin: memset ====
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 80498000 / 8049a8b4
-# memset 80499000 / 8049a8b4
-# memset 8049a000 / 8049a8b4
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 8049b000 / 8049c000
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 8049c000 / 8049d000
-# 
-# ====  end: memset ====
-#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
-# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
-# rr                vvvvvvvvvvvvvvvvvvvvvv      
-# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
-# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
-# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
-# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
-# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
-# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
-# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
-# 
-#        INSTRUCTION SETS WANT TO BE FREE
-# ../machine/minit.c:199: mie = 0000082a
-# 
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0000010, mbadaddr = 0xc0019ffc, ex 0, rd 0, wt 1
-# (THU.CST) os is loading ...
-# 
-# Special kernel symbols:
-#   entry  0xc000000c (virtual)
-#   etext  0xc00137d4 (virtual)
-#   edata  0xc0097000 (virtual)
-#   end    0xc009711c (virtual)
-# Kernel executable memory footprint: 605KB
-# memory management: default_pmm_manager
-# physcial memory map:
-#   memory: 0x00c00000, [0x80400000, 0x80ffffff].
-# mem_begin: 0x804be000, mem_end: 0x81000000
-# check_alloc_page() succeeded!
-# check_pgdir() succeeded!
-# KMEMSIZE = 1000000
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0002350, mbadaddr = 0xc0097054, ex 0, rd 0, wt 1
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0002368, mbadaddr = 0xc00a78a8, ex 0, rd 0, wt 1
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0002c88, mbadaddr = 0xc00be000, ex 0, rd 0, wt 1
-# check_boot_pgdir() succeeded!
-# -------------------- BEGIN --------------------
-# --------------------- END ---------------------
-# use SLOB allocator
-# kmalloc_init() succeeded!
-# check_vma_struct() succeeded!
-# Store/AMO access fault
-# page falut at 0x00000100: K/W
-# check_pgfault() succeeded!
-# check_vmm() succeeded.
-# sched class: stride_scheduler
-# Initrd: 0xc001a000 - 0xc0021cff, size: 0x00007d00
-# Initrd: 0xc0021d00 - 0xc0096fff, size: 0x00075300
-# SWAP: manager = fifo swap manager
-# BEGIN check_swap: count 1, total 2871
-# setup Page Table for vaddr 0X1000, so alloc a page
-# setup Page Table vaddr 0~4MB OVER!
-# set up init env for check_swap begin!
-# Store/AMO access fault
-# page falut at 0x00001000: K/W
-# Store/AMO access fault
-# page falut at 0x00002000: K/W
-# Store/AMO access fault
-# page falut at 0x00003000: K/W
-# Store/AMO access fault
-# page falut at 0x00004000: K/W
-# set up init env for check_swap over!
-# write Virt Page c in fifo_check_swap
-# write Virt Page a in fifo_check_swap
-# write Virt Page d in fifo_check_swap
-# write Virt Page b in fifo_check_swap
-# write Virt Page e in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00005000: K/W
-# swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2
-# write Virt Page b in fifo_check_swap
-# write Virt Page a in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00001000: K/W
-# swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3
-# swap_in: load disk swap entry 2 with swap_page in vadr 0x1000
-# write Virt Page b in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00002000: K/W
-# swap_out: i 0, store page in vaddr 0x3000 to disk swap entry 4
-# swap_in: load disk swap entry 3 with swap_page in vadr 0x2000
-# write Virt Page c in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00003000: K/W
-# swap_out: i 0, store page in vaddr 0x4000 to disk swap entry 5
-# swap_in: load disk swap entry 4 with swap_page in vadr 0x3000
-# write Virt Page d in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00004000: K/W
-# swap_out: i 0, store page in vaddr 0x5000 to disk swap entry 6
-# swap_in: load disk swap entry 5 with swap_page in vadr 0x4000
-# write Virt Page e in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00005000: K/W
-# swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2
-# swap_in: load disk swap entry 6 with swap_page in vadr 0x5000
-# write Virt Page a in fifo_check_swap
-# Load access fault
-# page falut at 0x00001000: K/R
-# swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3
-# swap_in: load disk swap entry 2 with swap_page in vadr 0x1000
-# count is 0, total is 5
-# check_swap() succeeded!
-# sfs: mount: 'simple file system' (115/2/117)
-# vfs: mount disk0.
-# ++ setup timer interrupts
-# ../machine/mtrap.c:100: assertion failed: tohost == 0
-restart
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.wb_conmax_slave_if(fast)
-run -a
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
-# 
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
-# 
-# reiko
-# plic_ndevs = 0
-# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
-# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
-# mem_size = 01000000
-# ==== begin: memcpy ====
-# memcpy 80400000 / 80497049
-# memcpy 80401000 / 80497049
-# memcpy 80402000 / 80497049
-# memcpy 80403000 / 80497049
-# memcpy 80404000 / 80497049
-# memcpy 80405000 / 80497049
-# memcpy 80406000 / 80497049
-# memcpy 80407000 / 80497049
-# memcpy 80408000 / 80497049
-# memcpy 80409000 / 80497049
-# memcpy 8040a000 / 80497049
-# memcpy 8040b000 / 80497049
-# memcpy 8040c000 / 80497049
-# memcpy 8040d000 / 80497049
-# memcpy 8040e000 / 80497049
-# memcpy 8040f000 / 80497049
-# memcpy 80410000 / 80497049
-# memcpy 80411000 / 80497049
-# memcpy 80412000 / 80497049
-# memcpy 80413000 / 80497049
-# memcpy 80414000 / 80497049
-# memcpy 80415000 / 80497049
-# memcpy 80416000 / 80497049
-# memcpy 80417000 / 80497049
-# memcpy 80418000 / 80497049
-# memcpy 80419000 / 80497049
-# memcpy 8041a000 / 80497049
-# memcpy 8041b000 / 80497049
-# memcpy 8041c000 / 80497049
-# memcpy 8041d000 / 80497049
-# memcpy 8041e000 / 80497049
-# memcpy 8041f000 / 80497049
-# memcpy 80420000 / 80497049
-# memcpy 80421000 / 80497049
-# memcpy 80422000 / 80497049
-# memcpy 80423000 / 80497049
-# memcpy 80424000 / 80497049
-# memcpy 80425000 / 80497049
-# memcpy 80426000 / 80497049
-# memcpy 80427000 / 80497049
-# memcpy 80428000 / 80497049
-# memcpy 80429000 / 80497049
-# memcpy 8042a000 / 80497049
-# memcpy 8042b000 / 80497049
-# memcpy 8042c000 / 80497049
-# memcpy 8042d000 / 80497049
-# memcpy 8042e000 / 80497049
-# memcpy 8042f000 / 80497049
-# memcpy 80430000 / 80497049
-# memcpy 80431000 / 80497049
-# memcpy 80432000 / 80497049
-# memcpy 80433000 / 80497049
-# memcpy 80434000 / 80497049
-# memcpy 80435000 / 80497049
-# memcpy 80436000 / 80497049
-# memcpy 80437000 / 80497049
-# memcpy 80438000 / 80497049
-# memcpy 80439000 / 80497049
-# memcpy 8043a000 / 80497049
-# memcpy 8043b000 / 80497049
-# memcpy 8043c000 / 80497049
-# memcpy 8043d000 / 80497049
-# memcpy 8043e000 / 80497049
-# memcpy 8043f000 / 80497049
-# memcpy 80440000 / 80497049
-# memcpy 80441000 / 80497049
-# memcpy 80442000 / 80497049
-# memcpy 80443000 / 80497049
-# memcpy 80444000 / 80497049
-# memcpy 80445000 / 80497049
-# memcpy 80446000 / 80497049
-# memcpy 80447000 / 80497049
-# memcpy 80448000 / 80497049
-# memcpy 80449000 / 80497049
-# memcpy 8044a000 / 80497049
-# memcpy 8044b000 / 80497049
-# memcpy 8044c000 / 80497049
-# memcpy 8044d000 / 80497049
-# memcpy 8044e000 / 80497049
-# memcpy 8044f000 / 80497049
-# memcpy 80450000 / 80497049
-# memcpy 80451000 / 80497049
-# memcpy 80452000 / 80497049
-# memcpy 80453000 / 80497049
-# memcpy 80454000 / 80497049
-# memcpy 80455000 / 80497049
-# memcpy 80456000 / 80497049
-# memcpy 80457000 / 80497049
-# memcpy 80458000 / 80497049
-# memcpy 80459000 / 80497049
-# memcpy 8045a000 / 80497049
-# memcpy 8045b000 / 80497049
-# memcpy 8045c000 / 80497049
-# memcpy 8045d000 / 80497049
-# memcpy 8045e000 / 80497049
-# memcpy 8045f000 / 80497049
-# memcpy 80460000 / 80497049
-# memcpy 80461000 / 80497049
-# memcpy 80462000 / 80497049
-# memcpy 80463000 / 80497049
-# memcpy 80464000 / 80497049
-# memcpy 80465000 / 80497049
-# memcpy 80466000 / 80497049
-# memcpy 80467000 / 80497049
-# memcpy 80468000 / 80497049
-# memcpy 80469000 / 80497049
-# memcpy 8046a000 / 80497049
-# memcpy 8046b000 / 80497049
-# memcpy 8046c000 / 80497049
-# memcpy 8046d000 / 80497049
-# memcpy 8046e000 / 80497049
-# memcpy 8046f000 / 80497049
-# memcpy 80470000 / 80497049
-# memcpy 80471000 / 80497049
-# memcpy 80472000 / 80497049
-# memcpy 80473000 / 80497049
-# memcpy 80474000 / 80497049
-# memcpy 80475000 / 80497049
-# memcpy 80476000 / 80497049
-# memcpy 80477000 / 80497049
-# memcpy 80478000 / 80497049
-# memcpy 80479000 / 80497049
-# memcpy 8047a000 / 80497049
-# memcpy 8047b000 / 80497049
-# memcpy 8047c000 / 80497049
-# memcpy 8047d000 / 80497049
-# memcpy 8047e000 / 80497049
-# memcpy 8047f000 / 80497049
-# memcpy 80480000 / 80497049
-# memcpy 80481000 / 80497049
-# memcpy 80482000 / 80497049
-# memcpy 80483000 / 80497049
-# memcpy 80484000 / 80497049
-# memcpy 80485000 / 80497049
-# memcpy 80486000 / 80497049
-# memcpy 80487000 / 80497049
-# memcpy 80488000 / 80497049
-# memcpy 80489000 / 80497049
-# memcpy 8048a000 / 80497049
-# memcpy 8048b000 / 80497049
-# memcpy 8048c000 / 80497049
-# memcpy 8048d000 / 80497049
-# memcpy 8048e000 / 80497049
-# memcpy 8048f000 / 80497049
-# memcpy 80490000 / 80497049
-# memcpy 80491000 / 80497049
-# memcpy 80492000 / 80497049
-# memcpy 80493000 / 80497049
-# memcpy 80494000 / 80497049
-# memcpy 80495000 / 80497049
-# memcpy 80496000 / 80497049
-# memcpy 80497000 / 80497049
-# 
-# ====  end: memcpy ====
-# ==== begin: memset ====
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 80498000 / 8049a8b4
-# memset 80499000 / 8049a8b4
-# memset 8049a000 / 8049a8b4
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 8049b000 / 8049c000
-# 
-# ====  end: memset ====
-# ==== begin: memset ====
-# memset 8049c000 / 8049d000
-# 
-# ====  end: memset ====
-#               vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-#                   vvvvvvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrrrr    vvvvvvvvvvvvvvvvvvvvvvvv
-# rrrrrrrrrrrrrrrr      vvvvvvvvvvvvvvvvvvvvvv  
-# rrrrrrrrrrrrr       vvvvvvvvvvvvvvvvvvvvvv    
-# rr                vvvvvvvvvvvvvvvvvvvvvv      
-# rr            vvvvvvvvvvvvvvvvvvvvvvvv      rr
-# rrrr      vvvvvvvvvvvvvvvvvvvvvvvvvv      rrrr
-# rrrrrr      vvvvvvvvvvvvvvvvvvvvvv      rrrrrr
-# rrrrrrrr      vvvvvvvvvvvvvvvvvv      rrrrrrrr
-# rrrrrrrrrr      vvvvvvvvvvvvvv      rrrrrrrrrr
-# rrrrrrrrrrrr      vvvvvvvvvv      rrrrrrrrrrrr
-# rrrrrrrrrrrrrr      vvvvvv      rrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrr      vv      rrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrr          rrrrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrrrr      rrrrrrrrrrrrrrrrrrrr
-# rrrrrrrrrrrrrrrrrrrrrr  rrrrrrrrrrrrrrrrrrrrrr
-# 
-#        INSTRUCTION SETS WANT TO BE FREE
-# ../machine/minit.c:199: mie = 0000082a
-# 
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0000010, mbadaddr = 0xc0019ffc, ex 0, rd 0, wt 1
-# (THU.CST) os is loading ...
-# 
-# Special kernel symbols:
-#   entry  0xc000000c (virtual)
-#   etext  0xc00137d4 (virtual)
-#   edata  0xc0097000 (virtual)
-#   end    0xc009711c (virtual)
-# Kernel executable memory footprint: 605KB
-# memory management: default_pmm_manager
-# physcial memory map:
-#   memory: 0x00c00000, [0x80400000, 0x80ffffff].
-# mem_begin: 0x804be000, mem_end: 0x81000000
-# check_alloc_page() succeeded!
-# check_pgdir() succeeded!
-# KMEMSIZE = 1000000
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0002350, mbadaddr = 0xc0097054, ex 0, rd 0, wt 1
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0002368, mbadaddr = 0xc00a78a8, ex 0, rd 0, wt 1
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc0002c88, mbadaddr = 0xc00be000, ex 0, rd 0, wt 1
-# check_boot_pgdir() succeeded!
-# -------------------- BEGIN --------------------
-# --------------------- END ---------------------
-# use SLOB allocator
-# kmalloc_init() succeeded!
-# check_vma_struct() succeeded!
-# Store/AMO access fault
-# page falut at 0x00000100: K/W
-# check_pgfault() succeeded!
-# check_vmm() succeeded.
-# sched class: stride_scheduler
-# Initrd: 0xc001a000 - 0xc0021cff, size: 0x00007d00
-# Initrd: 0xc0021d00 - 0xc0096fff, size: 0x00075300
-# SWAP: manager = fifo swap manager
-# BEGIN check_swap: count 1, total 2871
-# setup Page Table for vaddr 0X1000, so alloc a page
-# setup Page Table vaddr 0~4MB OVER!
-# set up init env for check_swap begin!
-# Store/AMO access fault
-# page falut at 0x00001000: K/W
-# Store/AMO access fault
-# page falut at 0x00002000: K/W
-# Store/AMO access fault
-# page falut at 0x00003000: K/W
-# Store/AMO access fault
-# page falut at 0x00004000: K/W
-# set up init env for check_swap over!
-# write Virt Page c in fifo_check_swap
-# write Virt Page a in fifo_check_swap
-# write Virt Page d in fifo_check_swap
-# write Virt Page b in fifo_check_swap
-# write Virt Page e in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00005000: K/W
-# swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2
-# write Virt Page b in fifo_check_swap
-# write Virt Page a in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00001000: K/W
-# swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3
-# swap_in: load disk swap entry 2 with swap_page in vadr 0x1000
-# write Virt Page b in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00002000: K/W
-# swap_out: i 0, store page in vaddr 0x3000 to disk swap entry 4
-# swap_in: load disk swap entry 3 with swap_page in vadr 0x2000
-# write Virt Page c in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00003000: K/W
-# swap_out: i 0, store page in vaddr 0x4000 to disk swap entry 5
-# swap_in: load disk swap entry 4 with swap_page in vadr 0x3000
-# write Virt Page d in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00004000: K/W
-# swap_out: i 0, store page in vaddr 0x5000 to disk swap entry 6
-# swap_in: load disk swap entry 5 with swap_page in vadr 0x4000
-# write Virt Page e in fifo_check_swap
-# Store/AMO access fault
-# page falut at 0x00005000: K/W
-# swap_out: i 0, store page in vaddr 0x1000 to disk swap entry 2
-# swap_in: load disk swap entry 6 with swap_page in vadr 0x5000
-# write Virt Page a in fifo_check_swap
-# Load access fault
-# page falut at 0x00001000: K/R
-# swap_out: i 0, store page in vaddr 0x2000 to disk swap entry 3
-# swap_in: load disk swap entry 2 with swap_page in vadr 0x1000
-# count is 0, total is 5
-# check_swap() succeeded!
-# sfs: mount: 'simple file system' (115/2/117)
-# vfs: mount disk0.
-# ++ setup timer interrupts
-# ../machine/emulation.c:152: tlb_miss_trap: update, mepc = 0xc000f164, mbadaddr = 0xc0015cc9, ex 0, rd 0, wt 1
-# kernel_execve: pid = 2, name = "sh".
-# Environment call from S-mode
-user sh is running!!!$ ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿCompile of ex.v failed with 1 errors.
-# Compile of id.v was successful.
-# 2 compiles, 1 failed with 1 error. 
-restart
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.wb_conmax_slave_if(fast)
-# Compile of ex.v failed with 1 errors.
-# Compile of ex.v was successful.
-restart
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.wb_conmax_slave_if(fast)
-run -a
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
-# 
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
-# 
-# Compile of ex.v was successful.
-# Compile of id.v failed with 1 errors.
-# Compile of id_ex.v was successful.
-# 3 compiles, 1 failed with 1 error. 
-# Compile of id.v failed with 1 errors.
-# Compile of id.v was successful.
-# Compile of openriscv.v was successful.
-# 2 compiles, 0 failed with no errors. 
 # Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ctrl.v was successful with warnings.
 # Compile of defines.v was successful.
 # Compile of div.v was successful.
 # Compile of ex.v was successful.
@@ -912,18 +58,6 @@ run -a
 # Compile of config_string_and_timer.v was successful.
 # Compile of mmu_conv.v was successful.
 # 46 compiles, 0 failed with no errors. 
-restart
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# Loading work.openriscv_min_sopc_tb(fast)
-# Loading work.wb_conmax_slave_if(fast)
-run -a
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
-# 
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
-# 
-# Compile of ctrl.v was successful.
-# Compile of defines.v was successful.
-# Compile of div.v was successful.
 # Compile of ex.v was successful.
 # Compile of ex_mem.v was successful.
 # Compile of id.v was successful.
@@ -1017,105 +151,8 @@ vsim -voptargs=+acc work.openriscv_min_sopc_tb
 # Loading work.wb_conmax_pri_enc(fast)
 # Loading work.wb_conmax_pri_dec(fast)
 # Loading work.wb_conmax_rf(fast)
-vsim -novopt work.openriscv_min_sopc_tb
-# vsim -novopt work.openriscv_min_sopc_tb 
-# Refreshing /home/shyo/openriscv/modelsim/work.openriscv_min_sopc_tb
-# Loading work.openriscv_min_sopc_tb
-# Refreshing /home/shyo/openriscv/modelsim/work.openriscv_min_sopc
-# Loading work.openriscv_min_sopc
-# Refreshing /home/shyo/openriscv/modelsim/work.phy_bus_addr_conv
-# Loading work.phy_bus_addr_conv
-# Refreshing /home/shyo/openriscv/modelsim/work.openriscv
-# Loading work.openriscv
-# Refreshing /home/shyo/openriscv/modelsim/work.pc_reg
-# Loading work.pc_reg
-# Refreshing /home/shyo/openriscv/modelsim/work.if_id
-# Loading work.if_id
-# Refreshing /home/shyo/openriscv/modelsim/work.id
-# Loading work.id
-# Refreshing /home/shyo/openriscv/modelsim/work.regfile
-# Loading work.regfile
-# Refreshing /home/shyo/openriscv/modelsim/work.id_ex
-# Loading work.id_ex
-# Refreshing /home/shyo/openriscv/modelsim/work.ex
-# Loading work.ex
-# Refreshing /home/shyo/openriscv/modelsim/work.ex_mem
-# Loading work.ex_mem
-# Refreshing /home/shyo/openriscv/modelsim/work.mem
-# Loading work.mem
-# Refreshing /home/shyo/openriscv/modelsim/work.mem_wb
-# Loading work.mem_wb
-# Refreshing /home/shyo/openriscv/modelsim/work.ctrl
-# Loading work.ctrl
-# Refreshing /home/shyo/openriscv/modelsim/work.div
-# Loading work.div
-# Refreshing /home/shyo/openriscv/modelsim/work.LLbit_reg
-# Loading work.LLbit_reg
-# Refreshing /home/shyo/openriscv/modelsim/work.csr
-# Loading work.csr
-# Refreshing /home/shyo/openriscv/modelsim/work.mmu_conv
-# Loading work.mmu_conv
-# Refreshing /home/shyo/openriscv/modelsim/work.wishbone_bus_if
-# Loading work.wishbone_bus_if
-# Refreshing /home/shyo/openriscv/modelsim/work.data_ram
-# Loading work.data_ram
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_top
-# Loading work.uart_top
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_wb
-# Loading work.uart_wb
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_regs
-# Loading work.uart_regs
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_transmitter
-# Loading work.uart_transmitter
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_tfifo
-# Loading work.uart_tfifo
-# Refreshing /home/shyo/openriscv/modelsim/work.raminfr
-# Loading work.raminfr
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_sync_flops
-# Loading work.uart_sync_flops
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_receiver
-# Loading work.uart_receiver
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_rfifo
-# Loading work.uart_rfifo
-# Refreshing /home/shyo/openriscv/modelsim/work.uart_debug_if
-# Loading work.uart_debug_if
-# Refreshing /home/shyo/openriscv/modelsim/work.config_string_and_timer
-# Loading work.config_string_and_timer
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_top
-# Loading work.wb_conmax_top
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_master_if
-# Loading work.wb_conmax_master_if
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_slave_if
-# Loading work.wb_conmax_slave_if
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_arb
-# Loading work.wb_conmax_arb
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_msel
-# Loading work.wb_conmax_msel
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_pri_enc
-# Loading work.wb_conmax_pri_enc
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_pri_dec
-# Loading work.wb_conmax_pri_dec
-# Refreshing /home/shyo/openriscv/modelsim/work.wb_conmax_rf
-# Loading work.wb_conmax_rf
-do /home/shyo/openriscv/modelsim/wave.do
-run -a
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
-# 
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
-# 
-add wave -position 12  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/id0/imm
-add wave -position 26  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex0/reg1_i
-add wave -position 27  sim:/openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/ex0/reg2_i
-restart
-run -a
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
-# 
-# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
-# 
-# Compile of ex.v was successful.
-restart
-# Refreshing /home/shyo/openriscv/modelsim/work.ex
-# Loading work.ex
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
 run -a
 # (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
 # 
@@ -1142,3 +179,449 @@ run -a
 # memcpy 8040c000 / 80497049
 # memcpy 8040d000 / 80497049
 # memcpy 8040e000 / 80497049
+# memcpy 8040f000 / 80497049
+# memcpy 80410000 / 80497049
+# memcpy 80411000 / 80497049
+# memcpy 80412000 / 80497049
+# memcpy 80413000 / 80497049
+# memcpy 80414000 / 80497049
+# memcpy 80415000 / 80497049
+# memcpy 80416000 / 80497049
+# memcpy 80417000 / 80497049
+# memcpy 80418000 / 80497049
+# memcpy 80419000 / 80497049
+# memcpy 8041a000 / 80497049
+# memcpy 8041b000 / 80497049
+# memcpy 8041c000 / 80497049
+# memcpy 8041d000 / 80497049
+# memcpy 8041e000 / 80497049
+# memcpy 8041f000 / 80497049
+# memcpy 80420000 / 80497049
+# memcpy 80421000 / 80497049
+# memcpy 80422000 / 80497049
+# memcpy 80423000 / 80497049
+# memcpy 80424000 / 80497049
+# memcpy 80425000 / 80497049
+# memcpy 80426000 / 80497049
+# memcpy 80427000 / 80497049
+# memcpy 80428000 / 80497049
+# memcpy 80429000 / 80497049
+# memcpy 8042a000 / 80497049
+# memcpy 8042b000 / 80497049
+# memcpy 8042c000 / 80497049
+# memcpy 8042d000 / 80497049
+# memcpy 8042e000 / 80497049
+# memcpy 8042f000 / 80497049
+# memcpy 80430000 / 80497049
+# memcpy 80431000 / 80497049
+# memcpy 80432000 / 80497049
+# memcpy 80433000 / 80497049
+# memcpy 80434000 / 80497049
+# memcpy 80435000 / 80497049
+# memcpy 80436000 / 80497049
+# memcpy 80437000 / 80497049
+# memcpy 80438000 / 80497049
+# memcpy 80439000 / 80497049
+# memcpy 8043a000 / 80497049
+# memcpy 8043b000 / 80497049
+# memcpy 8043c000 / 80497049
+# memcpy 8043d000 / 80497049
+# memcpy 8043e000 / 80497049
+# memcpy 8043f000 / 80497049
+# memcpy 80440000 / 80497049
+memcpy 80441000Compile of config_string_and_timer.v was successful.
+restart
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc.v(239): (vopt-2685) [TFMPC] - Too few port connections for 'config_string_and_timer0'.  Expected 13, found 12.
+# ** Warning: /home/shyo/openriscv/src/modelsim_tb/openriscv_min_sopc.v(239): (vopt-2718) [TFMPC] - Missing connection for port 'cpu_clk'.
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# ../machine/minit.c:118: assertion failed: read_csr(mip) & MIP_MTIP
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# Compile of csr.v was successful.
+# Compile of config_string_and_timer.v was successful.
+# Compile of mmu_conv.v was successful.
+# 46 compiles, 0 failed with no errors. 
+restart
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# ../machine/minit.c:118: assertion failed: read_csr(mip) & MIP_MTIP
+do /home/shyo/openriscv/modelsim/wave.do
+restart
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# ../machine/minit.c:118: assertion failed: read_csr(mip) & MIP_MTIP
+# Compile of ctrl.v was successful.
+# Compile of defines.v was successful.
+# Compile of div.v was successful.
+# Compile of ex.v was successful.
+# Compile of ex_mem.v was successful.
+# Compile of id.v was successful.
+# Compile of id_ex.v was successful.
+# Compile of if_id.v was successful.
+# Compile of llbit_reg.v was successful.
+# Compile of mem.v was successful.
+# Compile of mem_wb.v was successful.
+# Compile of openriscv.v was successful.
+# Compile of pc_reg.v was successful.
+# Compile of regfile.v was successful.
+# Compile of wishbone_bus_if.v was successful.
+# Compile of bootloader_rom.v was successful.
+# Compile of data_ram.v was successful.
+# Compile of flash_rom.v was successful.
+# Compile of openriscv_min_sopc.v was successful.
+# Compile of openriscv_min_sopc_tb.v was successful.
+# Compile of phy_bus_addr_conv.v was successful.
+# Compile of async.v was successful.
+# Compile of raminfr.v was successful.
+# Compile of timescale.v was successful.
+# Compile of uart_debug_if.v was successful.
+# Compile of uart_defines.v was successful.
+# Compile of uart_receiver.v was successful.
+# Compile of uart_regs.v was successful.
+# Compile of uart_rfifo.v was successful.
+# Compile of uart_sync_flops.v was successful.
+# Compile of uart_tfifo.v was successful.
+# Compile of uart_top.v was successful.
+# Compile of uart_transmitter.v was successful.
+# Compile of uart_wb.v was successful.
+# Compile of wb_conmax_arb.v was successful.
+# Compile of wb_conmax_defines.v was successful.
+# Compile of wb_conmax_master_if.v was successful.
+# Compile of wb_conmax_msel.v was successful.
+# Compile of wb_conmax_pri_dec.v was successful.
+# Compile of wb_conmax_pri_enc.v was successful.
+# Compile of wb_conmax_rf.v was successful.
+# Compile of wb_conmax_slave_if.v was successful.
+# Compile of wb_conmax_top.v was successful.
+# Compile of csr.v was successful.
+# Compile of config_string_and_timer.v was successful.
+# Compile of mmu_conv.v was successful.
+# 46 compiles, 0 failed with no errors. 
+restart
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading work.openriscv_min_sopc_tb(fast)
+
+restart
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
+
+# Loading work.openriscv_min_sopc_tb(fast)
+# Loading work.openriscv_min_sopc(fast)
+# Loading work.phy_bus_addr_conv(fast)
+# Loading work.openriscv(fast)
+# Loading work.pc_reg(fast)
+# Loading work.if_id(fast)
+# Loading work.id(fast)
+# Loading work.regfile(fast)
+# Loading work.id_ex(fast)
+# Loading work.ex(fast)
+# Loading work.ex_mem(fast)
+# Loading work.mem(fast)
+# Loading work.mem_wb(fast)
+# Loading work.ctrl(fast)
+# Loading work.div(fast)
+# Loading work.LLbit_reg(fast)
+# Loading work.csr(fast)
+# Loading work.mmu_conv(fast)
+# Loading work.wishbone_bus_if(fast)
+# Loading work.wishbone_bus_if(fast__1)
+# Loading work.data_ram(fast)
+# Loading work.uart_top(fast)
+# Loading work.uart_wb(fast)
+# Loading work.uart_regs(fast)
+# Loading work.uart_transmitter(fast)
+# Loading work.uart_tfifo(fast)
+# Loading work.raminfr(fast)
+# Loading work.uart_sync_flops(fast)
+# Loading work.uart_receiver(fast)
+# Loading work.uart_rfifo(fast)
+# Loading work.uart_debug_if(fast)
+# Loading work.config_string_and_timer(fast)
+# Loading work.wb_conmax_top(fast)
+# Loading work.wb_conmax_master_if(fast)
+# Loading work.wb_conmax_slave_if(fast)
+# Loading work.wb_conmax_arb(fast)
+# Loading work.wb_conmax_msel(fast)
+# Loading work.wb_conmax_pri_enc(fast)
+# Loading work.wb_conmax_pri_dec(fast)
+# Loading work.wb_conmax_rf(fast)
+# ** Warning: (vsim-3015) /home/shyo/openriscv/src/cpu/openriscv.v(674): [PCDPC] - Port size (12 or 12) does not match connection size (32) for port 'csr_reg_addr_i'. The port definition is at: /home/shyo/openriscv/src/cpu/mem.v(65).
+#         Region: /openriscv_min_sopc_tb/openriscv_min_sopc0/openriscv0/mem0
+run -a
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Data bus width is 32. Debug Interface present.
+# 
+# (openriscv_min_sopc_tb.openriscv_min_sopc0.uart_top0) UART INFO: Doesn't have baudrate output
+# 
+# reiko
+# plic_ndevs = 0
+# ../machine/misaligned_ldst.c:14: machine mode: misaligned_load_trap()
+# ../machine/misaligned_ldst.c:59: machine mode: misaligned_store_trap()
+# mem_size = 01000000
+# ==== begin: memcpy ====
+# memcpy 80400000 / 80497049
+# memcpy 80401000 / 80497049
+# memcpy 80402000 / 80497049
+# memcpy 80403000 / 80497049
+# memcpy 80404000 / 80497049
+# memcpy 80405000 / 80497049
+# memcpy 80406000 / 80497049
+# memcpy 80407000 / 80497049
+# memcpy 80408000 / 80497049
+# memcpy 80409000 / 80497049
+# memcpy 8040a000 / 80497049
+# memcpy 8040b000 / 80497049
+# memcpy 8040c000 / 80497049
+# memcpy 8040d000 / 80497049
+# memcpy 8040e000 / 80497049
+# memcpy 8040f000 / 80497049
+# memcpy 80410000 / 80497049
+# memcpy 80411000 / 80497049
+# memcpy 80412000 / 80497049
+# memcpy 80413000 / 80497049
+# memcpy 80414000 / 80497049
+# memcpy 80415000 / 80497049
+# memcpy 80416000 / 80497049
+# memcpy 80417000 / 80497049
+# memcpy 80418000 / 80497049
+# memcpy 80419000 / 80497049
+# memcpy 8041a000 / 80497049
+# memcpy 8041b000 / 80497049
+# memcpy 8041c000 / 80497049
+# memcpy 8041d000 / 80497049
+# memcpy 8041e000 / 80497049
+# memcpy 8041f000 / 80497049
+# memcpy 80420000 / 80497049
+# memcpy 80421000 / 80497049
+# memcpy 80422000 / 80497049
+# memcpy 80423000 / 80497049
+# memcpy 80424000 / 80497049
+# memcpy 80425000 / 80497049
+# memcpy 80426000 / 80497049
+# memcpy 80427000 / 80497049
+# memcpy 80428000 / 80497049
+# memcpy 80429000 / 80497049

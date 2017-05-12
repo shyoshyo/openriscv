@@ -222,6 +222,7 @@ module openriscv_min_sopc(
 
 	config_string_and_timer config_string_and_timer0(
 		.clk(wishbone_clk),
+		.cpu_clk(clk),
 		.rst_n(rst_n),
 
 		.wishbone_addr_i(s3_addr_o),
