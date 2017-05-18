@@ -25,7 +25,8 @@ module sdram_funcmod
 	parameter T250US = 16'd33250;
 
 	// tRP 20ns, tRRC 63ns, tRCD 20ns, tMRD 2CLK, tWR/tDPL 2CLK, CAS Latency 3CLK
-	parameter TRP = 16'd3, TRRC = 16'd9, TMRD = 16'd2, TRCD = 16'd3, TWR = 16'd2, CL = 16'd3;
+	// parameter TRP = 16'd3, TRRC = 16'd9, TMRD = 16'd2, TRCD = 16'd3, TWR = 16'd2, CL = 16'd3;
+	parameter TRP = 16'd4, TRRC = 16'd10, TMRD = 16'd2, TRCD = 16'd4, TWR = 16'd3, CL = 16'd4;
 	parameter _INIT = 5'b01111, _NOP = 5'b10111, _ACT = 5'b10011, _RD = 5'b10101, _WR = 5'b10100,
 	_BSTP = 5'b10110, _PR = 5'b10010, _AR = 5'b10001, _LMR = 5'b10000;
 

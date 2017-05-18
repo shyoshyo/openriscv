@@ -31,8 +31,11 @@
 //////////////////////////////////////////////////////////////////////
 `include "../cpu/defines.v"
 
-`define RAM_PHYSICAL_ADDR_BEGIN            34'h08000_0000
-`define RAM_PHYSICAL_ADDR_LEN              34'h00100_0000
+`define SSRAM_PHYSICAL_ADDR_BEGIN            34'h0800_00000
+`define SSRAM_PHYSICAL_ADDR_LEN              34'h0002_00000
+
+`define SDRAM_PHYSICAL_ADDR_BEGIN            34'h0802_00000
+`define SDRAM_PHYSICAL_ADDR_LEN              34'h0010_00000
 
 `define UART_PHYSICAL_ADDR_BEGIN           34'h0bfd003f8
 `define UART_PHYSICAL_ADDR_LEN             34'h20
@@ -55,7 +58,8 @@ module phy_bus_addr_conv(
 	input wire[`PhyAddrBus] phy_addr_i,
 	output reg[`WishboneAddrBus] bus_addr_o
 );
-	wire [`PhyAddrBus] ram_index = ((phy_addr_i - `RAM_PHYSICAL_ADDR_BEGIN));
+	wire [`PhyAddrBus] ssram_index = ((phy_addr_i - `SSRAM_PHYSICAL_ADDR_BEGIN));
+	wire [`PhyAddrBus] sdram_index = ((phy_addr_i - `SDRAM_PHYSICAL_ADDR_BEGIN));
 	wire [`PhyAddrBus] uart_index = ((phy_addr_i - `UART_PHYSICAL_ADDR_BEGIN));
 	wire [`PhyAddrBus] config_string_index = ((phy_addr_i - `CONFIG_STRING_PHYSICAL_ADDR_BEGIN));
 	
@@ -70,8 +74,10 @@ module phy_bus_addr_conv(
 		end
 		else
 		begin
-			if (ram_index < `RAM_PHYSICAL_ADDR_LEN)
-				bus_addr_o <= {4'h0, ram_index[27:0]};
+			if (ssram_index < `SSRAM_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h0, ssram_index[27:0]};
+			else if (sdram_index < `SDRAM_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h2, sdram_index[27:0]};
 			else if (uart_index < `UART_PHYSICAL_ADDR_LEN)
 				bus_addr_o <= {4'h1, uart_index[27:2], 2'h0};
 			else if (config_string_index < `CONFIG_STRING_PHYSICAL_ADDR_LEN)

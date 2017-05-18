@@ -44,8 +44,8 @@ module sdram_top
 			request_delay <= request;
 	
 	// ack signal
-	reg [2:0]ack_delay;
-	reg [2:0]cancel_delay;
+	reg [4:0]ack_delay;
+	reg [4:0]cancel_delay;
 	reg [1:0]status_wishbone;
 
 	assign request_rising_edge = ((request_delay ^ request) & request) | (request & request_delay & (ack_delay[2] | cancel_delay[2]));
@@ -70,8 +70,8 @@ module sdram_top
 	always @ (posedge wb_clk_i or negedge rst_n)
 		if (~rst_n)
 		begin
-			ack_delay <= 3'b000;
-			cancel_delay <= 3'b000;
+			ack_delay <= 5'b00000;
+			cancel_delay <= 5'b00000;
 
 			in_request_reg <= 1'b0;
 
@@ -87,8 +87,8 @@ module sdram_top
 		end
 		else
 		begin
-			ack_delay <= {ack_delay[1:0], 1'b0};
-			cancel_delay <= {cancel_delay[1:0], 1'b0};
+			ack_delay <= {ack_delay[3:0], 1'b0};
+			cancel_delay <= {cancel_delay[3:0], 1'b0};
 
 			case(status_wishbone)
 				WISHBONE_IDLE_0, WISHBONE_IDLE_1: // IDLE
@@ -119,13 +119,13 @@ module sdram_top
 					begin
 						if(request && in_request_reg)
 						begin
-							ack_delay <= {ack_delay[1:0], 1'b1};
+							ack_delay <= {ack_delay[3:0], 1'b1};
 							if(is_read_reg)
 								wb_data_o <= wb_data_o_wire;
 						end
 						else
 						begin
-							cancel_delay <= {cancel_delay[1:0], 1'b1};
+							cancel_delay <= {cancel_delay[3:0], 1'b1};
 						end
 
 						status_wishbone <=

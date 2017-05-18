@@ -111,16 +111,18 @@ module openriscv_min_sopc(
 		.c0(wishbone_clk)
 	);
 
-	/*
+	
 	// sdram_clk
 	wire sdram_clk;
+	wire sdram_clk_locked;
 	sdram_clk sdram_clk0(
 		.inclk0(clk_i),
 
 		.c0(sdram_clk),
-		.c1(sdr_clk_o)
+		.c1(sdr_clk_o),
+
+		.locked(sdram_clk_locked)
 	);
-	*/
 	
 	wire[31:0] pc_o;
 	assign red_led = {pc_o[31:30], pc_o[15:0]};
@@ -257,20 +259,19 @@ module openriscv_min_sopc(
 		.pc_o(pc_o)
 	);
 
-	/*
-	wire[31:0] s0_data_i;
-	wire[31:0] s0_data_o;
-	wire[31:0] s0_addr_o;
-	wire[3:0]  s0_sel_o;
-	wire       s0_we_o; 
-	wire       s0_cyc_o; 
-	wire       s0_stb_o;
-	wire       s0_ack_i;
+	wire[31:0] s2_data_i;
+	wire[31:0] s2_data_o;
+	wire[31:0] s2_addr_o;
+	wire[3:0]  s2_sel_o;
+	wire       s2_we_o; 
+	wire       s2_cyc_o; 
+	wire       s2_stb_o;
+	wire       s2_ack_i;
 
 	sdram_top sdram_top0
 	(
 		.clk_sdram(sdram_clk),
-		.rst_n(rst_n),
+		.rst_n(rst_n & sdram_clk_locked),
 
 		.S_CKE(sdr_cke_o),
 		.S_NCS(sdr_cs_n_o),
@@ -285,81 +286,18 @@ module openriscv_min_sopc(
 
 		.sdram_init_done(sdram_init_done),
 
-	    	.wb_clk_i(wishbone_clk),
+	    .wb_clk_i(wishbone_clk),
 					
-		.wb_stb_i(s0_stb_o),
-		.wb_ack_o(s0_ack_i),
-		.wb_addr_i( {7'b0, s0_addr_o[26:2]} ),
-		.wb_we_i(s0_we_o),
-		.wb_data_i(s0_data_o),
-		.wb_sel_i(s0_sel_o),
-		.wb_data_o(s0_data_i),
-		.wb_cyc_i(s0_cyc_o)
-	);
-	*/
-
-	/*
-	wire[31:0] s0_data_i;
-	wire[31:0] s0_data_o;
-	wire[31:0] s0_addr_o;
-	wire[3:0]  s0_sel_o;
-	wire       s0_we_o; 
-	wire       s0_cyc_o; 
-	wire       s0_stb_o;
-	wire       s0_ack_i;
-	
-	wire sdram_init_done_;
-	assign sdram_init_done = ~sdram_init_done_;
-
-	sdrc_top sdrc_top0(
-		.wb_rst_i(~rst_n),
-		.wb_clk_i(wishbone_clk),
-		
-		.wb_stb_i(s0_stb_o),
-		.wb_ack_o(s0_ack_i),
-		.wb_addr_i({1'b0, s0_addr_o[26:2]}),
-		.wb_we_i(s0_we_o),
-		.wb_dat_i(s0_data_o),
-		.wb_sel_i(s0_sel_o),
-		.wb_dat_o(s0_data_i),
-		.wb_cyc_i(s0_cyc_o),
-		.wb_cti_i(3'b000),
-
-		//Interface to SDRAMs
-		.sdram_clk(sdram_clk),
-		.sdram_resetn(rst_n),
-		.sdr_cs_n(sdr_cs_n_o),
-		.sdr_cke(sdr_cke_o),
-		.sdr_ras_n(sdr_ras_n_o),
-		.sdr_cas_n(sdr_cas_n_o),
-		.sdr_we_n(sdr_we_n_o),
-		.sdr_dqm(sdr_dqm_o),
-		.sdr_ba(sdr_ba_o),
-		.sdr_addr(sdr_addr_o),
-		.sdr_dq(sdr_dq_io),
-		
-		//Parameters
-		.cfg_sdr_en(rst_n),
-		.sdr_init_done(sdram_init_done_),
-		
-		.cfg_sdr_width(2'b00),
-		.cfg_colbits(2'b10),
-		.cfg_req_depth(2'b11),
-		.cfg_sdr_mode_reg(13'b000_0_00_011_0_000),
-		.cfg_sdr_tras_d(4'd6),
-		.cfg_sdr_trp_d(4'd3),
-		.cfg_sdr_trcd_d(4'd3),
-		.cfg_sdr_cas(3'd6),
-		.cfg_sdr_trcar_d(4'd9),
-		.cfg_sdr_twr_d(4'd8),
-		.cfg_sdr_rfsh(12'd390),
-		.cfg_sdr_rfmax(3'd4)
+		.wb_stb_i(s2_stb_o),
+		.wb_ack_o(s2_ack_i),
+		.wb_addr_i( {7'b0, s2_addr_o[26:2]} ),
+		.wb_we_i(s2_we_o),
+		.wb_data_i(s2_data_o),
+		.wb_sel_i(s2_sel_o),
+		.wb_data_o(s2_data_i),
+		.wb_cyc_i(s2_cyc_o)
 	);
 
-	// assign sdr_clk_o = sdram_clk;
-	*/
-
-	
 	wire[31:0] s0_data_i;
 	wire[31:0] s0_data_o;
 	wire[31:0] s0_addr_o;
@@ -594,14 +532,14 @@ module openriscv_min_sopc(
 		.s1_rty_i(1'b0),
 
 		// Slave 2 Interface
-		.s2_data_i(),
-		.s2_data_o(),
-		.s2_addr_o(),
-		.s2_sel_o(),
-		.s2_we_o(), 
-		.s2_cyc_o(), 
-		.s2_stb_o(),
-		.s2_ack_i(1'b0), 
+		.s2_data_i(s2_data_i),
+		.s2_data_o(s2_data_o),
+		.s2_addr_o(s2_addr_o),
+		.s2_sel_o(s2_sel_o),
+		.s2_we_o(s2_we_o), 
+		.s2_cyc_o(s2_cyc_o), 
+		.s2_stb_o(s2_stb_o),
+		.s2_ack_i(s2_ack_i), 
 		.s2_err_i(1'b0), 
 		.s2_rty_i(1'b0),
 

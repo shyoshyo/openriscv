@@ -322,68 +322,6 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_PIPELINE=0" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_PIPELINE=0" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=0" -section_id auto_signaltap_0
-set_global_assignment -name VERILOG_FILE sdram_ip/wb2sdrc.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sync_fifo.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_xfr_ctl.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_top.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_req_gen.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_define.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_core.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_bs_convert.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_bank_fsm.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdrc_bank_ctl.v
-set_global_assignment -name VERILOG_FILE sdram_ip/sdram_top.v
-set_global_assignment -name VERILOG_FILE sdram_ip/async_fifo.v
-set_global_assignment -name VERILOG_FILE seven_segment_encoder.v
-set_global_assignment -name VERILOG_FILE ../cpu/wishbone_bus_if.v
-set_global_assignment -name VERILOG_FILE ../cpu/regfile.v
-set_global_assignment -name VERILOG_FILE ../cpu/pc_reg.v
-set_global_assignment -name VERILOG_FILE ../cpu/openriscv.v
-set_global_assignment -name VERILOG_FILE ../cpu/mmu_conv.v
-set_global_assignment -name VERILOG_FILE ../cpu/mem_wb.v
-set_global_assignment -name VERILOG_FILE ../cpu/mem.v
-set_global_assignment -name VERILOG_FILE ../cpu/llbit_reg.v
-set_global_assignment -name VERILOG_FILE ../cpu/if_id.v
-set_global_assignment -name VERILOG_FILE ../cpu/id_ex.v
-set_global_assignment -name VERILOG_FILE ../cpu/id.v
-set_global_assignment -name VERILOG_FILE ../cpu/ex_mem.v
-set_global_assignment -name VERILOG_FILE ../cpu/ex.v
-set_global_assignment -name VERILOG_FILE ../cpu/div.v
-set_global_assignment -name VERILOG_FILE ../cpu/defines.v
-set_global_assignment -name VERILOG_FILE ../cpu/ctrl.v
-set_global_assignment -name VERILOG_FILE ../cpu/csr.v
-set_global_assignment -name VERILOG_FILE phy_bus_addr_conv.v
-set_global_assignment -name VERILOG_FILE openriscv_min_sopc.v
-set_global_assignment -name VERILOG_FILE config_string_and_timer.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_top.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_slave_if.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_rf.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_pri_enc.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_pri_dec.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_msel.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_master_if.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_defines.v
-set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_arb.v
-set_global_assignment -name VERILOG_FILE uart/uart_wb.v
-set_global_assignment -name VERILOG_FILE uart/uart_transmitter.v
-set_global_assignment -name VERILOG_FILE uart/uart_top.v
-set_global_assignment -name VERILOG_FILE uart/uart_tfifo.v
-set_global_assignment -name VERILOG_FILE uart/uart_sync_flops.v
-set_global_assignment -name VERILOG_FILE uart/uart_rfifo.v
-set_global_assignment -name VERILOG_FILE uart/uart_regs.v
-set_global_assignment -name VERILOG_FILE uart/uart_receiver.v
-set_global_assignment -name VERILOG_FILE uart/uart_defines.v
-set_global_assignment -name VERILOG_FILE uart/uart_debug_if.v
-set_global_assignment -name VERILOG_FILE uart/timescale.v
-set_global_assignment -name VERILOG_FILE uart/raminfr.v
-set_global_assignment -name VERILOG_FILE uart/async.v
-set_global_assignment -name VERILOG_FILE ssram/ssram_flash.v
-set_global_assignment -name VERILOG_FILE ssram/ssram.v
-set_global_assignment -name QIP_FILE cpu_clk.qip
-set_global_assignment -name QIP_FILE wishbone_clk.qip
-set_global_assignment -name QIP_FILE sdram_clk.qip
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name SOURCE_FILE db/openriscv_min_sopc.cmp.rdb
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "openriscv:openriscv0|if_id:if_id0|clk" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "openriscv:openriscv0|if_id:if_id0|id_inst[0]" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "openriscv:openriscv0|if_id:if_id0|id_inst[10]" -section_id auto_signaltap_0
@@ -732,5 +670,58 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_global_assignment -name VERILOG_FILE sdram/sdram_top.v
+set_global_assignment -name VERILOG_FILE sdram/sdram_funcmod.v
+set_global_assignment -name VERILOG_FILE sdram/sdram_ctrlmod.v
+set_global_assignment -name VERILOG_FILE seven_segment_encoder.v
+set_global_assignment -name VERILOG_FILE ../cpu/wishbone_bus_if.v
+set_global_assignment -name VERILOG_FILE ../cpu/regfile.v
+set_global_assignment -name VERILOG_FILE ../cpu/pc_reg.v
+set_global_assignment -name VERILOG_FILE ../cpu/openriscv.v
+set_global_assignment -name VERILOG_FILE ../cpu/mmu_conv.v
+set_global_assignment -name VERILOG_FILE ../cpu/mem_wb.v
+set_global_assignment -name VERILOG_FILE ../cpu/mem.v
+set_global_assignment -name VERILOG_FILE ../cpu/llbit_reg.v
+set_global_assignment -name VERILOG_FILE ../cpu/if_id.v
+set_global_assignment -name VERILOG_FILE ../cpu/id_ex.v
+set_global_assignment -name VERILOG_FILE ../cpu/id.v
+set_global_assignment -name VERILOG_FILE ../cpu/ex_mem.v
+set_global_assignment -name VERILOG_FILE ../cpu/ex.v
+set_global_assignment -name VERILOG_FILE ../cpu/div.v
+set_global_assignment -name VERILOG_FILE ../cpu/defines.v
+set_global_assignment -name VERILOG_FILE ../cpu/ctrl.v
+set_global_assignment -name VERILOG_FILE ../cpu/csr.v
+set_global_assignment -name VERILOG_FILE phy_bus_addr_conv.v
+set_global_assignment -name VERILOG_FILE openriscv_min_sopc.v
+set_global_assignment -name VERILOG_FILE config_string_and_timer.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_top.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_slave_if.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_rf.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_pri_enc.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_pri_dec.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_msel.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_master_if.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_defines.v
+set_global_assignment -name VERILOG_FILE wb_conmax/wb_conmax_arb.v
+set_global_assignment -name VERILOG_FILE uart/uart_wb.v
+set_global_assignment -name VERILOG_FILE uart/uart_transmitter.v
+set_global_assignment -name VERILOG_FILE uart/uart_top.v
+set_global_assignment -name VERILOG_FILE uart/uart_tfifo.v
+set_global_assignment -name VERILOG_FILE uart/uart_sync_flops.v
+set_global_assignment -name VERILOG_FILE uart/uart_rfifo.v
+set_global_assignment -name VERILOG_FILE uart/uart_regs.v
+set_global_assignment -name VERILOG_FILE uart/uart_receiver.v
+set_global_assignment -name VERILOG_FILE uart/uart_defines.v
+set_global_assignment -name VERILOG_FILE uart/uart_debug_if.v
+set_global_assignment -name VERILOG_FILE uart/timescale.v
+set_global_assignment -name VERILOG_FILE uart/raminfr.v
+set_global_assignment -name VERILOG_FILE uart/async.v
+set_global_assignment -name VERILOG_FILE ssram/ssram_flash.v
+set_global_assignment -name VERILOG_FILE ssram/ssram.v
+set_global_assignment -name QIP_FILE cpu_clk.qip
+set_global_assignment -name QIP_FILE wishbone_clk.qip
+set_global_assignment -name QIP_FILE sdram_clk.qip
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name SOURCE_FILE db/openriscv_min_sopc.cmp.rdb
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
