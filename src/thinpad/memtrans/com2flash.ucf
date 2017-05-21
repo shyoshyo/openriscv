@@ -1,0 +1,4 @@
+NET "clk" LOC = U26;	# 50MB
+NET "rst" LOC = T1;
+
+# vim: ft=conf

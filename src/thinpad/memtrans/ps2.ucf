@@ -1,0 +1,8 @@
+NET "kbd_enb_hi"  LOC = "R24";	# InterConn2
+NET "kbd_enb_lo"  LOC = "R25";
+NET "kbd_data[0]" LOC = "R23";
+NET "kbd_data[1]" LOC = "T26";
+NET "kbd_data[2]" LOC = "T24";
+NET "kbd_data[3]" LOC = "T23";	# InterConn7
+
+# vim: ft=conf

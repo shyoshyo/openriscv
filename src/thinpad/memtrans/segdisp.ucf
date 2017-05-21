@@ -1,0 +1,15 @@
+NET "segdisp0[0]" LOC = B26;
+NET "segdisp0[1]" LOC = C25;
+NET "segdisp0[2]" LOC = D24;
+NET "segdisp0[3]" LOC = A25;
+NET "segdisp0[4]" LOC = B24;
+NET "segdisp0[5]" LOC = C26;
+NET "segdisp0[6]" LOC = D26;
+
+NET "segdisp1[0]" LOC = C24;
+NET "segdisp1[1]" LOC = D22;
+NET "segdisp1[2]" LOC = E23;
+NET "segdisp1[3]" LOC = B23;
+NET "segdisp1[4]" LOC = A23;
+NET "segdisp1[5]" LOC = D23;
+NET "segdisp1[6]" LOC = B25;

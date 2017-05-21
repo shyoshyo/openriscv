@@ -1,0 +1,16 @@
+NET "led[0]" LOC = N26;
+NET "led[1]" LOC = M26;
+NET "led[2]" LOC = L25;
+NET "led[3]" LOC = L26;
+NET "led[4]" LOC = K26;
+NET "led[5]" LOC = M23;
+NET "led[6]" LOC = K24;
+NET "led[7]" LOC = L24;
+NET "led[8]" LOC = J24;
+NET "led[9]" LOC = G23;
+NET "led[10]" LOC = J25;
+NET "led[11]" LOC = J26;
+NET "led[12]" LOC = H26;
+NET "led[13]" LOC = G25;
+NET "led[14]" LOC = G26;
+NET "led[15]" LOC = F26;

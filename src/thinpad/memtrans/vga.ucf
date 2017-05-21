@@ -1,0 +1,13 @@
+NET "vga_color_out[8]" LOC = F24;
+NET "vga_color_out[7]" LOC = G24;
+NET "vga_color_out[6]" LOC = H24;
+NET "vga_color_out[5]" LOC = E26;
+NET "vga_color_out[4]" LOC = E25;
+NET "vga_color_out[3]" LOC = E24;
+NET "vga_color_out[2]" LOC = N24;
+NET "vga_color_out[1]" LOC = N25;
+NET "vga_color_out[0]" LOC = M24;
+
+NET "vga_hsync" LOC = L23;
+NET "vga_vsync" LOC = J23;
+
