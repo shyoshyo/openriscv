@@ -1,3 +1,5 @@
+.globl __start
+__start:
 .org 0x0
 j 0x20000
 
@@ -22,9 +24,9 @@ j 0x20000
 .ascii "};\n"
 .ascii "uart {\n"
 .ascii "  0 {\n"
-.ascii "    addr 0xbfd003f8;\n"
+.ascii "    addr 0x10013000;\n"
 .ascii "    type UART16550IPCore;\n"
-.ascii "    divclk 22;\n"
+.ascii "    divclk 38;\n"
 .ascii "  };\n"
 .ascii "};\n"
 .ascii "core {\n"

@@ -58,15 +58,14 @@ next_sec:
     jal load_word
     mv s6, a0
 
-  #s7, p_mem
+  #s7, p_memsz
   ### LOAD_WORD_R(s7, 20, s1)
     add a0, s1, 20
     jal load_word
     mv s7, a0
 
   # beq  s4, zero, goto_next_sec
-  # beq  s5, zero, goto_next_sec
-  beq  s7, zero, goto_next_sec
+  beq s5, zero, copy_finish
 
 #copy from file_base+p_offset to p_va
 copy_sec:
@@ -82,7 +81,9 @@ copy_sec:
   add s7, s7, -4
   bgtz  s5, copy_sec
 
-  beq   s7, zero, goto_next_sec
+copy_finish:
+  beq s7, zero, goto_next_sec
+
 memset_zero:
   sw zero, 0(s4)
   add s4, s4, 4

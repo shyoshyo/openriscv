@@ -1,0 +1,17 @@
+PROMGEN: Xilinx Prom Generator P.20131013
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+promgen -w -p mcs -c FF -o E:\Openriscv\src\thinpad\openriscv//openriscv_prom_35M -x xcf32p -ver 0 E:/Openriscv/src/thinpad/openriscv/openriscv_min_sopc.bit 
+
+PROM E:\Openriscv\src\thinpad\openriscv\openriscv_prom_35M.prm map: Mon May 22 19:30:30 2017
+
+Calculating PROM checksum with fill value ff
+
+Format        Mcs86 (32-bit)
+Size          4096K
+PROM start    0000:0000
+PROM end      003f:ffff
+PROM checksum 0e9878d2
+
+        Addr1        Addr2                     Date File(s)
+    0000:0000    0032:a093     May 22 16:47:30 2017 E:/Openriscv/src/thinpad/openriscv/openriscv_min_sopc.bit

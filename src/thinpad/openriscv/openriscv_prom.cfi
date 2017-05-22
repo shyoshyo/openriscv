@@ -1,0 +1,14 @@
+# PROMGEN: Xilinx Prom Generator P.20131013
+# Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+SOFTWARE_VERSION P.20131013
+DATE            05/22/2017 - 12:25
+SOURCE          E:\Openriscv\src\thinpad\openriscv\openriscv_prom.mcs
+DEVICE          XCF32P
+DATA_WIDTH      8
+FILL_DATA       0xFF
+SIGNATURE       0x0E99A04A
+BLOCK 0 VERSION 0 0x0E99A04A
+BLOCK 1 VERSION 0 0x0E99A04A
+BLOCK 2 VERSION 0 0x0E99A04A
+BLOCK 3 VERSION 0 END 0x0E99A04A

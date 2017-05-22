@@ -1,0 +1,11 @@
+Storage Target: Xilinx Flash/PROM
+Storage Family: Platform Flash
+xcf32p          [32 M]
+FF
+openriscv_prom_35M
+E:/Openriscv/src/thinpad/openriscv
+
+MCS
+Yes
+1
+No
