@@ -43,7 +43,6 @@
 
 module bootloader(
 	input wire clk,
-	input wire cpu_clk,
 	input wire rst_n,
 
 	input wire[`WishboneAddrBus]           wishbone_addr_i,

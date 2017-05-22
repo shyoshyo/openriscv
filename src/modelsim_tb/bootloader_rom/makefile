@@ -5,7 +5,7 @@ OBJCOPY = $(GCC_PREFIX)objcopy
 OBJDUMP = $(GCC_PREFIX)objdump
 GDB = $(GCC_PREFIX)gdb
 
-all: config_string_rom.v config_string_rom.om
+all: bootloader_rom.v bootloader_rom.om
 
 %.o: %.s
 	$(CC) $< -o $@

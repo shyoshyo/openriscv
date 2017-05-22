@@ -1,6 +1,7 @@
-.long 0x0
-.long 0x0
-.long 0x0
+.org 0x0
+j 0x20000
+
+.org 0x00c
 .long 0x00001020
 .long 0x0
 .long 0x0
@@ -16,13 +17,14 @@
 .ascii "ram {\n"
 .ascii "  0 {\n"
 .ascii "    addr 0x80000000;\n"
-.ascii "    size 0x01000000;\n"
+.ascii "    size 0x00800000;\n"
 .ascii "  };\n"
 .ascii "};\n"
 .ascii "uart {\n"
 .ascii "  0 {\n"
 .ascii "    addr 0xbfd003f8;\n"
-.ascii "    reiko reiko_>w<;\n"
+.ascii "    type UART16550IPCore;\n"
+.ascii "    divclk 55;\n"
 .ascii "  };\n"
 .ascii "};\n"
 .ascii "core {\n"

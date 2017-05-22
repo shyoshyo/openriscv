@@ -26,29 +26,35 @@
 // File:    data_ram.v
 // Author:  Lei Silei, shyoshyo
 // E-mail:  leishangwen@163.com, shyoshyo@qq.com
-// Description: 数据存储器
+// Description: bootloader
 // Revision: 1.0
 //////////////////////////////////////////////////////////////////////
 
-`define BootloaderRomNum 32'h0000_0100
-`define BootloaderRomNumLog2 8
+`include "../cpu/defines.v"
 
-`include "defines.v"
+//数据存储器data_ram
+`define DataAddrBus 31:0
+`define DataBus 31:0
+`define DataMemNum (256)
+`define DataMemNumLog2 8
+`define ByteWidth 7:0
+
 `timescale 1ns/1ps
 
-module bootloader_rom(
+module bootloader(
 	input wire clk,
+	input wire cpu_clk,
 	input wire rst_n,
 
-	input wire[`RegBus]           wishbone_addr_i,
-	input wire[`RegBus]           wishbone_data_i,
-	input wire                    wishbone_we_i,
-	input wire[3:0]               wishbone_sel_i,
-	input wire                    wishbone_stb_i,
-	input wire                    wishbone_cyc_i,
+	input wire[`WishboneAddrBus]           wishbone_addr_i,
+	input wire[`WishboneDataBus]           wishbone_data_i,
+	input wire                             wishbone_we_i,
+	input wire[`WishboneSelBus]            wishbone_sel_i,
+	input wire                             wishbone_stb_i,
+	input wire                             wishbone_cyc_i,
 	
-	output reg[`RegBus]           wishbone_data_o,
-	output reg                    wishbone_ack_o
+	output reg[`WishboneDataBus]           wishbone_data_o,
+	output wire                            wishbone_ack_o
 );
 	// request signal
 	wire request;
@@ -59,7 +65,7 @@ module bootloader_rom(
 	wire is_read, is_write;
 
 	// ack signal
-	reg  ram_ack;
+	reg  [2:0]ram_ack_delay;
 
 	// get request signal
 	assign request = wishbone_stb_i & wishbone_cyc_i;
@@ -68,21 +74,8 @@ module bootloader_rom(
 	assign is_read  = wishbone_stb_i & wishbone_cyc_i & ~wishbone_we_i;
 	assign is_write = wishbone_stb_i & wishbone_cyc_i & wishbone_we_i;
 
-
-	reg[`RegBus]  mem[0:`BootloaderRomNum-1];
-	
-	initial
-	begin
-		:block 
-		integer i;
-		for(i = 0; i < `BootloaderRomNum; i = i + 1)
-			mem[i] <= `ZeroWord;
-
-		mem[0] <= 32'h3c038000;
-		mem[1] <= 32'h00600008;
-		mem[2] <= 32'h00000000;
-	end
-	
+	wire[`WishboneDataBus]  mem[0:`DataMemNum-1];
+	`include"bootloader_rom/bootloader_rom.v"
 
 	always @ (posedge clk or negedge rst_n)
 		if(rst_n == `RstEnable)
@@ -90,60 +83,48 @@ module bootloader_rom(
 		else
 			request_delay <= request;
  
-	assign request_rising_edge = (request_delay ^ request) & request;
+ 	assign request_rising_edge = ((request_delay ^ request) & request) | (request & request_delay & ram_ack_delay[2]);
 
 	// generate a 1 cycle acknowledgement for each request rising edge
 	always @ (posedge clk or negedge rst_n)
 	begin
 		if (rst_n == `RstEnable)
 		begin
-			ram_ack <= 0;
+			{ram_ack_delay} <= 3'b000;
+			
 			wishbone_data_o <= `ZeroWord;
+		end
+		else if(request == 1'b0)
+		begin
+			{ram_ack_delay} <= 3'b000;
 		end
 		else if (request_rising_edge == 1'b1)
 		begin
-			ram_ack <= 1'b1;
+			{ram_ack_delay} <= {ram_ack_delay[1:0], 1'b1};
 
 			if(is_write)
 			begin
-				/*
-				if (wishbone_sel_i[3] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][31:24] <= wishbone_data_i[31:24];
-				if (wishbone_sel_i[2] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][23:16] <= wishbone_data_i[23:16];
-				if (wishbone_sel_i[1] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][15:8] <= wishbone_data_i[15:8];
-				if (wishbone_sel_i[0] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][7:0] <= wishbone_data_i[7:0];
-				*/
+				
 			end
 			else
 			begin
 				wishbone_data_o <= `ZeroWord;
 
 				if (wishbone_sel_i[3] == 1'b1)
-					wishbone_data_o[31:24] <= mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][31:24];
+					wishbone_data_o[31:24] <= mem[wishbone_addr_i[`DataMemNumLog2+1:2]][31:24];
 				if (wishbone_sel_i[2] == 1'b1)
-					wishbone_data_o[23:16] <= mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][23:16];
+					wishbone_data_o[23:16] <= mem[wishbone_addr_i[`DataMemNumLog2+1:2]][23:16];
 				if (wishbone_sel_i[1] == 1'b1)
-					wishbone_data_o[15:8] <= mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][15:8];
+					wishbone_data_o[15:8] <= mem[wishbone_addr_i[`DataMemNumLog2+1:2]][15:8];
 				if (wishbone_sel_i[0] == 1'b1)
-					wishbone_data_o[7:0] <= mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][7:0];
+					wishbone_data_o[7:0] <= mem[wishbone_addr_i[`DataMemNumLog2+1:2]][7:0];
 			end
 		end
 		else
 		begin
-			ram_ack <= 1'b0;
+			{ram_ack_delay} <= {ram_ack_delay[1:0], 1'b0};
 		end
 	end
 
-	// register wishbone_ack output, because onchip ram0 uses registered output
-	always @ (posedge clk or negedge rst_n)
-	begin
-		if (rst_n == `RstEnable)
-			wishbone_ack_o <= 1'b0;
-		else
-			wishbone_ack_o <= ram_ack;
-	end
-	
+	assign wishbone_ack_o = ram_ack_delay[0] & request;
 endmodule

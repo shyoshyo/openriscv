@@ -31,6 +31,13 @@
 //////////////////////////////////////////////////////////////////////
 
 `include "defines.v"
+
+`define DataAddrBus 31:0
+`define DataBus 31:0
+`define DataMemNum (4*1024*1024)
+`define DataMemNumLog2 22
+`define ByteWidth 7:0
+
 `timescale 1ns/1ps
 
 module flash_rom(
@@ -66,13 +73,13 @@ module flash_rom(
 	assign is_write = wishbone_stb_i & wishbone_cyc_i & wishbone_we_i;
 
 
-	reg[`RegBus]  mem[0:32'h0100_0000];
+	reg[`WishboneDataBus]  mem[0:`DataMemNum-1];
 	
 	initial
 	begin
 		:block 
 		integer i;
-		for(i = 0; i < 32'h0100_0000; i = i + 1)
+		for(i = 0; i < `DataMemNum; i = i + 1)
 			mem[i] <= `ZeroWord;
 
 		#100 $readmemh ( "flash.data", mem );
@@ -101,25 +108,11 @@ module flash_rom(
 
 			if(is_write)
 			begin
-				/*
-				if (wishbone_sel_i[3] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][31:24] <= wishbone_data_i[31:24];
-				if (wishbone_sel_i[2] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][23:16] <= wishbone_data_i[23:16];
-				if (wishbone_sel_i[1] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][15:8] <= wishbone_data_i[15:8];
-				if (wishbone_sel_i[0] == 1'b1)
-					mem[wishbone_addr_i[`BootloaderRomNumLog2+1:2]][7:0] <= wishbone_data_i[7:0];
-				*/
 			end
 			else
 			begin
 				wishbone_data_o <= `ZeroWord;
-
-				// if (wishbone_sel_i[3] == 1'b1)
-					wishbone_data_o[31:24] <= 8'h00;
-				// if (wishbone_sel_i[2] == 1'b1)
-					wishbone_data_o[23:16] <= 8'h00;
+				
 				if(wishbone_addr_i[2] == 1'b0)
 				begin
 					if (wishbone_sel_i[1] == 1'b1)
@@ -129,14 +122,11 @@ module flash_rom(
 				end
 				else
 				begin
-					if (wishbone_sel_i[2] == 1'b1)
+					if (wishbone_sel_i[1] == 1'b1)
 						wishbone_data_o[15:8] <= mem[wishbone_addr_i[25:3]][31:24];
 					if (wishbone_sel_i[0] == 1'b1)
 						wishbone_data_o[7:0] <= mem[wishbone_addr_i[25:3]][23:16];
 				end
-
-				if(wishbone_addr_i[27] == 1'b0)
-				 	wishbone_data_o <= 32'h0;
 			end
 		end
 		else

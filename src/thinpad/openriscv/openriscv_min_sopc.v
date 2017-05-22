@@ -226,7 +226,6 @@ module openriscv_min_sopc(
 
 	bootloader bootloader0(
 		.clk(wishbone_clk),
-		.cpu_clk(cpu_clk),
 		.rst_n(rst_n),
 
 		.wishbone_addr_i(s2_addr_o),
