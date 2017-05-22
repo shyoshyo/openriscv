@@ -31,8 +31,8 @@
 //////////////////////////////////////////////////////////////////////
 `include "../../cpu/defines.v"
 
-`define SRAM_PHYSICAL_ADDR_BEGIN          34'h0800_00000
-`define SRAM_PHYSICAL_ADDR_LEN            34'h0008_00000
+`define SRAM_PHYSICAL_ADDR_BEGIN           34'h0800_00000
+`define SRAM_PHYSICAL_ADDR_LEN             34'h0008_00000
 
 `define UART_PHYSICAL_ADDR_BEGIN           34'h0bfd003f8
 `define UART_PHYSICAL_ADDR_LEN             34'h20
@@ -49,6 +49,12 @@
 `define IPI_PHYSICAL_ADDR_BEGIN            34'h04000_1000
 `define IPI_PHYSICAL_ADDR_LEN              34'h00000_0004
 
+`define FLASH_PHYSICAL_ADDR_BEGIN          34'h0200_00000
+`define FLASH_PHYSICAL_ADDR_LEN            34'h0008_00000
+
+`define BOOTLOADER_PHYSICAL_ADDR_BEGIN     34'h0000_20000
+`define BOOTLOADER_PHYSICAL_ADDR_LEN       34'h0000_00400
+
 module phy_bus_addr_conv(
 	input wire rst_n,
 
@@ -62,6 +68,9 @@ module phy_bus_addr_conv(
 	wire [`PhyAddrBus] mtime_index = ((phy_addr_i - `MTIME_PHYSICAL_ADDR_BEGIN));
 	wire [`PhyAddrBus] mtimecmp_index = ((phy_addr_i - `MTIMECMP_PHYSICAL_ADDR_BEGIN));
 	wire [`PhyAddrBus] ipi_index = ((phy_addr_i - `IPI_PHYSICAL_ADDR_BEGIN));
+
+	wire [`PhyAddrBus] flash_index = ((phy_addr_i - `FLASH_PHYSICAL_ADDR_BEGIN));
+	wire [`PhyAddrBus] bootloader_index = ((phy_addr_i - `BOOTLOADER_PHYSICAL_ADDR_BEGIN));
 
 	always @(*)
 		if (rst_n == `RstEnable)
@@ -82,6 +91,10 @@ module phy_bus_addr_conv(
 				bus_addr_o <= {4'h3, mtimecmp_index[27:0] + 12'h3f8};
 			else if (ipi_index < `IPI_PHYSICAL_ADDR_LEN)
 				bus_addr_o <= {4'h3, ipi_index[27:0] + 12'h3ec};
+			else if (flash_index < `FLASH_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h4, flash_index[27:0]};
+			else if (bootloader_index < `BOOTLOADER_PHYSICAL_ADDR_LEN)
+				bus_addr_o <= {4'h2, bootloader_index[27:0]};
 			else
 				bus_addr_o <= ~`ZeroWord;
 		end

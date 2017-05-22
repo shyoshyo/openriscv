@@ -41,12 +41,10 @@ module openriscv_min_sopc(
 	input wire clk_i,
 	input wire rst_n,
 
-	/*
 	// Flash
 	output wire[22:0] flash_addr,
 	inout wire[15:0] flash_data,
 	output wire[0:7] flash_signal,
-	*/
 
 	// Ports of 2 SRAM chips
 	output wire[19:0] sram_addr0, sram_addr1,	// addr bus
@@ -216,6 +214,32 @@ module openriscv_min_sopc(
 		.dtr_pad_o()
 	);
 	
+	//连接 bootloader
+	wire[31:0] s2_data_i;
+	wire[31:0] s2_data_o;
+	wire[31:0] s2_addr_o;
+	wire[3:0]  s2_sel_o;
+	wire       s2_we_o;
+	wire       s2_cyc_o;
+	wire       s2_stb_o;
+	wire       s2_ack_i;
+
+	bootloader bootloader0(
+		.clk(wishbone_clk),
+		.cpu_clk(cpu_clk),
+		.rst_n(rst_n),
+
+		.wishbone_addr_i(s2_addr_o),
+		.wishbone_data_i(s2_data_o),
+		.wishbone_we_i(s2_we_o),
+		.wishbone_sel_i(s2_sel_o),
+		.wishbone_stb_i(s2_stb_o),
+		.wishbone_cyc_i(s2_cyc_o),
+
+		.wishbone_data_o(s2_data_i),
+		.wishbone_ack_o(s2_ack_i)
+	);
+
 	//连接 config_string, timer
 	wire[31:0] s3_data_i;
 	wire[31:0] s3_data_o;
@@ -243,6 +267,34 @@ module openriscv_min_sopc(
 
 		.timer_int_o(timer_int),
 		.software_int_o(software_int)
+	);
+
+	// 连接flash
+	wire[31:0] s4_data_i;
+	wire[31:0] s4_data_o;
+	wire[31:0] s4_addr_o;
+	wire[3:0]  s4_sel_o;
+	wire       s4_we_o; 
+	wire       s4_cyc_o; 
+	wire       s4_stb_o;
+	wire       s4_ack_i;
+
+	flash_wishbone flash_wb0(
+		.clk(wishbone_clk),
+		.rst_n(rst_n),
+
+		.wishbone_addr_i(s4_addr_o),
+		.wishbone_data_i(s4_data_o),
+		.wishbone_we_i(s4_we_o),
+		.wishbone_sel_i(s4_sel_o),
+		.wishbone_stb_i(s4_stb_o),
+		.wishbone_cyc_i(s4_cyc_o),
+		.wishbone_data_o(s4_data_i),
+		.wishbone_ack_o(s4_ack_i),
+
+		.signal(flash_signal),
+		.flash_data(flash_data),
+		.flash_addr(flash_addr)
 	);
 
 	// bus arbiter
@@ -371,16 +423,17 @@ module openriscv_min_sopc(
 		.s1_rty_i(1'b0),
 
 		// Slave 2 Interface
-		.s2_data_i(),
-		.s2_data_o(),
-		.s2_addr_o(),
-		.s2_sel_o(),
-		.s2_we_o(), 
-		.s2_cyc_o(), 
-		.s2_stb_o(),
-		.s2_ack_i(1'b0), 
+		.s2_data_i(s2_data_i),
+		.s2_data_o(s2_data_o),
+		.s2_addr_o(s2_addr_o),
+		.s2_sel_o(s2_sel_o),
+		.s2_we_o(s2_we_o),
+		.s2_cyc_o(s2_cyc_o),
+		.s2_stb_o(s2_stb_o),
+		.s2_ack_i(s2_ack_i),
 		.s2_err_i(1'b0), 
 		.s2_rty_i(1'b0),
+
 
 		// Slave 3 Interface
 		.s3_data_i(s3_data_i),
@@ -395,14 +448,14 @@ module openriscv_min_sopc(
 		.s3_rty_i(1'b0),
 
 		// Slave 4 Interface
-		.s4_data_i(),
-		.s4_data_o(),
-		.s4_addr_o(),
-		.s4_sel_o(),
-		.s4_we_o(), 
-		.s4_cyc_o(), 
-		.s4_stb_o(),
-		.s4_ack_i(1'b0), 
+		.s4_data_i(s4_data_i),
+		.s4_data_o(s4_data_o),
+		.s4_addr_o(s4_addr_o),
+		.s4_sel_o(s4_sel_o),
+		.s4_we_o(s4_we_o),
+		.s4_cyc_o(s4_cyc_o),
+		.s4_stb_o(s4_stb_o),
+		.s4_ack_i(s4_ack_i),
 		.s4_err_i(1'b0), 
 		.s4_rty_i(1'b0),
 
