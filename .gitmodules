@@ -1,0 +1,3 @@
+[submodule "riscv-pk"]
+	path = riscv-pk
+	url = https://git.net9.org/shyoshyo/riscv-pk
